@@ -1,0 +1,24 @@
+ [20:53:02]  Set Debug : True.
+ [20:53:10]  INP: S 3, D 8, Dp 31, Sp 47, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [20:53:20]  INP: S 3, D 8, Dp 31, Sp 34, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [20:53:30]  INP: S 3, D 8, Dp 31, Sp 56, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [20:53:40]  INP: S 3, D 8, Dp 31, Sp 49, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [20:53:49]  OUT: S 8, D 5, Dp 1, Sp 39, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:53:53]  OUT: S 8, D 5, Dp 1, Sp 41, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [11:53:57]  OUT: S 8, D 5, Dp 1, Sp 42, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:01]  OUT: S 8, D 5, Dp 1, Sp 45, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:05]  OUT: S 8, D 5, Dp 1, Sp 47, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:09]  OUT: S 8, D 5, Dp 1, Sp 49, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:13]  OUT: S 8, D 5, Dp 1, Sp 50, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:17]  OUT: S 8, D 5, Dp 1, Sp 52, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:21]  OUT: S 8, D 5, Dp 1, Sp 53, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:25]  OUT: S 8, D 5, Dp 1, Sp 59, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:29]  OUT: S 8, D 5, Dp 1, Sp 60, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:33]  OUT: S 8, D 5, Dp 1, Sp 32, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:38]  OUT: S 8, D 5, Dp 1, Sp 38, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:42]  OUT: S 8, D 5, Dp 1, Sp 44, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:46]  OUT: S 8, D 5, Dp 1, Sp 47, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:50]  OUT: S 8, D 5, Dp 1, Sp 57, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:54]  OUT: S 8, D 5, Dp 1, Sp 63, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:54:58]  OUT: S 8, D 5, Dp 1, Sp 37, Pr 2, Fl 0x01, Sz 210 VIA: KISS
+ [20:55:02]  OUT: S 8, D 5, Dp 1, Sp 43, Pr 2, Fl 0x01, Sz 210 VIA: KISS

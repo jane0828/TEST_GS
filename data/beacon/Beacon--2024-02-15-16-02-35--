@@ -1,0 +1,40 @@
+Call Sign : MIMAN
+Message ID : 0x89c
+Sequence : 0xe764
+Length : 107
+Time Code : 0x92 0x20 0x4e 0xa0 0xd0 0x7c
+Spacecraft Time : 2451590816
+Reboot Count : 2
+Current Mode : 6
+Current Submode : 60
+Previous Mode : 1
+Previous SubMode : 11
+Mode : 7
+Reset Cause : 26
+Reset Count : 2097
+Battery Status : 0x8000
+Battery IN Voltage : 0
+Baterry In Current : 0
+Battery Temperature : 1094
+Mboard MPPT In V : 0 0 0
+Mboard MPPT In I : 0 0 0
+Mboard Channel I 3V : 0 0 0 0
+Mboard Channel I 5V : 0 0 0 0
+Mboard Supply V : 3312
+Mboard Temperature : 1788
+Dboard MPPT In V : 0 0
+Dboard MPPT In I : 0 0
+Dboard Channel I 5V : 0
+Dboard Channel I 12V : 0
+Temperature : 0.00
+Angular Velocity : 0.00 0.00 0.00
+RW Error Count : 0
+Total RX Bytes : 1502644
+Boot Count : 1900
+Active Conf : 2
+
+
+
+
+Binary : 
+4d	49	4d	41	4e	8	ffffff9c	ffffffe7	64	0	64	ffffff92	20	4e	ffffffa0	ffffffd0	7c	0	0	0	0	ffffffa0	4e	20	ffffff92	2	0	6	3c	1	b	7	1a	31	8	0	ffffff80	0	0	0	0	46	4	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	fffffff0	c	fffffffc	6	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	ffffffb4	ffffffed	16	0	6c	7	2	

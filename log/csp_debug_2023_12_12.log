@@ -1,0 +1,19 @@
+ [02:22:10]  Half-open connection found, sending RST
+ [02:22:11]  RDP 0x56401e749330: Half-open connection detected, RST sent, now retrying
+ [02:27:15]  Half-open connection found, sending RST
+ [02:27:16]  RDP 0x56401e749260: Half-open connection detected, RST sent, now retrying
+ [03:59:21]  Half-open connection found, sending RST
+ [03:59:21]  RDP 0x56401e748ff0: Half-open connection detected, RST sent, now retrying
+ [04:00:40]  Half-open connection found, sending RST
+ [04:00:40]  RDP 0x56401e748be0: Half-open connection detected, RST sent, now retrying
+ [00:10:32]  Half-open connection found, sending RST
+ [04:01:04]  Half-open connection found, sending RST
+ [04:01:04]  RDP 0x56401e749260: Half-open connection detected, RST sent, now retrying
+ [04:01:42]  Half-open connection found, sending RST
+ [04:01:43]  RDP 0x56401e7490c0: Half-open connection detected, RST sent, now retrying
+ [04:01:56]  Half-open connection found, sending RST
+ [04:01:56]  RDP 0x56401e748cb0: Half-open connection detected, RST sent, now retrying
+ [16:05:36]  RDP: ERROR cannot send, connection reset
+ [16:05:36]  RDP send failed!
+ [16:08:37]  RDP: ERROR cannot send, connection reset
+ [16:08:37]  RDP send failed!

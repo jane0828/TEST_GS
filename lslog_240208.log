@@ -1,0 +1,6 @@
+total 12108
+drwxr-xr-x    2 root     root          4096 Jan 21 00:46 .
+drwxr-xr-x    5 root     root          4096 Jan  1 23:04 ..
+-rw-r--r--    1 root     root       6190144 Jan  1 23:04 0.bin
+-rw-r--r--    1 root     root       6190144 Jan 21 00:46 1.bin
+-rw-r--r--    1 root     root             4 Jan 21 00:46 index

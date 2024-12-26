@@ -1,0 +1,3 @@
+/home/miman/Desktop/MIMAN_GS/CMakeFiles/rebuild_cache.dir
+/home/miman/Desktop/MIMAN_GS/CMakeFiles/edit_cache.dir
+/home/miman/Desktop/MIMAN_GS/CMakeFiles/MIMAN.dir

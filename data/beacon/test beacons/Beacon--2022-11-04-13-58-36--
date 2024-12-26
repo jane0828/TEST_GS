@@ -1,0 +1,40 @@
+Call Sign : MIMANU
+Message ID : 0x89c
+Sequence : 0xc01b
+Length : 107
+Time Code : 0x6 0x35 0x92 0xcb 0x3d 0x97
+Spacecraft Time : 104174281
+Reboot Count : 47
+Current Mode : 6
+Current Submode : 60
+Previous Mode : 1
+Previous SubMode : $u
+Mode : 0
+Reset Cause : 0
+Reset Count : 0
+Battery Status : 0x0
+Battery IN Voltage : 0
+Baterry In Current : 0
+Battery Temperature : 0
+Mboard MPPT In V : 0 0 0
+Mboard MPPT In I : 0 0 0
+Mboard Channel I 3V : 0 0 0 0
+Mboard Channel I 5V : 0 0 0 0
+Mboard Supply V : 0
+Mboard Temperature : 0
+Dboard MPPT In V : 0 0
+Dboard MPPT In I : 0 0
+Dboard Channel I 5V : 0
+Dboard Channel I 12V : 0
+Temperature : 0.00
+Angular Velocity : 0.00 0.00 0.00
+RW Error Count : 0
+Total RX Bytes : 309866
+Boot Count : 931
+Active Conf : 2
+
+
+
+
+Binary : 
+4d	49	4d	41	4e	8	ffffff9c	ffffffc0	1b	0	64	6	35	ffffff92	ffffffcb	3d	ffffff97	0	0	0	0	ffffffc9	ffffff92	35	6	2f	0	6	3c	1	c	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	0	6a	ffffffba	4	0	ffffffa3	3	2	

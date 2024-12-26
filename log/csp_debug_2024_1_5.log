@@ -1,0 +1,130 @@
+ [15:55:44]  OUT: S 8, D 5, Dp 1, Sp 58, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:56:29]  INP: S 3, D 8, Dp 31, Sp 59, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:56:34]  OUT: S 8, D 5, Dp 1, Sp 43, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:56:43]  OUT: S 8, D 5, Dp 1, Sp 53, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:56:48]  OUT: S 8, D 5, Dp 1, Sp 47, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:56:49]  INP: S 3, D 8, Dp 31, Sp 33, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:56:52]  OUT: S 8, D 5, Dp 1, Sp 46, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:56:59]  INP: S 3, D 8, Dp 31, Sp 48, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:57:02]  OUT: S 8, D 5, Dp 1, Sp 39, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:57:07]  OUT: S 8, D 5, Dp 1, Sp 49, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:57:19]  INP: S 3, D 8, Dp 31, Sp 54, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:57:20]  OUT: S 8, D 5, Dp 1, Sp 51, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:57:29]  INP: S 3, D 8, Dp 31, Sp 41, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:57:30]  OUT: S 8, D 5, Dp 1, Sp 56, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:57:30]  INP: S 5, D 8, Dp 56, Sp 1, Pr 2, Fl 0x01, Sz 8 VIA: KISS
+ [15:57:39]  INP: S 3, D 8, Dp 31, Sp 32, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:57:49]  INP: S 3, D 8, Dp 31, Sp 57, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:57:59]  INP: S 3, D 8, Dp 31, Sp 44, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:58:00]  OUT: S 8, D 3, Dp 13, Sp 60, Pr 1, Fl 0x01, Sz 12 VIA: KISS
+ [15:58:00]  RX Delay : 1190368 microsecond.
+ [15:58:09]  INP: S 3, D 8, Dp 31, Sp 57, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:58:11]  OUT: S 8, D 3, Dp 13, Sp 52, Pr 1, Fl 0x01, Sz 12 VIA: KISS
+ [15:58:11]  RX Delay : 1190368 microsecond.
+ [15:58:19]  INP: S 3, D 8, Dp 31, Sp 44, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:58:22]  OUT: S 8, D 3, Dp 13, Sp 40, Pr 1, Fl 0x01, Sz 12 VIA: KISS
+ [15:58:22]  RX Delay : 1190368 microsecond.
+ [15:58:23]  INP: S 3, D 8, Dp 40, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [15:59:21]  OUT: S 8, D 5, Dp 1, Sp 36, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:59:25]  OUT: S 8, D 5, Dp 1, Sp 45, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:59:37]  Set Parameter Delays : tx : 4800 rx : 2400 tx_guard : 0 rx_guard : 0
+ [15:59:42]  INP: S 3, D 8, Dp 31, Sp 38, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [15:59:50]  Set Parameter Delays : tx : 2400 rx : 2400 tx_guard : 0 rx_guard : 0
+ [15:59:52]  INP: S 3, D 8, Dp 31, Sp 57, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:00:05]  OUT: S 8, D 5, Dp 1, Sp 58, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:00:12]  INP: S 3, D 8, Dp 31, Sp 32, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:00:17]  Set Environment Delays : kiss 500000 switch : 115200 can : 1000000 queue : 150000 gs100_node : 20
+ [16:00:22]  INP: S 3, D 8, Dp 31, Sp 51, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:00:32]  INP: S 3, D 8, Dp 31, Sp 38, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:00:37]  Set Environment Delays : kiss 500000 switch : 115200 can : 1000000 queue : 200000 gs100_node : 20
+ [16:00:42]  INP: S 3, D 8, Dp 31, Sp 57, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:00:51]  Set Environment Delays : kiss 500000 switch : 115200 can : 1000000 queue : 150000 gs100_node : 20
+ [16:00:52]  INP: S 3, D 8, Dp 31, Sp 44, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:00:53]  OUT: S 8, D 5, Dp 1, Sp 37, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:00:56]  OUT: S 8, D 5, Dp 1, Sp 40, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:01:01]  Set Environment Delays : kiss 500000 switch : 115200 can : 1000000 queue : 200000 gs100_node : 20
+ [16:01:02]  INP: S 3, D 8, Dp 31, Sp 63, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:01:03]  OUT: S 8, D 5, Dp 1, Sp 45, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:01:03]  INP: S 5, D 8, Dp 45, Sp 1, Pr 2, Fl 0x01, Sz 8 VIA: KISS
+ [16:01:04]  OUT: S 8, D 5, Dp 1, Sp 34, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:01:05]  INP: S 5, D 8, Dp 34, Sp 1, Pr 2, Fl 0x01, Sz 8 VIA: KISS
+ [16:01:08]  OUT: S 8, D 3, Dp 13, Sp 53, Pr 1, Fl 0x01, Sz 16 VIA: KISS
+ [16:01:08]  RX Delay : 1443772 microsecond.
+ [16:01:09]  INP: S 3, D 8, Dp 53, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:01:10]  OUT: S 8, D 3, Dp 13, Sp 51, Pr 1, Fl 0x01, Sz 16 VIA: KISS
+ [16:01:10]  RX Delay : 1443772 microsecond.
+ [16:01:11]  INP: S 3, D 8, Dp 51, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:01:12]  INP: S 3, D 8, Dp 31, Sp 50, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:01:13]  OUT: S 8, D 3, Dp 13, Sp 50, Pr 1, Fl 0x01, Sz 13 VIA: KISS
+ [16:01:13]  RX Delay : 1433725 microsecond.
+ [16:01:14]  INP: S 3, D 8, Dp 50, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:01:16]  OUT: S 8, D 3, Dp 13, Sp 42, Pr 1, Fl 0x01, Sz 13 VIA: KISS
+ [16:01:16]  RX Delay : 1433725 microsecond.
+ [16:01:17]  INP: S 3, D 8, Dp 42, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:01:22]  OUT: S 8, D 3, Dp 13, Sp 61, Pr 1, Fl 0x01, Sz 13 VIA: KISS
+ [16:01:22]  INP: S 3, D 8, Dp 31, Sp 37, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:01:22]  RX Delay : 1433725 microsecond.
+ [16:01:27]  OUT: S 8, D 3, Dp 13, Sp 52, Pr 1, Fl 0x01, Sz 13 VIA: KISS
+ [16:01:27]  RX Delay : 1433725 microsecond.
+ [16:01:28]  INP: S 3, D 8, Dp 52, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:01:29]  OUT: S 8, D 3, Dp 13, Sp 38, Pr 1, Fl 0x01, Sz 33 VIA: KISS
+ [16:01:29]  RX Delay : 1500705 microsecond.
+ [16:01:30]  INP: S 3, D 8, Dp 38, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:01:32]  INP: S 3, D 8, Dp 31, Sp 56, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:01:35]  OUT: S 8, D 3, Dp 13, Sp 61, Pr 1, Fl 0x01, Sz 33 VIA: KISS
+ [16:01:35]  RX Delay : 1500705 microsecond.
+ [16:01:36]  INP: S 3, D 8, Dp 61, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:01:42]  INP: S 3, D 8, Dp 31, Sp 43, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:02:02]  INP: S 3, D 8, Dp 31, Sp 49, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:02:12]  INP: S 3, D 8, Dp 31, Sp 36, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:02:20]  OUT: S 8, D 5, Dp 1, Sp 36, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:02:21]  INP: S 5, D 8, Dp 36, Sp 1, Pr 2, Fl 0x01, Sz 8 VIA: KISS
+ [16:02:22]  INP: S 3, D 8, Dp 31, Sp 54, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:02:24]  OUT: S 8, D 3, Dp 13, Sp 43, Pr 1, Fl 0x01, Sz 16 VIA: KISS
+ [16:02:24]  RX Delay : 1443772 microsecond.
+ [16:02:25]  INP: S 3, D 8, Dp 43, Sp 13, Pr 1, Fl 0x01, Sz 10 VIA: KISS
+ [16:02:28]  OUT: S 8, D 3, Dp 13, Sp 36, Pr 1, Fl 0x01, Sz 16 VIA: KISS
+ [16:02:28]  RX Delay : 1443772 microsecond.
+ [16:02:40]  Set Parameter Delays : tx : 2400 rx : 4800 tx_guard : 0 rx_guard : 0
+ [16:02:41]  INP: S 3, D 8, Dp 31, Sp 62, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:02:44]  OUT: S 8, D 5, Dp 1, Sp 51, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:02:51]  INP: S 3, D 8, Dp 31, Sp 40, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:02:53]  Set Parameter Delays : tx : 4800 rx : 4800 tx_guard : 0 rx_guard : 0
+ [16:02:55]  OUT: S 8, D 5, Dp 1, Sp 39, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:02:58]  OUT: S 8, D 5, Dp 1, Sp 37, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:02:58]  INP: S 5, D 8, Dp 37, Sp 1, Pr 2, Fl 0x01, Sz 8 VIA: KISS
+ [16:03:01]  Set Environment Delays : kiss 500000 switch : 115200 can : 1000000 queue : 150000 gs100_node : 20
+ [16:03:01]  INP: S 3, D 8, Dp 31, Sp 59, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:03:02]  OUT: S 8, D 5, Dp 1, Sp 38, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [16:03:03]  INP: S 5, D 8, Dp 38, Sp 1, Pr 2, Fl 0x01, Sz 8 VIA: KISS
+ [16:03:11]  INP: S 3, D 8, Dp 31, Sp 46, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:03:21]  INP: S 3, D 8, Dp 31, Sp 41, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:03:31]  INP: S 3, D 8, Dp 31, Sp 60, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:03:41]  INP: S 3, D 8, Dp 31, Sp 47, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:03:51]  INP: S 3, D 8, Dp 31, Sp 36, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:04:01]  INP: S 3, D 8, Dp 31, Sp 55, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:04:11]  INP: S 3, D 8, Dp 31, Sp 42, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:04:21]  INP: S 3, D 8, Dp 31, Sp 59, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:04:31]  INP: S 3, D 8, Dp 31, Sp 46, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:04:41]  INP: S 3, D 8, Dp 31, Sp 33, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:05:01]  INP: S 3, D 8, Dp 31, Sp 39, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:05:11]  INP: S 3, D 8, Dp 31, Sp 58, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:05:21]  INP: S 3, D 8, Dp 31, Sp 45, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:05:31]  INP: S 3, D 8, Dp 31, Sp 32, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:05:51]  INP: S 3, D 8, Dp 31, Sp 38, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:06:01]  INP: S 3, D 8, Dp 31, Sp 57, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:06:11]  INP: S 3, D 8, Dp 31, Sp 44, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:06:21]  INP: S 3, D 8, Dp 31, Sp 63, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:06:31]  INP: S 3, D 8, Dp 31, Sp 50, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:06:41]  INP: S 3, D 8, Dp 31, Sp 37, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:06:51]  INP: S 3, D 8, Dp 31, Sp 56, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:07:11]  INP: S 3, D 8, Dp 31, Sp 61, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:07:21]  INP: S 3, D 8, Dp 31, Sp 51, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:07:31]  INP: S 3, D 8, Dp 31, Sp 38, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:07:41]  INP: S 3, D 8, Dp 31, Sp 57, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:07:51]  INP: S 3, D 8, Dp 31, Sp 51, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:08:01]  INP: S 3, D 8, Dp 31, Sp 38, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:08:21]  INP: S 3, D 8, Dp 31, Sp 37, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:08:31]  INP: S 3, D 8, Dp 31, Sp 56, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:08:41]  INP: S 3, D 8, Dp 31, Sp 43, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:09:01]  INP: S 3, D 8, Dp 31, Sp 49, Pr 2, Fl 0x01, Sz 116 VIA: KISS

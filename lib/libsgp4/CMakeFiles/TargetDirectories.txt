@@ -1,0 +1,8 @@
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/sgp4.dir
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/sgp4s.dir
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/edit_cache.dir
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/rebuild_cache.dir
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/list_install_components.dir
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/install.dir
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/install/local.dir
+/home/canyval/Desktop/MIMAN/JDM/MIMAN_GS/lib/libsgp4/CMakeFiles/install/strip.dir

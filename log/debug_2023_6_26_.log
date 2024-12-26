@@ -1,0 +1,7 @@
+ [22:34:42]  Set Debug : True.
+ [03:19:24]  RDP 0x55ac88ffd4b0: Wake Tx task (check timeouts)
+ [03:20:51]  RDP 0x55ac88ffcf00: Received in S 3: syn 0, ack 1, eack 1, rst 0, seq_nr 40168, ack_nr 12119, packet_len 5 (0)
+ [03:21:22]  packet length : 1
+ [03:23:48]  FTP: Set Streaming Value : 0
+ [03:26:50]  RDP 0x55ac88ffcf00: Wake Tx task (check timeouts)
+ [03:29:07]  RDP 0x55ac88ffd3e0: Wake Tx task (check timeouts)

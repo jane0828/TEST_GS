@@ -1,0 +1,4 @@
+ [15:53:39]  Half-open connection found, sending RST
+ [15:53:40]  RDP 0x55b00e83b190: Half-open connection detected, RST sent, now retrying
+ [17:30:11]  Half-open connection found, sending RST
+ [17:30:11]  RDP 0x55b00e83abe0: Half-open connection detected, RST sent, now retrying

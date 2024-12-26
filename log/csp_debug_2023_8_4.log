@@ -1,0 +1,236 @@
+ [15:19:11]  Set Debug : True.
+ [15:19:15]  FTP: Create Connection.
+ [15:19:15]  RDP 0x562a7364e260: Active connect, conn state 0
+ [15:19:15]  RDP 0x562a7364e260: AC: Sending SYN
+ [15:19:15]  RDP: CMP: conn pointer 0x562a7364e260, packet pointer 0x562aa91dfef0, flag 1, seq_nr 50359, ack_nr 0
+ [15:19:15]  OUT: S 8, D 3, Dp 15, Sp 41, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:19:15]  RDP 0x562a7364e260: AC: Waiting for SYN/ACK reply...
+ [15:19:17]  RDP: CMP: conn pointer 0x562a7364e260, packet pointer (nil), flag 2, seq_nr 50360, ack_nr 0
+ [15:19:17]  OUT: S 8, D 3, Dp 15, Sp 41, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:19]  RDP: CMP: conn pointer 0x562a7364e260, packet pointer (nil), flag 2, seq_nr 50360, ack_nr 0
+ [15:19:19]  OUT: S 8, D 3, Dp 15, Sp 41, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:21]  RDP: CMP: conn pointer 0x562a7364e260, packet pointer (nil), flag 2, seq_nr 50360, ack_nr 0
+ [15:19:21]  OUT: S 8, D 3, Dp 15, Sp 41, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:22]  TX Element timed out, retransmitting seq 50359
+ [15:19:24]  RDP: CMP: conn pointer 0x562a7364e260, packet pointer (nil), flag 2, seq_nr 50360, ack_nr 0
+ [15:19:24]  OUT: S 8, D 3, Dp 15, Sp 41, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:25]  RDP 0x562a7364e260: AC: Connection Failed
+ [15:19:25]  RDP 0x562a7364e260: Close in CLOSE_WAIT, now closing
+ [15:19:25]  RDP 0x562a7364e260: Flush TX Element, time 573757206, seq 50359
+ [15:19:25]  FTP: Create Connection.
+ [15:19:25]  RDP 0x562a7364e0c0: Active connect, conn state 0
+ [15:19:25]  RDP 0x562a7364e0c0: AC: Sending SYN
+ [15:19:25]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer 0x562aa9338bd0, flag 1, seq_nr 44106, ack_nr 0
+ [15:19:25]  OUT: S 8, D 3, Dp 15, Sp 34, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:19:25]  RDP 0x562a7364e0c0: AC: Waiting for SYN/ACK reply...
+ [15:19:27]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 44107, ack_nr 0
+ [15:19:27]  OUT: S 8, D 3, Dp 15, Sp 34, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:29]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 44107, ack_nr 0
+ [15:19:30]  OUT: S 8, D 3, Dp 15, Sp 34, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:32]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 44107, ack_nr 0
+ [15:19:32]  OUT: S 8, D 3, Dp 15, Sp 34, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:33]  TX Element timed out, retransmitting seq 44106
+ [15:19:33]  OUT: S 8, D 3, Dp 15, Sp 34, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:19:34]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 44107, ack_nr 0
+ [15:19:34]  OUT: S 8, D 3, Dp 15, Sp 34, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:35]  RDP 0x562a7364e0c0: AC: Connection Failed
+ [15:19:35]  RDP 0x562a7364e0c0: Close in CLOSE_WAIT, now closing
+ [15:19:35]  RDP 0x562a7364e0c0: Flush TX Element, time 573767528, seq 44106
+ [15:19:35]  FTP: Create Connection.
+ [15:19:35]  RDP 0x562a7364dbe0: Active connect, conn state 0
+ [15:19:35]  RDP 0x562a7364dbe0: AC: Sending SYN
+ [15:19:35]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer 0x562aa947dbd0, flag 1, seq_nr 37262, ack_nr 0
+ [15:19:35]  OUT: S 8, D 3, Dp 15, Sp 40, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:19:36]  RDP 0x562a7364dbe0: AC: Waiting for SYN/ACK reply...
+ [15:19:37]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 37263, ack_nr 0
+ [15:19:37]  OUT: S 8, D 3, Dp 15, Sp 40, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:40]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 37263, ack_nr 0
+ [15:19:40]  OUT: S 8, D 3, Dp 15, Sp 40, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:42]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 37263, ack_nr 0
+ [15:19:42]  OUT: S 8, D 3, Dp 15, Sp 40, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:43]  TX Element timed out, retransmitting seq 37262
+ [15:19:43]  OUT: S 8, D 3, Dp 15, Sp 40, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:19:44]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 37263, ack_nr 0
+ [15:19:44]  OUT: S 8, D 3, Dp 15, Sp 40, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:19:46]  RDP 0x562a7364dbe0: AC: Connection Failed
+ [15:19:46]  RDP 0x562a7364dbe0: Close in CLOSE_WAIT, now closing
+ [15:19:46]  RDP 0x562a7364dbe0: Flush TX Element, time 573777877, seq 37262
+ [15:19:46]  FTP: FTP task DONE. (info)
+ [15:19:58]  FTP: Create Connection.
+ [15:19:58]  RDP 0x562a7364e0c0: Active connect, conn state 0
+ [15:19:58]  RDP 0x562a7364e0c0: AC: Sending SYN
+ [15:19:58]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer 0x562aa94b69d0, flag 1, seq_nr 63873, ack_nr 0
+ [15:19:58]  OUT: S 8, D 3, Dp 15, Sp 33, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:19:58]  RDP 0x562a7364e0c0: AC: Waiting for SYN/ACK reply...
+ [15:20:00]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 63874, ack_nr 0
+ [15:20:00]  OUT: S 8, D 3, Dp 15, Sp 33, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:02]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 63874, ack_nr 0
+ [15:20:02]  OUT: S 8, D 3, Dp 15, Sp 33, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:04]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 63874, ack_nr 0
+ [15:20:04]  OUT: S 8, D 3, Dp 15, Sp 33, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:05]  TX Element timed out, retransmitting seq 63873
+ [15:20:05]  OUT: S 8, D 3, Dp 15, Sp 33, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:07]  RDP: CMP: conn pointer 0x562a7364e0c0, packet pointer (nil), flag 2, seq_nr 63874, ack_nr 0
+ [15:20:07]  OUT: S 8, D 3, Dp 15, Sp 33, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:08]  RDP 0x562a7364e0c0: AC: Connection Failed
+ [15:20:08]  RDP 0x562a7364e0c0: Close in CLOSE_WAIT, now closing
+ [15:20:08]  RDP 0x562a7364e0c0: Flush TX Element, time 573800080, seq 63873
+ [15:20:08]  FTP: Create Connection.
+ [15:20:08]  RDP 0x562a7364dcb0: Active connect, conn state 0
+ [15:20:08]  RDP 0x562a7364dcb0: AC: Sending SYN
+ [15:20:08]  RDP: CMP: conn pointer 0x562a7364dcb0, packet pointer 0x562aa91e6070, flag 1, seq_nr 37053, ack_nr 0
+ [15:20:08]  OUT: S 8, D 3, Dp 15, Sp 63, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:08]  RDP 0x562a7364dcb0: AC: Waiting for SYN/ACK reply...
+ [15:20:10]  RDP: CMP: conn pointer 0x562a7364dcb0, packet pointer (nil), flag 2, seq_nr 37054, ack_nr 0
+ [15:20:10]  OUT: S 8, D 3, Dp 15, Sp 63, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:12]  RDP: CMP: conn pointer 0x562a7364dcb0, packet pointer (nil), flag 2, seq_nr 37054, ack_nr 0
+ [15:20:12]  OUT: S 8, D 3, Dp 15, Sp 63, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:15]  RDP: CMP: conn pointer 0x562a7364dcb0, packet pointer (nil), flag 2, seq_nr 37054, ack_nr 0
+ [15:20:15]  OUT: S 8, D 3, Dp 15, Sp 63, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:16]  TX Element timed out, retransmitting seq 37053
+ [15:20:16]  OUT: S 8, D 3, Dp 15, Sp 63, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:17]  RDP: CMP: conn pointer 0x562a7364dcb0, packet pointer (nil), flag 2, seq_nr 37054, ack_nr 0
+ [15:20:17]  OUT: S 8, D 3, Dp 15, Sp 63, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:18]  RDP 0x562a7364dcb0: AC: Connection Failed
+ [15:20:18]  RDP 0x562a7364dcb0: CLOSE_WAIT timeout
+ [15:20:18]  RDP 0x562a7364dcb0: Close in CLOSE_WAIT, now closing
+ [15:20:18]  RDP 0x562a7364dcb0: Flush TX Element, time 573810424, seq 37053
+ [15:20:18]  RDP 0x562a7364dcb0: Close in CLOSE_WAIT, now closing
+ [15:20:18]  FTP: Create Connection.
+ [15:20:18]  RDP 0x562a7364e190: Active connect, conn state 0
+ [15:20:18]  RDP 0x562a7364e190: AC: Sending SYN
+ [15:20:18]  RDP: CMP: conn pointer 0x562a7364e190, packet pointer 0x562aa931b490, flag 1, seq_nr 53951, ack_nr 0
+ [15:20:18]  OUT: S 8, D 3, Dp 15, Sp 53, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:19]  RDP 0x562a7364e190: AC: Waiting for SYN/ACK reply...
+ [15:20:20]  RDP: CMP: conn pointer 0x562a7364e190, packet pointer (nil), flag 2, seq_nr 53952, ack_nr 0
+ [15:20:20]  OUT: S 8, D 3, Dp 15, Sp 53, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:23]  RDP: CMP: conn pointer 0x562a7364e190, packet pointer (nil), flag 2, seq_nr 53952, ack_nr 0
+ [15:20:23]  OUT: S 8, D 3, Dp 15, Sp 53, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:25]  RDP: CMP: conn pointer 0x562a7364e190, packet pointer (nil), flag 2, seq_nr 53952, ack_nr 0
+ [15:20:25]  OUT: S 8, D 3, Dp 15, Sp 53, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:26]  TX Element timed out, retransmitting seq 53951
+ [15:20:26]  OUT: S 8, D 3, Dp 15, Sp 53, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:27]  RDP: CMP: conn pointer 0x562a7364e190, packet pointer (nil), flag 2, seq_nr 53952, ack_nr 0
+ [15:20:27]  OUT: S 8, D 3, Dp 15, Sp 53, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:29]  RDP 0x562a7364e190: AC: Connection Failed
+ [15:20:29]  RDP 0x562a7364e190: Close in CLOSE_WAIT, now closing
+ [15:20:29]  RDP 0x562a7364e190: Flush TX Element, time 573820769, seq 53951
+ [15:20:29]  FTP: FTP task DONE. (info)
+ [15:20:36]  FTP: Create Connection.
+ [15:20:36]  RDP 0x562a7364de50: Active connect, conn state 0
+ [15:20:36]  RDP 0x562a7364de50: AC: Sending SYN
+ [15:20:36]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer 0x562aa9231b10, flag 1, seq_nr 40731, ack_nr 0
+ [15:20:36]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:37]  RDP 0x562a7364de50: AC: Waiting for SYN/ACK reply...
+ [15:20:38]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 40732, ack_nr 0
+ [15:20:38]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:41]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 40732, ack_nr 0
+ [15:20:41]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:43]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 40732, ack_nr 0
+ [15:20:43]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:44]  TX Element timed out, retransmitting seq 40731
+ [15:20:44]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:45]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 40732, ack_nr 0
+ [15:20:45]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:47]  RDP 0x562a7364de50: AC: Connection Failed
+ [15:20:47]  RDP 0x562a7364de50: Close in CLOSE_WAIT, now closing
+ [15:20:47]  RDP 0x562a7364de50: Flush TX Element, time 573838756, seq 40731
+ [15:20:47]  FTP: Create Connection.
+ [15:20:47]  RDP 0x562a7364dbe0: Active connect, conn state 0
+ [15:20:47]  RDP 0x562a7364dbe0: AC: Sending SYN
+ [15:20:47]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer 0x562aa9373230, flag 1, seq_nr 25734, ack_nr 0
+ [15:20:47]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:47]  RDP 0x562a7364dbe0: AC: Waiting for SYN/ACK reply...
+ [15:20:49]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 25735, ack_nr 0
+ [15:20:49]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:51]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 25735, ack_nr 0
+ [15:20:51]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:53]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 25735, ack_nr 0
+ [15:20:53]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:54]  TX Element timed out, retransmitting seq 25734
+ [15:20:54]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:56]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 25735, ack_nr 0
+ [15:20:56]  OUT: S 8, D 3, Dp 15, Sp 48, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:20:57]  RDP 0x562a7364dbe0: AC: Connection Failed
+ [15:20:57]  RDP 0x562a7364dbe0: Close in CLOSE_WAIT, now closing
+ [15:20:57]  RDP 0x562a7364dbe0: Flush TX Element, time 573849116, seq 25734
+ [15:20:57]  FTP: Create Connection.
+ [15:20:57]  RDP 0x562a7364df20: Active connect, conn state 0
+ [15:20:57]  RDP 0x562a7364df20: AC: Sending SYN
+ [15:20:57]  RDP: CMP: conn pointer 0x562a7364df20, packet pointer 0x562aa94ae7d0, flag 1, seq_nr 54378, ack_nr 0
+ [15:20:57]  OUT: S 8, D 3, Dp 15, Sp 44, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:20:57]  RDP 0x562a7364df20: AC: Waiting for SYN/ACK reply...
+ [15:20:59]  RDP: CMP: conn pointer 0x562a7364df20, packet pointer (nil), flag 2, seq_nr 54379, ack_nr 0
+ [15:20:59]  OUT: S 8, D 3, Dp 15, Sp 44, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:01]  RDP: CMP: conn pointer 0x562a7364df20, packet pointer (nil), flag 2, seq_nr 54379, ack_nr 0
+ [15:21:01]  OUT: S 8, D 3, Dp 15, Sp 44, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:04]  RDP: CMP: conn pointer 0x562a7364df20, packet pointer (nil), flag 2, seq_nr 54379, ack_nr 0
+ [15:21:04]  OUT: S 8, D 3, Dp 15, Sp 44, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:05]  TX Element timed out, retransmitting seq 54378
+ [15:21:05]  OUT: S 8, D 3, Dp 15, Sp 44, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:21:06]  RDP: CMP: conn pointer 0x562a7364df20, packet pointer (nil), flag 2, seq_nr 54379, ack_nr 0
+ [15:21:06]  OUT: S 8, D 3, Dp 15, Sp 44, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:07]  RDP 0x562a7364df20: AC: Connection Failed
+ [15:21:07]  RDP 0x562a7364df20: Close in CLOSE_WAIT, now closing
+ [15:21:07]  RDP 0x562a7364df20: Flush TX Element, time 573859446, seq 54378
+ [15:21:07]  FTP: FTP task DONE. (info)
+ [15:21:08]  FTP: Create Connection.
+ [15:21:08]  RDP 0x562a7364dbe0: Active connect, conn state 0
+ [15:21:08]  RDP 0x562a7364dbe0: AC: Sending SYN
+ [15:21:08]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer 0x562aa91f9d50, flag 1, seq_nr 4781, ack_nr 0
+ [15:21:08]  OUT: S 8, D 3, Dp 15, Sp 38, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:21:08]  RDP 0x562a7364dbe0: AC: Waiting for SYN/ACK reply...
+ [15:21:10]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 4782, ack_nr 0
+ [15:21:10]  OUT: S 8, D 3, Dp 15, Sp 38, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:12]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 4782, ack_nr 0
+ [15:21:12]  OUT: S 8, D 3, Dp 15, Sp 38, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:14]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 4782, ack_nr 0
+ [15:21:14]  OUT: S 8, D 3, Dp 15, Sp 38, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:15]  TX Element timed out, retransmitting seq 4781
+ [15:21:15]  OUT: S 8, D 3, Dp 15, Sp 38, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:21:17]  RDP: CMP: conn pointer 0x562a7364dbe0, packet pointer (nil), flag 2, seq_nr 4782, ack_nr 0
+ [15:21:17]  OUT: S 8, D 3, Dp 15, Sp 38, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:18]  RDP 0x562a7364dbe0: AC: Connection Failed
+ [15:21:18]  RDP 0x562a7364dbe0: Close in CLOSE_WAIT, now closing
+ [15:21:18]  RDP 0x562a7364dbe0: Flush TX Element, time 573870117, seq 4781
+ [15:21:18]  FTP: Create Connection.
+ [15:21:18]  RDP 0x562a7364e330: Active connect, conn state 0
+ [15:21:18]  RDP 0x562a7364e330: AC: Sending SYN
+ [15:21:18]  RDP: CMP: conn pointer 0x562a7364e330, packet pointer 0x562aa932a850, flag 1, seq_nr 41100, ack_nr 0
+ [15:21:18]  OUT: S 8, D 3, Dp 15, Sp 55, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:21:18]  RDP 0x562a7364e330: AC: Waiting for SYN/ACK reply...
+ [15:21:20]  RDP: CMP: conn pointer 0x562a7364e330, packet pointer (nil), flag 2, seq_nr 41101, ack_nr 0
+ [15:21:20]  OUT: S 8, D 3, Dp 15, Sp 55, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:22]  RDP: CMP: conn pointer 0x562a7364e330, packet pointer (nil), flag 2, seq_nr 41101, ack_nr 0
+ [15:21:22]  OUT: S 8, D 3, Dp 15, Sp 55, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:25]  RDP: CMP: conn pointer 0x562a7364e330, packet pointer (nil), flag 2, seq_nr 41101, ack_nr 0
+ [15:21:25]  OUT: S 8, D 3, Dp 15, Sp 55, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:26]  TX Element timed out, retransmitting seq 41100
+ [15:21:26]  OUT: S 8, D 3, Dp 15, Sp 55, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:21:27]  RDP: CMP: conn pointer 0x562a7364e330, packet pointer (nil), flag 2, seq_nr 41101, ack_nr 0
+ [15:21:27]  OUT: S 8, D 3, Dp 15, Sp 55, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:28]  RDP 0x562a7364e330: AC: Connection Failed
+ [15:21:28]  RDP 0x562a7364e330: Close in CLOSE_WAIT, now closing
+ [15:21:28]  RDP 0x562a7364e330: Flush TX Element, time 573880448, seq 41100
+ [15:21:28]  FTP: Create Connection.
+ [15:21:28]  RDP 0x562a7364de50: Active connect, conn state 0
+ [15:21:28]  RDP 0x562a7364de50: AC: Sending SYN
+ [15:21:28]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer 0x562aa945f450, flag 1, seq_nr 20288, ack_nr 0
+ [15:21:28]  OUT: S 8, D 3, Dp 15, Sp 43, Pr 1, Fl 0x03, Sz 29 VIA: KISS
+ [15:21:29]  RDP 0x562a7364de50: AC: Waiting for SYN/ACK reply...
+ [15:21:30]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 20289, ack_nr 0
+ [15:21:30]  OUT: S 8, D 3, Dp 15, Sp 43, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:33]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 20289, ack_nr 0
+ [15:21:33]  OUT: S 8, D 3, Dp 15, Sp 43, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:35]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 20289, ack_nr 0
+ [15:21:35]  OUT: S 8, D 3, Dp 15, Sp 43, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:36]  TX Element timed out, retransmitting seq 20288
+ [15:21:36]  OUT: S 8, D 3, Dp 15, Sp 43, Pr 2, Fl 0x03, Sz 29 VIA: KISS
+ [15:21:37]  RDP: CMP: conn pointer 0x562a7364de50, packet pointer (nil), flag 2, seq_nr 20289, ack_nr 0
+ [15:21:37]  OUT: S 8, D 3, Dp 15, Sp 43, Pr 1, Fl 0x03, Sz 5 VIA: KISS
+ [15:21:39]  RDP 0x562a7364de50: AC: Connection Failed
+ [15:21:39]  RDP 0x562a7364de50: Close in CLOSE_WAIT, now closing
+ [15:21:39]  RDP 0x562a7364de50: Flush TX Element, time 573890753, seq 20288
+ [15:21:39]  FTP: FTP task DONE. (info)
+ [15:21:41]  OUT: S 8, D 5, Dp 1, Sp 44, Pr 2, Fl 0x01, Sz 4 VIA: KISS
+ [15:21:45]  OUT: S 8, D 5, Dp 1, Sp 55, Pr 2, Fl 0x01, Sz 4 VIA: KISS

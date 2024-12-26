@@ -1,0 +1,7 @@
+ [03:01:18]  Half-open connection found, sending RST
+ [03:01:19]  RDP 0x56401e748f20: Half-open connection detected, RST sent, now retrying
+ [03:02:01]  Half-open connection found, sending RST
+ [03:02:02]  RDP 0x56401e748cb0: Half-open connection detected, RST sent, now retrying
+ [03:03:14]  Half-open connection found, sending RST
+ [16:44:55]  Half-open connection found, sending RST
+ [16:44:56]  RDP 0x56401e748f20: Half-open connection detected, RST sent, now retrying

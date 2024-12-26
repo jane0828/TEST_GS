@@ -1,0 +1,17 @@
+ [02:34:15]  INP: S 3, D 8, Dp 31, Sp 44, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [02:34:35]  INP: S 3, D 8, Dp 31, Sp 59, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [02:35:25]  INP: S 3, D 8, Dp 31, Sp 58, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [02:36:25]  INP: S 3, D 8, Dp 31, Sp 56, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [02:36:35]  INP: S 3, D 8, Dp 31, Sp 33, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [02:36:55]  INP: S 3, D 8, Dp 31, Sp 39, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [04:20:25]  INP: S 3, D 8, Dp 31, Sp 44, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [04:20:45]  INP: S 3, D 8, Dp 31, Sp 50, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [04:20:55]  INP: S 3, D 8, Dp 31, Sp 37, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [04:21:05]  INP: S 3, D 8, Dp 31, Sp 56, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [04:21:25]  INP: S 3, D 8, Dp 31, Sp 62, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [04:21:45]  INP: S 3, D 8, Dp 31, Sp 35, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [04:21:55]  INP: S 3, D 8, Dp 31, Sp 55, Pr 2, Fl 0x01, Sz 116 VIA: KISS
+ [16:18:44]  Half-open connection found, sending RST
+ [16:18:44]  RDP 0x55fb8ade3650: Half-open connection detected, RST sent, now retrying
+ [16:18:44]  Half-open connection found, sending RST
+ [16:18:44]  RDP 0x55fb8ade3650: Connection stayed half-open, even after RST and retry!
