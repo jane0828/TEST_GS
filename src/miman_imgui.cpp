@@ -1208,12 +1208,12 @@ void ImGui_ControlWindow(float fontscale)
             ImGui::EndCombo();
         }
         switch(gen_fnccode) {
-            case 0: {  //noarg
+            case 0: {  //no arg
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 
-                ImGui::InputScalar("msgid0",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode0",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
                 //ImGui::InputScalar("arg",ImGuiDataType_U8, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
@@ -1238,26 +1238,30 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd,sizeof(cmd));
-                    
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
+                
                 break;
             }
             case 1:  {// u8
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static uint8_t arg=0;
-                ImGui::InputScalar("msgid1",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode1",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg1",ImGuiDataType_U8, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg u8",ImGuiDataType_U8, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+9); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+CFE_SB_CMD_HDR_SIZE+sizeof(uint8_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = 9;
+                    TestPacket->Length = CFE_SB_CMD_HDR_SIZE+sizeof(uint8_t);
                     memset(TestPacket->Data,0,TestPacket->Length);
-                    uint8_t cmd2[9] = {0,};
+                    uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint8_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
                     memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
@@ -1274,9 +1278,16 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-                    
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        if(i < 8) {
+                            printf("0x%x ",cmd2[i]);
+                        }
+                        else {
+                            printf("%u", cmd2[i]);
+                        }
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1284,17 +1295,17 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static uint16_t arg=0;
-                ImGui::InputScalar("msgid2",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode2",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg2",ImGuiDataType_U16, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg u16",ImGuiDataType_U16, &arg);
                 if(ImGui::Button("Generate CMD")) { 
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+10); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+CFE_SB_CMD_HDR_SIZE+sizeof(uint16_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = 10;
+                    TestPacket->Length = CFE_SB_CMD_HDR_SIZE+sizeof(uint8_t);
                     memset(TestPacket->Data,0,TestPacket->Length);
-                    uint8_t cmd2[10] = {0,};
+                    uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint8_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
                     memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
@@ -1311,8 +1322,16 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        if(i < 8) {
+                            printf("0x%x ",cmd2[i]);
+                        }
+                        else {
+                            printf("%u", arg);
+                        }
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1320,17 +1339,17 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static uint32_t arg=0;
-                ImGui::InputScalar("msgid3",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode3",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg3",ImGuiDataType_U32, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg u32",ImGuiDataType_U32, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+12); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+CFE_SB_CMD_HDR_SIZE+sizeof(uint32_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = 12;
+                    TestPacket->Length = CFE_SB_CMD_HDR_SIZE+sizeof(uint32_t);
                     memset(TestPacket->Data,0,TestPacket->Length);
-                    uint8_t cmd2[12] = {0,};
+                    uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint32_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
                     memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
@@ -1347,8 +1366,11 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd2[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1356,17 +1378,17 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static uint64_t arg=0;
-                ImGui::InputScalar("msgid4",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode4",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg4",ImGuiDataType_U64, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg u64",ImGuiDataType_U64, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+16); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+CFE_SB_CMD_HDR_SIZE+sizeof(uint64_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = 16;
+                    TestPacket->Length = CFE_SB_CMD_HDR_SIZE+sizeof(uint64_t);
                     memset(TestPacket->Data,0,TestPacket->Length);
-                    uint8_t cmd2[16] = {0,};
+                    uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint64_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
                     memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
@@ -1375,7 +1397,7 @@ void ImGui_ControlWindow(float fontscale)
                     cmd2[3] = 0x00;
                     cmd2[4] = 0x00;
                     cmd2[5] = 0x09;
-                    uint16_t len = 16;
+                    uint16_t len = CFE_SB_CMD_HDR_SIZE+sizeof(uint64_t);
                     const uint8_t *byteptr = cmd2;
                     uint8_t checksum = 0xFF;
                     while (len--) {
@@ -1383,8 +1405,11 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd2[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1392,17 +1417,17 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static int8_t arg=0;
-                ImGui::InputScalar("msgid5",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode5",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg5",ImGuiDataType_S8, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg s8",ImGuiDataType_S8, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+9); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+CFE_SB_CMD_HDR_SIZE+sizeof(int8_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = 9;
+                    TestPacket->Length = CFE_SB_CMD_HDR_SIZE+sizeof(int8_t);
                     memset(TestPacket->Data,0,TestPacket->Length);
-                    uint8_t cmd2[9] = {0,};
+                    uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(int8_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
                     memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
@@ -1411,7 +1436,7 @@ void ImGui_ControlWindow(float fontscale)
                     cmd2[3] = 0x00;
                     cmd2[4] = 0x00;
                     cmd2[5] = 0x02;
-                    uint16_t len = 9;
+                    uint16_t len = CFE_SB_CMD_HDR_SIZE+sizeof(int8_t);
                     const uint8_t *byteptr = cmd2;
                     uint8_t checksum = 0xFF;
                     while (len--) {
@@ -1419,8 +1444,11 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd2[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1428,17 +1456,17 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static int16_t arg=0;
-                ImGui::InputScalar("msgid6",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode6",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg6",ImGuiDataType_S16, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg s16",ImGuiDataType_S16, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+10); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+CFE_SB_CMD_HDR_SIZE+sizeof(int16_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = 10;
+                    TestPacket->Length = CFE_SB_CMD_HDR_SIZE+sizeof(int16_t);
                     memset(TestPacket->Data,0,TestPacket->Length);
-                    uint8_t cmd2[10] = {0,};
+                    uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(int16_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
                     memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
@@ -1455,8 +1483,11 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd2[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1464,9 +1495,9 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static int32_t arg=0;
-                ImGui::InputScalar("msgid7",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode7",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg7",ImGuiDataType_S32, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg s32",ImGuiDataType_S32, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+12); // 8 is for data
@@ -1491,8 +1522,11 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd2[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1500,9 +1534,9 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid=0;
                 static uint8_t fnccode=0;
                 static int64_t arg=0;
-                ImGui::InputScalar("msgid8",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode8",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg8",ImGuiDataType_S64, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg s64",ImGuiDataType_S64, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+16); // 8 is for data
@@ -1527,8 +1561,11 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd2[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
@@ -1536,9 +1573,9 @@ void ImGui_ControlWindow(float fontscale)
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
                 static float arg =0;
-                ImGui::InputScalar("msgid9",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode9",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("arg9",ImGuiDataType_Float, &arg);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("arg float",ImGuiDataType_Float, &arg);
                 if(ImGui::Button("Generate CMD")) {
                     pthread_join(p_thread[4], NULL);
                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+12); // 8 is for data
@@ -1554,7 +1591,7 @@ void ImGui_ControlWindow(float fontscale)
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
                     cmd2[4] = 0x00;
-                    cmd2[5] = 0x09;
+                    cmd2[5] = 0x05;
                     uint16_t len = 12;
                     const uint8_t *byteptr = cmd2;
                     uint8_t checksum = 0xFF;
@@ -1563,24 +1600,27 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     cmd2[6]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
-
+                    for(int i=0; i<TestPacket->Length; i++) {
+                        printf("0x%x ",cmd2[i]);
+                    } printf("\n");
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 break;
             }
             case 10: { //u32u8bool
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid10",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode10",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("10u32",ImGuiDataType_U32, &command->u32u8bool.Timeout);
-                ImGui::InputScalar("10u8",ImGuiDataType_U8, &command->u32u8bool.Channel);
-                ImGui::InputScalar("10bool",ImGuiDataType_U8, &command->u32u8bool.Status);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("u32",ImGuiDataType_U32, &command->u32u8bool.Timeout);
+                ImGui::InputScalar("u8",ImGuiDataType_U8, &command->u32u8bool.Channel);
+                ImGui::InputScalar("bool",ImGuiDataType_U8, &command->u32u8bool.Status);
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u8bool_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32u8bool_t)-7};
                     memcpy(command->u32u8bool.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32u8bool.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32u8bool.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1599,27 +1639,29 @@ void ImGui_ControlWindow(float fontscale)
                     }
                     memcpy(command->u32u8bool.CmdHeader+6, &checksum, sizeof(uint8_t));
                     memcpy(TestPacket->Data, &command->u32u8bool, sizeof(u32u8bool_t));
-                    ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
                                 command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
                                 command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                }
                 break;
             }
             case 11: { // u32u8
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid10",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode10",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("10u32",ImGuiDataType_U32, &command->u32u8.Timeout);
-                ImGui::InputScalar("10u8",ImGuiDataType_U8, &command->u32u8.Channel);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("u32",ImGuiDataType_U32, &command->u32u8.Timeout);
+                ImGui::InputScalar("u8",ImGuiDataType_U8, &command->u32u8.Channel);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u8_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32u8_t)-7};
                     memcpy(command->u32u8.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32u8.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32u8.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1640,7 +1682,8 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u8_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->u32u8.CmdHeader[0],
                                 command->u32u8.CmdHeader[1], command->u32u8.CmdHeader[2], command->u32u8.CmdHeader[3], command->u32u8.CmdHeader[4], command->u32u8.CmdHeader[5], command->u32u8.CmdHeader[6], command->u32u8.CmdHeader[7],
@@ -1650,18 +1693,18 @@ void ImGui_ControlWindow(float fontscale)
             case 12: { //u32u32u8u8
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid10",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode10",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("10u32",ImGuiDataType_U32, &command->u32u32u8u8.Size);
-                ImGui::InputScalar("11u32",ImGuiDataType_U32, &command->u32u32u8u8.Timeout);
-                ImGui::InputScalar("10u8",ImGuiDataType_U8, &command->u32u32u8u8.Node);
-                ImGui::InputScalar("11u8",ImGuiDataType_U8, &command->u32u32u8u8.TableId);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("size",ImGuiDataType_U32, &command->u32u32u8u8.Size);
+                ImGui::InputScalar("timeout",ImGuiDataType_U32, &command->u32u32u8u8.Timeout);
+                ImGui::InputScalar("node",ImGuiDataType_U8, &command->u32u32u8u8.Node);
+                ImGui::InputScalar("tableid",ImGuiDataType_U8, &command->u32u32u8u8.TableId);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u32u8u8_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32u32u8u8_t)-7};
                     memcpy(command->u32u32u8u8.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32u32u8u8.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32u32u8u8.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1682,7 +1725,8 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u32u8u8_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->u32u32u8u8.CmdHeader[0],
                                 command->u32u32u8u8.CmdHeader[1], command->u32u32u8u8.CmdHeader[2], command->u32u32u8u8.CmdHeader[3], command->u32u32u8u8.CmdHeader[4], command->u32u32u8u8.CmdHeader[5], command->u32u32u8u8.CmdHeader[6], command->u32u32u8u8.CmdHeader[7],
@@ -1692,18 +1736,19 @@ void ImGui_ControlWindow(float fontscale)
             case 13: { //u32u8u8u8
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid10",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode10",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("10u32",ImGuiDataType_U32, &command->u32u8u8u8.Timeout);
-                ImGui::InputScalar("11u8",ImGuiDataType_U8, &command->u32u8u8u8.Node);
-                ImGui::InputScalar("12u8",ImGuiDataType_U8, &command->u32u8u8u8.TableId);
-                ImGui::InputScalar("13u8",ImGuiDataType_U8, &command->u32u8u8u8.Destination);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u8u8u8.Timeout);
+                ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u8u8u8.Node);
+                ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u8u8u8.TableId);
+                ImGui::InputScalar("destination u8",ImGuiDataType_U8, &command->u32u8u8u8.Destination);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u8u8u8_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32u8u8u8_t)-7};
                     memcpy(command->u32u8u8u8.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32u8u8u8.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32u8u8u8.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1724,7 +1769,8 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u8u8u8_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->u32u8u8u8.CmdHeader[0],
                                 command->u32u8u8u8.CmdHeader[1], command->u32u8u8u8.CmdHeader[2], command->u32u8u8u8.CmdHeader[3], command->u32u8u8u8.CmdHeader[4], command->u32u8u8u8.CmdHeader[5], command->u32u8u8u8.CmdHeader[6], command->u32u8u8u8.CmdHeader[7],
@@ -1734,21 +1780,21 @@ void ImGui_ControlWindow(float fontscale)
             case 14: { //u32u32u8u8u16u8
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid10",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode10",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("10u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Timeout);
-                ImGui::InputScalar("11u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Size);
-                ImGui::InputScalar("11u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Node);
-                ImGui::InputScalar("12u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.TableId);
-                ImGui::InputScalar("13u16",ImGuiDataType_U16, &command->u32u32u8u8u16u8.Address);
-                ImGui::InputScalar("13u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Type);
+                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Timeout);
+                ImGui::InputScalar("size u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Size);
+                ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Node);
+                ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.TableId);
+                ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->u32u32u8u8u16u8.Address);
+                ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Type);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u32u8u8u16u8_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32u32u8u8u16u8_t)-7};
                     memcpy(command->u32u32u8u8u16u8.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32u32u8u8u16u8.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32u32u8u8u16u8.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1769,7 +1815,8 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u32u8u8u16u8_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u",command->u32u32u8u8u16u8.CmdHeader[0],
                                 command->u32u32u8u8u16u8.CmdHeader[1], command->u32u32u8u8u16u8.CmdHeader[2], command->u32u32u8u8u16u8.CmdHeader[3], command->u32u32u8u8u16u8.CmdHeader[4], command->u32u32u8u8u16u8.CmdHeader[5], command->u32u32u8u8u16u8.CmdHeader[6], command->u32u32u8u8u16u8.CmdHeader[7],
@@ -1779,22 +1826,22 @@ void ImGui_ControlWindow(float fontscale)
             case 15: { //u32u32u32u8u8u16u8
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid10",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode10",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("10u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.Timeout);
-                ImGui::InputScalar("11u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemSize);
-                ImGui::InputScalar("12u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemCount);
-                ImGui::InputScalar("11u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Node);
-                ImGui::InputScalar("12u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.TableId);
-                ImGui::InputScalar("13u16",ImGuiDataType_U16, &command->u32u32u32u8u8u16u8.Address);
-                ImGui::InputScalar("13u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Type);
+                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.Timeout);
+                ImGui::InputScalar("itemsize u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemSize);
+                ImGui::InputScalar("itemcount u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemCount);
+                ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Node);
+                ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.TableId);
+                ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->u32u32u32u8u8u16u8.Address);
+                ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Type);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u32u32u8u8u16u8_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32u32u32u8u8u16u8_t)-7};
                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1812,10 +1859,11 @@ void ImGui_ControlWindow(float fontscale)
                         checksum ^= *(byteptr++);
                     }
                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u32u32u8u8u16u8_t));
+                    memcpy(TestPacket->Data, &command->u32u32u32u8u8u16u8, sizeof(u32u32u32u8u8u16u8_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->u32u32u32u8u8u16u8.CmdHeader[0],
                                 command->u32u32u32u8u8u16u8.CmdHeader[1], command->u32u32u32u8u8u16u8.CmdHeader[2], command->u32u32u32u8u8u16u8.CmdHeader[3], command->u32u32u32u8u8u16u8.CmdHeader[4], command->u32u32u32u8u8u16u8.CmdHeader[5], command->u32u32u32u8u8u16u8.CmdHeader[6], command->u32u32u32u8u8u16u8.CmdHeader[7],
@@ -1825,13 +1873,13 @@ void ImGui_ControlWindow(float fontscale)
             case 16: { //u32bool13
                 static uint16_t msgid = 0;
                 static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid10",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode10",ImGuiDataType_U8, &fnccode);
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("10u32",ImGuiDataType_U32, &command->u32bool13.Timeout);
+                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32bool13.Timeout);
                 for (uint8_t i =0; i<13; i++) {
                     char temp[10] ={0,};
-                    sprintf(temp, "bool%d",i);
+                    sprintf(temp, "channel status bool%d",i);
                     ImGui::Checkbox(temp, &command->u32bool13.ChannelStatus[i]);
                 }
 
@@ -1839,7 +1887,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32bool13_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32bool13_t)-7};
                     memcpy(command->u32bool13.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32bool13.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32bool13.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1860,11 +1908,13 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->u32bool13, sizeof(u32bool13_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->u32bool13.CmdHeader[0],
-                //                command->u32bool13.CmdHeader[1], command->u32bool13.CmdHeader[2], command->u32bool13.CmdHeader[3], command->u32bool13.CmdHeader[4], command->u32bool13.CmdHeader[5], command->u32bool13.CmdHeader[6], command->u32bool13.CmdHeader[7],
-                //                command->u32bool13.Timeout, command->u32bool13.ItemSize, command->u32bool13.ItemCount, command->u32bool13.Node, command->u32bool13.TableId, command->u32bool13.Address, command->u32bool13.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %d %d %d %d %d %d %d %d %d %d %d %d",command->u32bool13.CmdHeader[0],
+                                command->u32bool13.CmdHeader[1], command->u32bool13.CmdHeader[2], command->u32bool13.CmdHeader[3], command->u32bool13.CmdHeader[4], command->u32bool13.CmdHeader[5], command->u32bool13.CmdHeader[6], command->u32bool13.CmdHeader[7],
+                                command->u32bool13.Timeout, command->u32bool13.ChannelStatus[0], command->u32bool13.ChannelStatus[1], command->u32bool13.ChannelStatus[2], command->u32bool13.ChannelStatus[3], command->u32bool13.ChannelStatus[4], command->u32bool13.ChannelStatus[5],
+                                command->u32bool13.ChannelStatus[6], command->u32bool13.ChannelStatus[7], command->u32bool13.ChannelStatus[8], command->u32bool13.ChannelStatus[9], command->u32bool13.ChannelStatus[10], command->u32bool13.ChannelStatus[11], command->u32bool13.ChannelStatus[12], command->u32bool13.ChannelStatus[13]);
                 break;
             }
             case 17: { //u32bool9
@@ -1873,10 +1923,10 @@ void ImGui_ControlWindow(float fontscale)
                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("u32",ImGuiDataType_U32, &command->u32bool9.Timeout);
+                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32bool9.Timeout);
                 for (uint8_t i =0; i<9; i++) {
                     char temp[10] ={0,};
-                    sprintf(temp, "bool%d",i);
+                    sprintf(temp, "channel status bool%d",i);
                     ImGui::Checkbox(temp, &command->u32bool9.ChannelStatus[i]);
                 }
 
@@ -1884,7 +1934,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32bool9_t)};
+                    uint8_t length[2] = {0x00, sizeof(u32bool9_t)-7};
                     memcpy(command->u32bool9.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->u32bool9.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->u32bool9.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1905,11 +1955,13 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->u32bool9, sizeof(u32bool9_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->u32bool9.CmdHeader[0],
-                //                command->u32bool9.CmdHeader[1], command->u32bool9.CmdHeader[2], command->u32bool9.CmdHeader[3], command->u32bool9.CmdHeader[4], command->u32bool9.CmdHeader[5], command->u32bool9.CmdHeader[6], command->u32bool9.CmdHeader[7],
-                //                command->u32bool9.Timeout, command->u32bool9.ItemSize, command->u32bool9.ItemCount, command->u32bool9.Node, command->u32bool9.TableId, command->u32bool9.Address, command->u32bool9.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %d %d %d %d %d %d %d %d",command->u32bool9.CmdHeader[0],
+                                command->u32bool9.CmdHeader[1], command->u32bool9.CmdHeader[2], command->u32bool9.CmdHeader[3], command->u32bool9.CmdHeader[4], command->u32bool9.CmdHeader[5], command->u32bool9.CmdHeader[6], command->u32bool9.CmdHeader[7],
+                                command->u32bool9.Timeout, command->u32bool9.ChannelStatus[0], command->u32bool9.ChannelStatus[1], command->u32bool9.ChannelStatus[2], command->u32bool9.ChannelStatus[3], command->u32bool9.ChannelStatus[4], command->u32bool9.ChannelStatus[5],
+                                command->u32bool9.ChannelStatus[6],command->u32bool9.ChannelStatus[7],command->u32bool9.ChannelStatus[8]);
                 break;
             }
             case 18: { //grx assemblepublishcmd
@@ -1926,7 +1978,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_AssemblePublishCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_AssemblePublishCmd_t)-7};
                     memcpy(command->grxassemblepublishcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxassemblepublishcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxassemblepublishcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1948,6 +2000,7 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxassemblepublishcmd.CmdHeader[0],
                 //                command->grxassemblepublishcmd.CmdHeader[1], command->grxassemblepublishcmd.CmdHeader[2], command->grxassemblepublishcmd.CmdHeader[3], command->grxassemblepublishcmd.CmdHeader[4], command->grxassemblepublishcmd.CmdHeader[5], command->grxassemblepublishcmd.CmdHeader[6], command->grxassemblepublishcmd.CmdHeader[7],
@@ -1972,7 +2025,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLOGCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLOGCmd_t)-7};
                     memcpy(command->grxcmdlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -1994,10 +2047,12 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogcmd.CmdHeader[0],
-                //                command->grxcmdlogcmd.CmdHeader[1], command->grxcmdlogcmd.CmdHeader[2], command->grxcmdlogcmd.CmdHeader[3], command->grxcmdlogcmd.CmdHeader[4], command->grxcmdlogcmd.CmdHeader[5], command->grxcmdlogcmd.CmdHeader[6], command->grxcmdlogcmd.CmdHeader[7],
-                //                command->grxcmdlogcmd.Timeout, command->grxcmdlogcmd.ItemSize, command->grxcmdlogcmd.ItemCount, command->grxcmdlogcmd.Node, command->grxcmdlogcmd.TableId, command->grxcmdlogcmd.Address, command->grxcmdlogcmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogcmd.CmdHeader[0],
+                                command->grxcmdlogcmd.CmdHeader[1], command->grxcmdlogcmd.CmdHeader[2], command->grxcmdlogcmd.CmdHeader[3], command->grxcmdlogcmd.CmdHeader[4], command->grxcmdlogcmd.CmdHeader[5], command->grxcmdlogcmd.CmdHeader[6], command->grxcmdlogcmd.CmdHeader[7],
+                                command->grxcmdlogcmd.param.msgId, command->grxcmdlogcmd.param.type, command->grxcmdlogcmd.param.port, command->grxcmdlogcmd.param.trigger, 
+                                command->grxcmdlogcmd.param.hold, command->grxcmdlogcmd.param.period, command->grxcmdlogcmd.param.offset);
                 break;
             }
             case 20: { //grx cmdlogontime
@@ -2015,7 +2070,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnTimeCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnTimeCmd_t)-7};
                     memcpy(command->grxcmdlogontimecmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdlogontimecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdlogontimecmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2037,10 +2092,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogontimecmd.CmdHeader[0],
-                //                command->grxcmdlogontimecmd.CmdHeader[1], command->grxcmdlogontimecmd.CmdHeader[2], command->grxcmdlogontimecmd.CmdHeader[3], command->grxcmdlogontimecmd.CmdHeader[4], command->grxcmdlogontimecmd.CmdHeader[5], command->grxcmdlogontimecmd.CmdHeader[6], command->grxcmdlogontimecmd.CmdHeader[7],
-                //                command->grxcmdlogontimecmd.Timeout, command->grxcmdlogontimecmd.ItemSize, command->grxcmdlogontimecmd.ItemCount, command->grxcmdlogontimecmd.Node, command->grxcmdlogontimecmd.TableId, command->grxcmdlogontimecmd.Address, command->grxcmdlogontimecmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %lf %lf",command->grxcmdlogontimecmd.CmdHeader[0],
+                                command->grxcmdlogontimecmd.CmdHeader[1], command->grxcmdlogontimecmd.CmdHeader[2], command->grxcmdlogontimecmd.CmdHeader[3], command->grxcmdlogontimecmd.CmdHeader[4], command->grxcmdlogontimecmd.CmdHeader[5], command->grxcmdlogontimecmd.CmdHeader[6], command->grxcmdlogontimecmd.CmdHeader[7],
+                                command->grxcmdlogontimecmd.param.msgId, command->grxcmdlogontimecmd.param.port, command->grxcmdlogontimecmd.param.period, command->grxcmdlogontimecmd.param.offset);
                 break;
             }
             case 21: { //grxcmdlogonchanged
@@ -2056,7 +2112,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnChangedCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnChangedCmd_t)-7};
                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2078,10 +2134,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogonchangedcmd.CmdHeader[0],
-                //                command->grxcmdlogonchangedcmd.CmdHeader[1], command->grxcmdlogonchangedcmd.CmdHeader[2], command->grxcmdlogonchangedcmd.CmdHeader[3], command->grxcmdlogonchangedcmd.CmdHeader[4], command->grxcmdlogonchangedcmd.CmdHeader[5], command->grxcmdlogonchangedcmd.CmdHeader[6], command->grxcmdlogonchangedcmd.CmdHeader[7],
-                //                command->grxcmdlogonchangedcmd.Timeout, command->grxcmdlogonchangedcmd.ItemSize, command->grxcmdlogonchangedcmd.ItemCount, command->grxcmdlogonchangedcmd.Node, command->grxcmdlogonchangedcmd.TableId, command->grxcmdlogonchangedcmd.Address, command->grxcmdlogonchangedcmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxcmdlogonchangedcmd.CmdHeader[0],
+                                command->grxcmdlogonchangedcmd.CmdHeader[1], command->grxcmdlogonchangedcmd.CmdHeader[2], command->grxcmdlogonchangedcmd.CmdHeader[3], command->grxcmdlogonchangedcmd.CmdHeader[4], command->grxcmdlogonchangedcmd.CmdHeader[5], command->grxcmdlogonchangedcmd.CmdHeader[6], command->grxcmdlogonchangedcmd.CmdHeader[7],
+                                command->grxcmdlogonchangedcmd.param.msgId, command->grxcmdlogonchangedcmd.param.port);
                 break;
             }
             case 22: { //grxcmdlogonnew
@@ -2097,7 +2154,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnNewCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnNewCmd_t)-7};
                     memcpy(command->grxcmdlogonnewcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdlogonnewcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdlogonnewcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2119,10 +2176,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogonnewcmd.CmdHeader[0],
-                //                command->grxcmdlogonnewcmd.CmdHeader[1], command->grxcmdlogonnewcmd.CmdHeader[2], command->grxcmdlogonnewcmd.CmdHeader[3], command->grxcmdlogonnewcmd.CmdHeader[4], command->grxcmdlogonnewcmd.CmdHeader[5], command->grxcmdlogonnewcmd.CmdHeader[6], command->grxcmdlogonnewcmd.CmdHeader[7],
-                //                command->grxcmdlogonnewcmd.Timeout, command->grxcmdlogonnewcmd.ItemSize, command->grxcmdlogonnewcmd.ItemCount, command->grxcmdlogonnewcmd.Node, command->grxcmdlogonnewcmd.TableId, command->grxcmdlogonnewcmd.Address, command->grxcmdlogonnewcmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxcmdlogonnewcmd.CmdHeader[0],
+                                command->grxcmdlogonnewcmd.CmdHeader[1], command->grxcmdlogonnewcmd.CmdHeader[2], command->grxcmdlogonnewcmd.CmdHeader[3], command->grxcmdlogonnewcmd.CmdHeader[4], command->grxcmdlogonnewcmd.CmdHeader[5], command->grxcmdlogonnewcmd.CmdHeader[6], command->grxcmdlogonnewcmd.CmdHeader[7],
+                                command->grxcmdlogonnewcmd.param.msgId, command->grxcmdlogonnewcmd.param.port);
                 break;
             }
             case 23: { //grxcmdunlogcmd
@@ -2139,7 +2197,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogCmd_t)-7};
                     memcpy(command->grxcmdunlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdunlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdunlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2161,10 +2219,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdunlogcmd.CmdHeader[0],
-                //                command->grxcmdunlogcmd.CmdHeader[1], command->grxcmdunlogcmd.CmdHeader[2], command->grxcmdunlogcmd.CmdHeader[3], command->grxcmdunlogcmd.CmdHeader[4], command->grxcmdunlogcmd.CmdHeader[5], command->grxcmdunlogcmd.CmdHeader[6], command->grxcmdunlogcmd.CmdHeader[7],
-                //                command->grxcmdunlogcmd.Timeout, command->grxcmdunlogcmd.ItemSize, command->grxcmdunlogcmd.ItemCount, command->grxcmdunlogcmd.Node, command->grxcmdunlogcmd.TableId, command->grxcmdunlogcmd.Address, command->grxcmdunlogcmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->grxcmdunlogcmd.CmdHeader[0],
+                                command->grxcmdunlogcmd.CmdHeader[1], command->grxcmdunlogcmd.CmdHeader[2], command->grxcmdunlogcmd.CmdHeader[3], command->grxcmdunlogcmd.CmdHeader[4], command->grxcmdunlogcmd.CmdHeader[5], command->grxcmdunlogcmd.CmdHeader[6], command->grxcmdunlogcmd.CmdHeader[7],
+                                command->grxcmdunlogcmd.param.msgId, command->grxcmdunlogcmd.param.msgType, command->grxcmdunlogcmd.param.port);
                 break;
             }
             case 24: { //grxcmdunlogallcmd
@@ -2180,7 +2239,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogAllCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogAllCmd_t)-7};
                     memcpy(command->grxcmdunlogallcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdunlogallcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdunlogallcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2202,10 +2261,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdunlogallcmd.CmdHeader[0],
-                //                command->grxcmdunlogallcmd.CmdHeader[1], command->grxcmdunlogallcmd.CmdHeader[2], command->grxcmdunlogallcmd.CmdHeader[3], command->grxcmdunlogallcmd.CmdHeader[4], command->grxcmdunlogallcmd.CmdHeader[5], command->grxcmdunlogallcmd.CmdHeader[6], command->grxcmdunlogallcmd.CmdHeader[7],
-                //                command->grxcmdunlogallcmd.Timeout, command->grxcmdunlogallcmd.ItemSize, command->grxcmdunlogallcmd.ItemCount, command->grxcmdunlogallcmd.Node, command->grxcmdunlogallcmd.TableId, command->grxcmdunlogallcmd.Address, command->grxcmdunlogallcmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d",command->grxcmdunlogallcmd.CmdHeader[0],
+                                command->grxcmdunlogallcmd.CmdHeader[1], command->grxcmdunlogallcmd.CmdHeader[2], command->grxcmdunlogallcmd.CmdHeader[3], command->grxcmdunlogallcmd.CmdHeader[4], command->grxcmdunlogallcmd.CmdHeader[5], command->grxcmdunlogallcmd.CmdHeader[6], command->grxcmdunlogallcmd.CmdHeader[7],
+                                command->grxcmdunlogallcmd.param.port, command->grxcmdunlogallcmd.param.held);
                 break;
             }
             case 25: { //grxcmdelevationcutoffcmd
@@ -2221,7 +2281,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdElevationCutoffCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdElevationCutoffCmd_t)-7};
                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2243,10 +2303,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdelevationcutoffcmd.CmdHeader[0],
-                //                command->grxcmdelevationcutoffcmd.CmdHeader[1], command->grxcmdelevationcutoffcmd.CmdHeader[2], command->grxcmdelevationcutoffcmd.CmdHeader[3], command->grxcmdelevationcutoffcmd.CmdHeader[4], command->grxcmdelevationcutoffcmd.CmdHeader[5], command->grxcmdelevationcutoffcmd.CmdHeader[6], command->grxcmdelevationcutoffcmd.CmdHeader[7],
-                //                command->grxcmdelevationcutoffcmd.Timeout, command->grxcmdelevationcutoffcmd.ItemSize, command->grxcmdelevationcutoffcmd.ItemCount, command->grxcmdelevationcutoffcmd.Node, command->grxcmdelevationcutoffcmd.TableId, command->grxcmdelevationcutoffcmd.Address, command->grxcmdelevationcutoffcmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %f",command->grxcmdelevationcutoffcmd.CmdHeader[0],
+                                command->grxcmdelevationcutoffcmd.CmdHeader[1], command->grxcmdelevationcutoffcmd.CmdHeader[2], command->grxcmdelevationcutoffcmd.CmdHeader[3], command->grxcmdelevationcutoffcmd.CmdHeader[4], command->grxcmdelevationcutoffcmd.CmdHeader[5], command->grxcmdelevationcutoffcmd.CmdHeader[6], command->grxcmdelevationcutoffcmd.CmdHeader[7],
+                                command->grxcmdelevationcutoffcmd.param.constellation, command->grxcmdelevationcutoffcmd.param.cutoff);
                 break;
             }
             case 26: { //grxcmdinterfacemodecmd
@@ -2265,7 +2326,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdInterfaceModeCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdInterfaceModeCmd_t)-7};
                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2287,10 +2348,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdinterfacemodecmd.CmdHeader[0],
-                //                command->grxcmdinterfacemodecmd.CmdHeader[1], command->grxcmdinterfacemodecmd.CmdHeader[2], command->grxcmdinterfacemodecmd.CmdHeader[3], command->grxcmdinterfacemodecmd.CmdHeader[4], command->grxcmdinterfacemodecmd.CmdHeader[5], command->grxcmdinterfacemodecmd.CmdHeader[6], command->grxcmdinterfacemodecmd.CmdHeader[7],
-                //                command->grxcmdinterfacemodecmd.Timeout, command->grxcmdinterfacemodecmd.ItemSize, command->grxcmdinterfacemodecmd.ItemCount, command->grxcmdinterfacemodecmd.Node, command->grxcmdinterfacemodecmd.TableId, command->grxcmdinterfacemodecmd.Address, command->grxcmdinterfacemodecmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->grxcmdinterfacemodecmd.CmdHeader[0],
+                                command->grxcmdinterfacemodecmd.CmdHeader[1], command->grxcmdinterfacemodecmd.CmdHeader[2], command->grxcmdinterfacemodecmd.CmdHeader[3], command->grxcmdinterfacemodecmd.CmdHeader[4], command->grxcmdinterfacemodecmd.CmdHeader[5], command->grxcmdinterfacemodecmd.CmdHeader[6], command->grxcmdinterfacemodecmd.CmdHeader[7],
+                                command->grxcmdinterfacemodecmd.param.port, command->grxcmdinterfacemodecmd.param.rxType, command->grxcmdinterfacemodecmd.param.txType, command->grxcmdinterfacemodecmd.param.responses);
                 break;
             }
             case 27: { //grxcmdserialconfigcmd
@@ -2312,7 +2374,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdSerialConfigCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdSerialConfigCmd_t)-7};
                     memcpy(command->grxcmdserialconfigcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxcmdserialconfigcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxcmdserialconfigcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2334,10 +2396,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdserialconfigcmd.CmdHeader[0],
-                //                command->grxcmdserialconfigcmd.CmdHeader[1], command->grxcmdserialconfigcmd.CmdHeader[2], command->grxcmdserialconfigcmd.CmdHeader[3], command->grxcmdserialconfigcmd.CmdHeader[4], command->grxcmdserialconfigcmd.CmdHeader[5], command->grxcmdserialconfigcmd.CmdHeader[6], command->grxcmdserialconfigcmd.CmdHeader[7],
-                //                command->grxcmdserialconfigcmd.Timeout, command->grxcmdserialconfigcmd.ItemSize, command->grxcmdserialconfigcmd.ItemCount, command->grxcmdserialconfigcmd.Node, command->grxcmdserialconfigcmd.TableId, command->grxcmdserialconfigcmd.Address, command->grxcmdserialconfigcmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdserialconfigcmd.CmdHeader[0],
+                                command->grxcmdserialconfigcmd.CmdHeader[1], command->grxcmdserialconfigcmd.CmdHeader[2], command->grxcmdserialconfigcmd.CmdHeader[3], command->grxcmdserialconfigcmd.CmdHeader[4], command->grxcmdserialconfigcmd.CmdHeader[5], command->grxcmdserialconfigcmd.CmdHeader[6], command->grxcmdserialconfigcmd.CmdHeader[7],
+                                command->grxcmdserialconfigcmd.param.port, command->grxcmdserialconfigcmd.param.baud, command->grxcmdserialconfigcmd.param.parity, command->grxcmdserialconfigcmd.param.databits, command->grxcmdserialconfigcmd.param.stopbits, command->grxcmdserialconfigcmd.param.handshake, command->grxcmdserialconfigcmd.param._break);
                 break;
             }
             case 28: { //grxlogresisterhandlercmd
@@ -2353,7 +2416,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogRegisterHandlerCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogRegisterHandlerCmd_t)-7};
                     memcpy(command->grxlogresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxlogresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxlogresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2375,10 +2438,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxlogresisterhandlercmd.CmdHeader[0],
-                //                command->grxlogresisterhandlercmd.CmdHeader[1], command->grxlogresisterhandlercmd.CmdHeader[2], command->grxlogresisterhandlercmd.CmdHeader[3], command->grxlogresisterhandlercmd.CmdHeader[4], command->grxlogresisterhandlercmd.CmdHeader[5], command->grxlogresisterhandlercmd.CmdHeader[6], command->grxlogresisterhandlercmd.CmdHeader[7],
-                //                command->grxlogresisterhandlercmd.Timeout, command->grxlogresisterhandlercmd.ItemSize, command->grxlogresisterhandlercmd.ItemCount, command->grxlogresisterhandlercmd.Node, command->grxlogresisterhandlercmd.TableId, command->grxlogresisterhandlercmd.Address, command->grxlogresisterhandlercmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxlogresisterhandlercmd.CmdHeader[0],
+                                command->grxlogresisterhandlercmd.CmdHeader[1], command->grxlogresisterhandlercmd.CmdHeader[2], command->grxlogresisterhandlercmd.CmdHeader[3], command->grxlogresisterhandlercmd.CmdHeader[4], command->grxlogresisterhandlercmd.CmdHeader[5], command->grxlogresisterhandlercmd.CmdHeader[6], command->grxlogresisterhandlercmd.CmdHeader[7],
+                                command->grxlogresisterhandlercmd.param.id, command->grxlogresisterhandlercmd.param.mlen);
                 break;
             }
             case 29: { //grxlogunresisterhandlercmd
@@ -2393,7 +2457,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogUnregisterHandlerCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogUnregisterHandlerCmd_t)-7};
                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2415,10 +2479,11 @@ void ImGui_ControlWindow(float fontscale)
                     
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxlogunresisterhandlercmd.CmdHeader[0],
-                //                command->grxlogunresisterhandlercmd.CmdHeader[1], command->grxlogunresisterhandlercmd.CmdHeader[2], command->grxlogunresisterhandlercmd.CmdHeader[3], command->grxlogunresisterhandlercmd.CmdHeader[4], command->grxlogunresisterhandlercmd.CmdHeader[5], command->grxlogunresisterhandlercmd.CmdHeader[6], command->grxlogunresisterhandlercmd.CmdHeader[7],
-                //                command->grxlogunresisterhandlercmd.Timeout, command->grxlogunresisterhandlercmd.ItemSize, command->grxlogunresisterhandlercmd.ItemCount, command->grxlogunresisterhandlercmd.Node, command->grxlogunresisterhandlercmd.TableId, command->grxlogunresisterhandlercmd.Address, command->grxlogunresisterhandlercmd.Type);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u",command->grxlogunresisterhandlercmd.CmdHeader[0],
+                                command->grxlogunresisterhandlercmd.CmdHeader[1], command->grxlogunresisterhandlercmd.CmdHeader[2], command->grxlogunresisterhandlercmd.CmdHeader[3], command->grxlogunresisterhandlercmd.CmdHeader[4], command->grxlogunresisterhandlercmd.CmdHeader[5], command->grxlogunresisterhandlercmd.CmdHeader[6], command->grxlogunresisterhandlercmd.CmdHeader[7],
+                                command->grxlogunresisterhandlercmd.id);
                 break;
             }
             case 30: { //grxlogaddcallbackcmd
@@ -2436,7 +2501,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogAddCallbackCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogAddCallbackCmd_t)-7};
                     memcpy(command->grxlogaddcallbackcmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxlogaddcallbackcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxlogaddcallbackcmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2457,7 +2522,8 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->grxlogaddcallbackcmd, sizeof(GRX_LogAddCallbackCmd_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %s %s",command->grxlogaddcallbackcmd.CmdHeader[0],
                                 command->grxlogaddcallbackcmd.CmdHeader[1], command->grxlogaddcallbackcmd.CmdHeader[2], command->grxlogaddcallbackcmd.CmdHeader[3], command->grxlogaddcallbackcmd.CmdHeader[4], command->grxlogaddcallbackcmd.CmdHeader[5], command->grxlogaddcallbackcmd.CmdHeader[6], command->grxlogaddcallbackcmd.CmdHeader[7],
@@ -2478,7 +2544,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogSetHandlerStatusCmd_t)};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogSetHandlerStatusCmd_t)-7};
                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader, &msgid, sizeof(uint16_t));
                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 4, length, sizeof(uint16_t));
@@ -2499,12 +2565,937 @@ void ImGui_ControlWindow(float fontscale)
                     memcpy(TestPacket->Data, &command->grxlogsethandlerstatuscmd, sizeof(GRX_LogSetHandlerStatusCmd_t));
                     
 
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->grxlogsethandlerstatuscmd.CmdHeader[0],
                                 command->grxlogsethandlerstatuscmd.CmdHeader[1], command->grxlogsethandlerstatuscmd.CmdHeader[2], command->grxlogsethandlerstatuscmd.CmdHeader[3], command->grxlogsethandlerstatuscmd.CmdHeader[4], command->grxlogsethandlerstatuscmd.CmdHeader[5], command->grxlogsethandlerstatuscmd.CmdHeader[6], command->grxlogsethandlerstatuscmd.CmdHeader[7],
                                 command->grxlogsethandlerstatuscmd.param.id, command->grxlogsethandlerstatuscmd.param.status, command->grxlogsethandlerstatuscmd.param.override);
                 break;
+            }
+
+            //ADCS
+            case 32: {
+                //ID 2
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("unixTimeSeconds",ImGuiDataType_U32, &command->adcs_Unixtime.unixTimeSeconds);
+                ImGui::InputScalar("unixTimeNanoSeconds",ImGuiDataType_U32, &command->adcs_Unixtime.unixTimeNanoSeconds);
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_CurrentUnixTimeCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_Unixtime.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_Unixtime.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_Unixtime.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_Unixtime.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_CurrentUnixTimeCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_CurrentUnixTimeCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_CurrentUnixTimeCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_Unixtime;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_Unixtime.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_Unixtime, sizeof(ADCS_CurrentUnixTimeCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+
+            }
+
+            case 33: {
+                //ID 48
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("TargetLatitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetLatitude);
+                ImGui::InputScalar("TargetLongitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetLongitude);
+                ImGui::InputScalar("TargetAltitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetAltitude);
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_Reference_LLHTargetCommandCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_RefLLHTarget.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_RefLLHTarget.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_RefLLHTarget.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_RefLLHTarget.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_Reference_LLHTargetCommandCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_Reference_LLHTargetCommandCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_Reference_LLHTargetCommandCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_RefLLHTarget;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_RefLLHTarget.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_RefLLHTarget, sizeof(ADCS_Reference_LLHTargetCommandCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+
+            }
+
+            case 34: {
+                //ID 49
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("gnssTimeSeconds(U32)",ImGuiDataType_U32, &command->adcs_GnssMeasurements.gnssTimeSeconds);
+                ImGui::InputScalar("gnssTimeNs(U32)",ImGuiDataType_U32, &command->adcs_GnssMeasurements.gnssTimeNs);
+                ImGui::InputScalar("gnssSatPosX(S32)",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosX);
+                ImGui::InputScalar("gnssSatPosY",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosY);
+                ImGui::InputScalar("gnssSatPosZ",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosZ);
+                ImGui::InputScalar("gnssSatVelX",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelX);
+                ImGui::InputScalar("gnssSatVelY",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelY);
+                ImGui::InputScalar("gnssSatVelZ",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelZ);
+                ImGui::InputScalar("syncTime",ImGuiDataType_U8, &command->adcs_GnssMeasurements.syncTime);
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_GnssMeasurementsCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_GnssMeasurements.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_GnssMeasurements.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_GnssMeasurements.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_GnssMeasurements.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_GnssMeasurementsCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_GnssMeasurementsCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_GnssMeasurementsCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_GnssMeasurements;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_GnssMeasurements.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_GnssMeasurements, sizeof(ADCS_GnssMeasurementsCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 35: {
+                //ID 54
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("cmdRpyRoll(F32)",ImGuiDataType_U32, &command->adcs_RefRPY.cmdRpyRoll);
+                ImGui::InputScalar("cmdRpyPitch(F32)",ImGuiDataType_U32, &command->adcs_RefRPY.cmdRpyPitch);
+                ImGui::InputScalar("cmdRpyYaw(F32)",ImGuiDataType_S32, &command->adcs_RefRPY.cmdRpyYaw);
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_ReferenceRPYValueCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_RefRPY.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_RefRPY.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_RefRPY.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_RefRPY.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ReferenceRPYValueCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_ReferenceRPYValueCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_ReferenceRPYValueCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_RefRPY;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_RefRPY.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_RefRPY, sizeof(ADCS_ReferenceRPYValueCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 36: {
+                //ID 55
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("mtq0OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq0OnTimeCmd);
+                ImGui::InputScalar("mtq1OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq1OnTimeCmd);
+                ImGui::InputScalar("mtq2OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq2OnTimeCmd);
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandMtqCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandMtqCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_OpenLoopCommandMtqCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_OpenLoopCommandMtqCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdMtq;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdMtq, sizeof(ADCS_OpenLoopCommandMtqCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+
+            }
+
+            case 37: {
+                //ID 58
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("controlMode(U8)",ImGuiDataType_U8, &command->adcs_ControlMode.controlMode);
+                ImGui::InputScalar("magConTimeout(U16)[s]",ImGuiDataType_U16, &command->adcs_ControlMode.magConTimeout);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_ControlModeCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_ControlMode.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_ControlMode.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_ControlMode.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_ControlMode.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ControlModeCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_ControlModeCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_ControlModeCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ControlMode;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_ControlMode.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_ControlMode, sizeof(ADCS_ControlModeCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 38: {
+                //ID 61
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("MOI ixx(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixx);
+                ImGui::InputScalar("MOI iyy(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.iyy);
+                ImGui::InputScalar("MOI izz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.izz);
+                ImGui::InputScalar("POI ixy(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixy);
+                ImGui::InputScalar("POI ixz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixz);
+                ImGui::InputScalar("POI iyz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.iyz);
+                ImGui::InputScalar("sunPointBodyVecX(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecX);
+                ImGui::InputScalar("sunPointBodyVecY(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecY);
+                ImGui::InputScalar("sunPointBodyVecZ(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecZ);
+                ImGui::InputScalar("tgtTrackBodyVecX(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecX);
+                ImGui::InputScalar("tgtTrackBodyVecY(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecY);
+                ImGui::InputScalar("tgtTrackBodyVecZ(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecZ);
+
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_ConfigAdcsSatelliteCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigAdcsSatelliteCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_ConfigAdcsSatelliteCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_ConfigAdcsSatelliteCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigAdcsSat;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_ConfigAdcsSat, sizeof(ADCS_ConfigAdcsSatelliteCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 39: {
+                //ID 62
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("Default control mode(U8)",ImGuiDataType_U8, &command->adcs_ControllerConfig.conModeDefault);
+                ImGui::InputScalar("Detumbling damping gain (Kd)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd);
+                ImGui::InputScalar("Sun-spin control gain - sunlit part (KDsun)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdsun);
+                ImGui::InputScalar("Sun-spin control gain - eclipse part (KDecl)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdecl);
+                ImGui::InputScalar("Detumbling spin gain (Ks)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.ks);
+                ImGui::InputScalar("Fast B-dot detumbling gain (Kdf)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdf);
+                ImGui::InputScalar("Y-momentum nutation damping gain (Kn)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kn);
+                ImGui::InputScalar("Y-momentum nutation damping quaternion gain (Kq)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kq);
+                ImGui::InputScalar("X-axis GG nutation damping quaternion gain (Kqx)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqx);
+                ImGui::InputScalar("Y-axis GG nutation damping quaternion gain (Kqy)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqy);
+                ImGui::InputScalar("Z-axis GG nutation damping quaternion gain (Kqz)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqz);
+                ImGui::InputScalar("Wheel desaturation control gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kh);
+                ImGui::InputScalar("Y-momentum proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp1);
+                ImGui::InputScalar("Y-momentum derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd1);
+                ImGui::InputScalar("RWheel proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp2);
+                ImGui::InputScalar("RWheel derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd2);
+                ImGui::InputScalar("Tracking proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp3);
+                ImGui::InputScalar("Tracking derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd3);
+                ImGui::InputScalar("Tracking integral gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.ki3);
+                ImGui::InputScalar("Reference spin rate(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.wy_ref);
+                ImGui::InputScalar("Reference wheel momentum(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.h_ref);
+                ImGui::InputScalar("Y-wheel bias momentum during XYZ-control(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.hy_bias);
+                ImGui::InputScalar("Reference spin rate for RW spin control(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.wSunYawRef);
+                ImGui::InputScalar("Sun keep-out angle(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.sunKeepoutAng);
+                ImGui::InputScalar("Roll limit angle(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.rollLimit);
+
+                ImGui::InputScalar("Yaw compensation for earth rotation(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.yawCompensate);
+                ImGui::InputScalar("Enable sun tracking in eclipse(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.sunTrackEclEn);
+                ImGui::InputScalar("Enable sun avoidance(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.sunAvoidEn);
+
+                
+
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_ControllerConfigurationCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_ControllerConfig.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_ControllerConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_ControllerConfig.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_ControllerConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ControllerConfigurationCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_ControllerConfigurationCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_ControllerConfigurationCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ControllerConfig;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_ControllerConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_ControllerConfig, sizeof(ADCS_ControllerConfigurationCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 40: {
+                //ID 63
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("Magnetometer channel 1 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset1);
+                ImGui::InputScalar("Magnetometer channel 2 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset2);
+                ImGui::InputScalar("Magnetometer channel 3 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset3);
+                ImGui::InputScalar("Magnetometer sensitivity matrix S11(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix11);
+                ImGui::InputScalar("Magnetometer sensitivity matrix S22(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix22);
+                ImGui::InputScalar("Magnetometer sensitivity matrix S33(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix33);
+
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_ConfigMag0OrbitCalCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigMag0OrbitCalCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_ConfigMag0OrbitCalCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_ConfigMag0OrbitCalCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigMag0OrbitCal;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_ConfigMag0OrbitCal, sizeof(ADCS_ConfigMag0OrbitCalCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 41: {
+                //ID 65
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("StackX mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackX);
+                ImGui::InputScalar("StackY mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackY);
+                ImGui::InputScalar("StackZ mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackZ);
+                ImGui::InputScalar("MTQ0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq0);
+                ImGui::InputScalar("MTQ1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq1);
+                ImGui::InputScalar("MTQ2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq2);
+                ImGui::InputScalar("Wheel0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl0);
+                ImGui::InputScalar("Wheel1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl1);
+                ImGui::InputScalar("Wheel2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl2);
+
+                ImGui::InputScalar("CSS0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss0);
+                ImGui::InputScalar("CSS1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss1);
+                ImGui::InputScalar("CSS2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss2);
+                ImGui::InputScalar("CSS3 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss3);
+                ImGui::InputScalar("CSS4 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss4);
+                ImGui::InputScalar("CSS5 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss5);
+                ImGui::InputScalar("CSS6 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss6);
+                ImGui::InputScalar("CSS7 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss7);
+                ImGui::InputScalar("CSS8 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss8);
+                ImGui::InputScalar("CSS9 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss9);
+
+                ImGui::InputScalar("FSS0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Alpha);
+                ImGui::InputScalar("FSS0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Beta);
+                ImGui::InputScalar("FSS0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Gamma);
+                ImGui::InputScalar("HSS0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Alpha);
+                ImGui::InputScalar("HSS0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Beta);
+                ImGui::InputScalar("HSS0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Gamma);
+                ImGui::InputScalar("MAG0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Alpha);
+                ImGui::InputScalar("MAG0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Beta);
+                ImGui::InputScalar("MAG0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Gamma);
+
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_MountingConfigurationCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_MountingConfig.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_MountingConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_MountingConfig.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_MountingConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_MountingConfigurationCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_MountingConfigurationCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_MountingConfigurationCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_MountingConfig;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_MountingConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_MountingConfig, sizeof(ADCS_MountingConfigurationCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 42: {
+                //ID 67
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("Default main estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.estModeMainDefault);
+                ImGui::InputScalar("Default backup estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.estModeBackupDefault);
+                ImGui::InputScalar("Use fine sun sensor measurements in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseFss);
+                ImGui::InputScalar("Use horizon sensor measurements in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseHss);
+   
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_EstimatorConfigurationCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_EstimatorConfig.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_EstimatorConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_EstimatorConfig.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_EstimatorConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_EstimatorConfigurationCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_EstimatorConfigurationCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_EstimatorConfigurationCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_EstimatorConfig;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_EstimatorConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_EstimatorConfig, sizeof(ADCS_EstimatorConfigurationCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 43: {
+                //ID 68
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("Orbit epoch(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitEpoch);
+                ImGui::InputScalar("Orbit inclination(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitIncl);
+                ImGui::InputScalar("Orbit RAAN(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitRaan);
+                ImGui::InputScalar("Orbit eccentricity(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitEccen);
+                ImGui::InputScalar("Orbit argument of perigee(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitAP);
+                ImGui::InputScalar("Orbit mean anomaly(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitMA);
+                ImGui::InputScalar("Orbit mean motion(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitMM);
+                ImGui::InputScalar("Orbit B-star drag term(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitBstar);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_ConfigOrbitSatParamsCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigOrbitSatParamsCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_ConfigOrbitSatParamsCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_ConfigOrbitSatParamsCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigOrbitSatParams;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_ConfigOrbitSatParams, sizeof(ADCS_ConfigOrbitSatParamsCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 44: {
+                //ID 69
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("RWL selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectRwl);
+                ImGui::InputScalar("MAG selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectMag);
+                ImGui::InputScalar("FSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectFss);
+                ImGui::InputScalar("HSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectHss);
+                ImGui::InputScalar("GYRO selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectGyro);
+                ImGui::InputScalar("GNSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectGnss);
+
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_NodeSelectionCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_NodeSelection.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_NodeSelection.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_NodeSelection.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_NodeSelection.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_NodeSelectionCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_NodeSelectionCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_NodeSelectionCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_NodeSelection;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_NodeSelection.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_NodeSelection, sizeof(ADCS_NodeSelectionCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 45: {
+                //ID 70
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("MTQ0 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq0Mmax);
+                ImGui::InputScalar("MTQ1 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq1Mmax);
+                ImGui::InputScalar("MTQ2 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq2Mmax);
+                ImGui::InputScalar("Maximum magnetorquer on-time(U16)",ImGuiDataType_U16, &command->adcs_MtqConfig.onTimeMax);
+                ImGui::InputScalar("Minimum magnetorquer on-time(U16)",ImGuiDataType_U16, &command->adcs_MtqConfig.onTimeMin);
+                ImGui::InputScalar("LPF factor for magnetorquer commands(0: no filtering)(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtqFfac);
+
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_MtqConfigCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_MtqConfig.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_MtqConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_MtqConfig.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_MtqConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_MtqConfigCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_MtqConfigCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_MtqConfigCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_MtqConfig;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_MtqConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_MtqConfig, sizeof(ADCS_MtqConfigCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 46: {
+                //ID 71
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("Main estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstMode.estModeMain);
+                ImGui::InputScalar("Backup estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstMode.estModeBackup);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_EstimationModeCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_EstMode.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_EstMode.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_EstMode.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_EstMode.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_EstimationModeCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_EstimationModeCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_EstimationModeCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_EstMode;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_EstMode.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_EstMode, sizeof(ADCS_EstimationModeCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 47: {
+                //ID 74
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("RWL0 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl0SpeedCmd);
+                ImGui::InputScalar("RWL1 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl1SpeedCmd);
+                ImGui::InputScalar("RWL2 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl2SpeedCmd);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandRwlCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandRwlCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_OpenLoopCommandRwlCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_OpenLoopCommandRwlCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdRwl;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdRwl, sizeof(ADCS_OpenLoopCommandRwlCmd_t));
+                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+            }
+
+            case 48: {
+                //ID 76
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("X-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hx);
+                ImGui::InputScalar("Y-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hy);
+                ImGui::InputScalar("Z-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hz);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+                    uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t)-7};
+                    
+                    
+                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t);
+                    
+                    uint16_t len = sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdHxyzRw;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdHxyzRw, sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t));
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                    msgid = htons(msgid);
+                }
+                break;
+
             }
             
         }
@@ -3892,7 +4883,7 @@ bool popup_tle()
 
 
 void Initialize_CMDLabels()
-{   
+{   // Common type cmd
     snprintf(Templabels[0], 64, "no arg");
     snprintf(Templabels[1], 64, "u8");
     snprintf(Templabels[2], 64, "u16");
@@ -3903,6 +4894,8 @@ void Initialize_CMDLabels()
     snprintf(Templabels[7], 64, "s32");
     snprintf(Templabels[8], 64, "s64");
     snprintf(Templabels[9], 64, "float");
+
+    // EPS unusual
     snprintf(Templabels[10], 64, "U32U8Bool");
     snprintf(Templabels[11], 64, "U32U8");
     snprintf(Templabels[12], 64, "U32U32U8U8");
@@ -3912,6 +4905,7 @@ void Initialize_CMDLabels()
     snprintf(Templabels[16], 64, "EPS_P60_DockSetChannelsCmd_t");
     snprintf(Templabels[17], 64, "U32Bool9");
 
+    //GRX unusual
     snprintf(Templabels[18], 64, "grx assemblepublishcmd");
     snprintf(Templabels[19], 64, "grx cmdlog");
     snprintf(Templabels[20], 64, "grx cmdlogontime");
@@ -3926,6 +4920,26 @@ void Initialize_CMDLabels()
     snprintf(Templabels[29], 64, "grx logunresister handler");
     snprintf(Templabels[30], 64, "grx log add callback");
     snprintf(Templabels[31], 64, "grx logsethandlerstatus");
+
+    // ADCS unusual
+    snprintf(Templabels[32], 64, "adcs unix time cmd");
+    snprintf(Templabels[33], 64, "adcs reference LLH target command");
+    snprintf(Templabels[34], 64, "adcs gnss measurement cmd");
+    snprintf(Templabels[35], 64, "adcs referenceRPY value cmd");
+    snprintf(Templabels[36], 64, "adcs openloop command MTQ cmd");
+    snprintf(Templabels[37], 64, "adcs control mode cmd");
+    snprintf(Templabels[38], 64, "adcs config adcs satellite cmd");
+    snprintf(Templabels[39], 64, "adcs controller configuration cmd");
+    snprintf(Templabels[40], 64, "adcs config mag0 orbital cmd");
+    snprintf(Templabels[41], 64, "adcs mounting configuration cmd");
+    snprintf(Templabels[42], 64, "adcs estimator configuration cmd");
+    snprintf(Templabels[43], 64, "adcs config orbit sat param cmd");
+    snprintf(Templabels[44], 64, "adcs node selection cmd");
+    snprintf(Templabels[45], 64, "adcs MTQ config cmd");
+    snprintf(Templabels[46], 64, "adcs Estimation Mode cmd");
+    snprintf(Templabels[47], 64, "adcs openloop command RWL cmd");
+    snprintf(Templabels[48], 64, "adcs openloop command HxyzRW cmd");
+
 }
 
 int CMDDataGenerator(uint32_t msgid, uint16_t fnccode, void *Requested, size_t RequestedSize) 
@@ -3987,2509 +5001,6 @@ int CMDDataGenerator(uint32_t msgid, uint16_t fnccode, void *Requested, size_t R
     return 1;
 	
 }
-
-
-// bool popup_cmd()
-// {
-//     ImGui::OpenPopup("CMD Manager");
-//     ImGui::SetNextWindowPos(ImGui::GetMainViewport()->GetCenter(), ImGuiCond_Appearing, ImVec2(0.5f, 0.5f));
-//     ImGui::SetNextWindowSize(ImVec2(720, 540), ImGuiCond_Appearing);
-//     if ( ImGui::BeginPopupModal("CMD Manager", NULL, ImGuiWindowFlags_AlwaysAutoResize) )
-//     {
-//         ImGuiTabBarFlags tab_bar_flags = ImGuiTabBarFlags_None;
-//         if (ImGui::BeginTabBar("CMDTabBar", tab_bar_flags))
-//         {
-//             if (ImGui::BeginTabItem("ADCS"))
-//             {
-//                 if(gen_msgid != ADCS_CMD_MID)
-//                 {
-//                     gen_msgid = ADCS_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, ADCSCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(ADCSCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(ADCSCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-                    
-//                     ImGui::EndCombo();
-//                 }
-//                 switch (gen_fnccode)
-//                 {
-//                 case ADCS_SETPARAM_SC : {
-//                     ImGui::PushItemWidth(200);
-//                     ImGui::Text("Contact to Manager. This packet is too long.");
-//                     ImGui::Text("Mass : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mass", &command->adcs_setparamsccmd.Params.mass);
-//                     ImGui::Text("MOI : ");
-//                     ImGui::Text("[0][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[0][0]", &command->adcs_setparamsccmd.Params.MOI[0][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[0][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[0][1]", &command->adcs_setparamsccmd.Params.MOI[0][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[0][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[0][2]", &command->adcs_setparamsccmd.Params.MOI[0][2]);
-//                     ImGui::Text("[1][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[1][0]", &command->adcs_setparamsccmd.Params.MOI[1][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[1][1]", &command->adcs_setparamsccmd.Params.MOI[1][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[1][2]", &command->adcs_setparamsccmd.Params.MOI[1][2]);
-//                     ImGui::Text("[2][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[2][0]", &command->adcs_setparamsccmd.Params.MOI[2][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[2][1]", &command->adcs_setparamsccmd.Params.MOI[2][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##moi[2][2]", &command->adcs_setparamsccmd.Params.MOI[2][2]);
-//                     ImGui::Text("Inv MOI : ");
-//                     ImGui::Text("[0][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[0][0]", &command->adcs_setparamsccmd.Params.inv_MOI[0][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[0][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[0][1]", &command->adcs_setparamsccmd.Params.inv_MOI[0][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[0][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[0][2]", &command->adcs_setparamsccmd.Params.inv_MOI[0][2]);
-//                     ImGui::Text("[1][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[1][0]", &command->adcs_setparamsccmd.Params.inv_MOI[1][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[1][1]", &command->adcs_setparamsccmd.Params.inv_MOI[1][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[1][2]", &command->adcs_setparamsccmd.Params.inv_MOI[1][2]);
-//                     ImGui::Text("[2][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[2][0]", &command->adcs_setparamsccmd.Params.inv_MOI[2][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[2][1]", &command->adcs_setparamsccmd.Params.inv_MOI[2][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##invmoi[2][2]", &command->adcs_setparamsccmd.Params.inv_MOI[2][2]);
-//                     ImGui::Text("CSS SF : ");
-//                     ImGui::Text("[0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##css_sf[0]", &command->adcs_setparamsccmd.Params.css_sf[0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##css_sf[0]", &command->adcs_setparamsccmd.Params.css_sf[1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##css_sf[0]", &command->adcs_setparamsccmd.Params.css_sf[2]);
-//                     ImGui::Text("[3]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##css_sf[0]", &command->adcs_setparamsccmd.Params.css_sf[3]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[4]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##css_sf[0]", &command->adcs_setparamsccmd.Params.css_sf[4]);
-//                     ImGui::Text("MMT_A : ");
-//                     ImGui::Text("[0][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[0][0]", &command->adcs_setparamsccmd.Params.mmt_A[0][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[0][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[0][1]", &command->adcs_setparamsccmd.Params.mmt_A[0][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[0][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[0][2]", &command->adcs_setparamsccmd.Params.mmt_A[0][2]);
-//                     ImGui::Text("[1][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[1][0]", &command->adcs_setparamsccmd.Params.mmt_A[1][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[1][1]", &command->adcs_setparamsccmd.Params.mmt_A[1][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[1][2]", &command->adcs_setparamsccmd.Params.mmt_A[1][2]);
-//                     ImGui::Text("[2][0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[2][0]", &command->adcs_setparamsccmd.Params.mmt_A[2][0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2][1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[2][1]", &command->adcs_setparamsccmd.Params.mmt_A[2][1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2][2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_A[2][2]", &command->adcs_setparamsccmd.Params.mmt_A[2][2]);
-//                     ImGui::Text("MMT bias : ");
-//                     ImGui::Text("[0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_bias[0]", &command->adcs_setparamsccmd.Params.mmt_bias[0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_bias[0]", &command->adcs_setparamsccmd.Params.mmt_bias[1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mmt_bias[0]", &command->adcs_setparamsccmd.Params.mmt_bias[2]);
-//                     ImGui::Text("Gyro bias A : ");
-//                     ImGui::Text("[0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##gyro_bias_a[0]", &command->adcs_setparamsccmd.Params.gyro_bias_a[0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##gyro_bias_a[0]", &command->adcs_setparamsccmd.Params.gyro_bias_a[1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##gyro_bias_a[0]", &command->adcs_setparamsccmd.Params.gyro_bias_a[2]);
-//                     ImGui::Text("Gyro bias B : ");
-//                     ImGui::Text("[0]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##gyro_bias_b[0]", &command->adcs_setparamsccmd.Params.gyro_bias_b[0]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[1]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##gyro_bias_b[0]", &command->adcs_setparamsccmd.Params.gyro_bias_b[1]);
-//                     ImGui::SameLine();
-//                     ImGui::Text("[2]");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##gyro_bias_b[0]", &command->adcs_setparamsccmd.Params.gyro_bias_b[2]);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->adcs_setparamsccmd, sizeof(ADCS_SetParamScCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                     }
-//                 case(ADCS_SETPARAM_TLE) : {
-//                     ImGui::Text("Epoch Year : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##epochyear", ImGuiDataType_U32, &command->adcs_setparamtlecmd.Params.epochYear, NULL, NULL, "%u");
-//                     ImGui::Text("Epoch Day : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputFloat("##epochday", &command->adcs_setparamtlecmd.Params.epochDay);
-//                     ImGui::Text("Bstar : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##bstar", &command->adcs_setparamtlecmd.Params.Bstar);
-//                     ImGui::Text("Inclination : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##bstar", &command->adcs_setparamtlecmd.Params.INC);
-//                     ImGui::Text("RAAN : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##bstar", &command->adcs_setparamtlecmd.Params.RAAN);
-//                     ImGui::Text("Eccentricity : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##bstar", &command->adcs_setparamtlecmd.Params.ECC);
-//                     ImGui::Text("AOP : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##bstar", &command->adcs_setparamtlecmd.Params.AOP);
-//                     ImGui::Text("Mean Anomoly : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##bstar", &command->adcs_setparamtlecmd.Params.MA);
-//                     ImGui::Text("Mean Motion : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##bstar", &command->adcs_setparamtlecmd.Params.MM);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->adcs_setparamtlecmd, sizeof(ADCS_SetParamTleCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(ADCS_SETPARAM_AUX) : {
-//                     ImGui::Text("mu_E: ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##mu_E", &command->adcs_setparamauxcmd.Params.mu_E);
-//                     ImGui::Text("R_E : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##R_E", &command->adcs_setparamauxcmd.Params.R_E);
-//                     ImGui::Text("Coef_J2 : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##coef_J2", &command->adcs_setparamauxcmd.Params.coef_J2);
-//                     ImGui::Text("w_E : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##w_E", &command->adcs_setparamauxcmd.Params.w_E);
-//                     ImGui::Text("wn : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##wn", &command->adcs_setparamauxcmd.Params.wn);
-//                     ImGui::Text("tstp : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##tstp", &command->adcs_setparamauxcmd.Params.tstp);
-//                     ImGui::Text("quit_TRIAD : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##quit_TRIAD", ImGuiDataType_U32, &command->adcs_setparamauxcmd.Params.quit_TRIAD, NULL, NULL, "%u");
-//                     ImGui::Text("num_AD_loop : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##num_AD_loop", ImGuiDataType_U8, &command->adcs_setparamauxcmd.Params.num_AD_loop, NULL, NULL, "%u");
-//                     ImGui::Text("num_AC_loop : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##num_AC_loop", ImGuiDataType_U8, &command->adcs_setparamauxcmd.Params.num_AC_loop, NULL, NULL, "%u");
-//                     ImGui::Text("option_prg_orb_est : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##option_prg_orb_est", ImGuiDataType_U8, &command->adcs_setparamauxcmd.Params.option_prg_orb_est, NULL, NULL, "%u");
-//                     ImGui::Text("option_gyroless : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##option_gyroless", ImGuiDataType_U8, &command->adcs_setparamauxcmd.Params.option_gyroless, NULL, NULL, "%u");
-//                     ImGui::Text("option_ignoreSTT : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##option_ignoreSTT", ImGuiDataType_U8, &command->adcs_setparamauxcmd.Params.option_ignoreSTT, NULL, NULL, "%u");
-//                     ImGui::Text("option_ignoreCSS : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##option_ignoreCSS", ImGuiDataType_U8, &command->adcs_setparamauxcmd.Params.option_ignoreCSS, NULL, NULL, "%u");
-//                     ImGui::Text("est_P_atd_STT_initial : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##est_P_atd_initial", &command->adcs_setparamauxcmd.Params.est_P_atd_STT_initial);
-//                     ImGui::Text("GS_sband[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##GS_sband[0]", &command->adcs_setparamauxcmd.Params.GS_sband[0]);
-//                     ImGui::Text("GS_sband[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##GS_sband[1]", &command->adcs_setparamauxcmd.Params.GS_sband[1]);
-//                     ImGui::Text("GS_sband[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##GS_sband[2]", &command->adcs_setparamauxcmd.Params.GS_sband[2]);
-//                     ImGui::Text("GS_uhf[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##GS_uhf[0]", &command->adcs_setparamauxcmd.Params.GS_uhf[0]);
-//                     ImGui::Text("GS_uhf[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##GS_uhf[1]", &command->adcs_setparamauxcmd.Params.GS_uhf[1]);
-//                     ImGui::Text("GS_uhf[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##GS_uhf[2]", &command->adcs_setparamauxcmd.Params.GS_uhf[2]);
-//                     ImGui::Text("wrpm_WHLdot_dump : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##wrpm_WHLdot_dump", &command->adcs_setparamauxcmd.Params.wrpm_WHLdot_dump);
-//                     ImGui::Text("wrpm_WHL_dump_crit : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##wrpm_WHL_dump_crit", &command->adcs_setparamauxcmd.Params.wrpm_WHL_dump_crit);
-//                     ImGui::Text("wrpm_WHL_dump_goal : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##wrpm_WHL_dump_goal", &command->adcs_setparamauxcmd.Params.wrpm_WHL_dump_goal);
-//                     ImGui::Text("w_stanby_detumbling_start : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##w_stanby_detumbling_start", &command->adcs_setparamauxcmd.Params.w_standby_detumbling_start);
-//                     ImGui::Text("w_stanby_detumbling_goal : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##w_stanby_detumblig_goal", &command->adcs_setparamauxcmd.Params.w_standby_detumbling_goal);
-//                     ImGui::Text("w_stanby_forcedSpin_start : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##w_stanby_forcedSpin_start", &command->adcs_setparamauxcmd.Params.w_standby_forcedSpin_start);
-//                     ImGui::Text("angle_stanby_forcedSpin_start : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##angle_stanby_forcedSpin_start", &command->adcs_setparamauxcmd.Params.angle_standby_forcedSpin_start);
-//                     ImGui::Text("M_stanby_forcedSpin[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##M_stanby_forcedSpin[0]", &command->adcs_setparamauxcmd.Params.M_standby_forcedSpin[0]);
-//                     ImGui::Text("M_stanby_forcedSpin[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##M_stanby_forcedSpin[1]", &command->adcs_setparamauxcmd.Params.M_standby_forcedSpin[1]);
-//                     ImGui::Text("M_stanby_forcedSpin[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##M_stanby_forcedSpin[2]", &command->adcs_setparamauxcmd.Params.M_standby_forcedSpin[2]);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->adcs_setparamauxcmd, sizeof(ADCS_SetParamAuxCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(ADCS_SETPARAM_TARGET) : {
-//                     ImGui::Text("r_Target[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##r_Target[0]", &command->adcs_setparamtargetcmd.Params.r_Target[0]);
-//                     ImGui::Text("r_Target[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##r_Target[1]", &command->adcs_setparamtargetcmd.Params.r_Target[1]);
-//                     ImGui::Text("r_Target[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##r_Target[2]", &command->adcs_setparamtargetcmd.Params.r_Target[2]);
-//                     ImGui::Text("q_Target[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##q_Target[0]", &command->adcs_setparamtargetcmd.Params.q_Target[0]);
-//                     ImGui::Text("q_Target[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##q_Target[1]", &command->adcs_setparamtargetcmd.Params.q_Target[1]);
-//                     ImGui::Text("q_Target[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##q_Target[2]", &command->adcs_setparamtargetcmd.Params.q_Target[2]);
-//                     ImGui::Text("q_Target[3] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputDouble("##q_Target[3]", &command->adcs_setparamtargetcmd.Params.q_Target[3]);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->adcs_setparamtargetcmd, sizeof(ADCS_SetParamTargetCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(ADCS_SETPARAM_GAIN) : {
-//                     ImGui::Text("WhichGain : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##adcs_setparamgain_whichgain", ImGuiDataType_U8, &command->adcs_setparamgaincmd.Payload.WhichGain, NULL, NULL, "%u");
-//                     ImGui::Text("Mode : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##adcs_setparamgain_Mode", ImGuiDataType_U8, &command->adcs_setparamgaincmd.Payload.Mode, NULL, NULL, "%u");
-//                     ImGui::Text("Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##adcs_setparamgain_num", ImGuiDataType_U16, &command->adcs_setparamgaincmd.Payload.Num, NULL, NULL, "%u");
-//                     for(int i = 0; i < 31; i++)
-//                     {
-//                         ImGui::Text("Gain[%d]", i);
-//                         ImGui::SameLine();
-//                         sprintf(repeated_label, "##adcs_setparamgain_gain_%d", i);
-//                         ImGui::InputDouble(repeated_label, &command->adcs_setparamgaincmd.Payload.Gain[i], NULL, NULL);
-//                         if(i % 4 != 3)
-//                             ImGui::SameLine();
-//                     }
-//                     ImGui::Text("");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->adcs_setparamgaincmd, sizeof(ADCS_SetParamGainCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default: {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->adcs_noargscmd, sizeof(ADCS_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("GPS"))
-//             {
-//                 if(gen_msgid != GPS_CMD_MID)
-//                 {
-//                     gen_msgid = GPS_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, GPSCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(GPSCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(GPSCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(GPS_LOG_ONCE_CC) :
-//                 {
-//                     ImGui::Text("Msg ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##logoncemsgid", ImGuiDataType_S16, &command->gps_logoncecmd.MsgId, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->gps_logoncecmd, sizeof(GPS_LogOnceCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(GPS_LOG_ONTIME_CC) :
-//                 {
-//                     ImGui::Text("Msg ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##gps_logontime_msgid", ImGuiDataType_S16, &command->gps_logontimecmd.MsgId, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->gps_logontimecmd, sizeof(GPS_LogOntimeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(GPS_LOG_ONCHANGE_CC) :
-//                 {
-//                     ImGui::Text("Msg ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##gps_logonchange_msgid", ImGuiDataType_S16, &command->gps_logonchangecmd.MsgId, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->gps_logonchangecmd, sizeof(GPS_LogOnChangeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->gps_noargscmd, sizeof(GPS_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("EPS"))
-//             {
-//                 if(gen_msgid != EPS_CMD_MID)
-//                 {
-//                     gen_msgid = EPS_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, EPSCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(EPSCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(EPSCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(EPS_SET_CONFIG_PARAMETER_CC) : {
-//                     ImGui::Text("Parameter ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ParameterID", ImGuiDataType_U16, &command->eps_setconfig.ParameterID, NULL, NULL, "%u");
-//                     ImGui::Text("Parameter Length : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameter Length", ImGuiDataType_U8, &command->eps_setconfig.ParameterLength, NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[0]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[0], NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[1]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[1], NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[2]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[2], NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[3] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[3]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[3], NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[4] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[4]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[4], NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[5] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[5]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[5], NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[6] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[6]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[6], NULL, NULL, "%u");
-//                     ImGui::Text("Parameter[7] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameters[7]", ImGuiDataType_U8, &command->eps_setconfig.Parameter[7], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_setconfig, sizeof(EPS_SetConfigurationParameterCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(EPS_RESET_CONFIG_PARAMETER_CC) : {
-//                     ImGui::Text("Parameter Length : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameter Length", ImGuiDataType_U8, &command->eps_resetconfig.ParameterLength, NULL, NULL, "%u");
-//                     ImGui::Text("Parameter ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Parameter ID", ImGuiDataType_U16, &command->eps_resetconfig.ParameterID, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_setconfig, sizeof(EPS_SetConfigurationParameterCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(EPS_CORRECT_TIME_CC) : {
-//                     ImGui::Text("Args : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##eps_correcttime_Arg : ", ImGuiDataType_S32, &command->eps_correcttimecmd.Arg, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_correcttimecmd, sizeof(EPS_CorrectTimeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(EPS_OUTPUT_BUS_GROUP_ON_CC) : {
-//                     ImGui::Text("Args : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##eps_outputbusgroupon_arg", ImGuiDataType_U16, &command->eps_outputbusgrouponcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_outputbusgrouponcmd, sizeof(EPS_OutputBusGroupOnCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(EPS_OUTPUT_BUS_GROUP_OFF_CC) : {
-//                     ImGui::Text("Args : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##eps_outputbusgroupoff_arg", ImGuiDataType_U16, &command->eps_outputbusgroupoffcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_outputbusgroupoffcmd, sizeof(EPS_OUTPUT_BUS_GROUP_OFF_CC)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(EPS_OUTPUT_BUS_GROUP_STATE_CC) : {
-//                     ImGui::Text("Args : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##eps_outputbusgroupstate_arg", ImGuiDataType_U16, &command->eps_outputbusgroupstatecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_outputbusgroupstatecmd, sizeof(EPS_OutputBusGroupStateCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(EPS_OUTPUT_BUS_CHANNEL_ON_CC) : {
-//                     ImGui::Text("Args : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##eps_outputbuschannelon", ImGuiDataType_U8, &command->eps_outputbuschanneloffcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_outputbuschanneloffcmd, sizeof(EPS_OutputBusChannelOnCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(EPS_OUTPUT_BUS_CHANNEL_OFF_CC) : {
-//                     ImGui::Text("Args : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##eps_outputbuschanneloff_arg", ImGuiDataType_U8, &command->eps_outputbuschanneloffcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_outputbuschanneloffcmd, sizeof(EPS_OutputBusChannelOffCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default: {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->eps_noargscmd, sizeof(EPS_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("FM"))
-//             {
-//                 if(gen_msgid != FM_CMD_MID)
-//                 {
-//                     gen_msgid = FM_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, FMCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(FMCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(FMCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch (gen_fnccode)
-//                 {
-//                 case FM_RESET_APP_CC : {
-//                     ImGui::Text("Application ID             : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Application ID", ImGuiDataType_U32, &command->fm_resetappcmd.AppId, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_resetappcmd, sizeof(FM_ResetAppCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case FM_MODE_TRANSFER_CC : {
-//                     ImGui::Text("Mode                       : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Mode", ImGuiDataType_U8, &command->fm_modetransfercmd.Mode, NULL, NULL, "%u");
-//                     ImGui::Text("Submode                    : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Submode", ImGuiDataType_U8, &command->fm_modetransfercmd.Submode, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_modetransfercmd, sizeof(FM_ModeTransferCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case FM_SET_OPERATION_MODE_CC : {
-//                     ImGui::Text("Mode                       : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Mode", ImGuiDataType_U8, &command->fm_setoperationmodecmd.Mode, NULL, NULL, "%u");
-//                     ImGui::Text("Submode                    : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Submode", ImGuiDataType_U8, &command->fm_setoperationmodecmd.Submode, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_setoperationmodecmd, sizeof(FM_SetOperationModeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case FM_SET_COMMISSIONING_PHASE_CC : {
-//                     ImGui::Text("Commissioning Phase        : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Commissioning Phase", ImGuiDataType_U8, &command->fm_setcommissioningphasecmd.CommissioningPhase, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_setcommissioningphasecmd, sizeof(FM_SetCommissioningPhaseCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case FM_SET_SPACECRAFT_TIME_CC : {
-//                     ImGui::Text("Second                     : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Second", ImGuiDataType_U32, &command->fm_setspacecrafttimecmd.Seconds, NULL, NULL, "%u");
-//                     ImGui::Text("Subsecond                  : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Subsecond", ImGuiDataType_U32, &command->fm_setspacecrafttimecmd.Subseconds, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_setspacecrafttimecmd, sizeof(FM_SetSpacecraftTimeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case FM_SET_ANTENNA_DEPLOY_FLAG_CC : {
-//                     ImGui::Text("Antenna Deploy Flag        : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Antenna Deploy Flag", ImGuiDataType_U8, &command->fm_setantennadeployflagcmd.AntennaDeployFlag, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_setantennadeployflagcmd, sizeof(FM_SetAntennaDeployFlagCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case FM_SET_DAYLIGHT_DETECTION_FLAG_CC : {
-//                     ImGui::Text("Daylight Detection Flag    : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Daylight Detection Flag", ImGuiDataType_U8, &command->fm_setdaylightdetectionflagcmd.DaylightDetectionFlag, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_setdaylightdetectionflagcmd, sizeof(FM_SetDaylightDetectionFlagCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case FM_SET_COMM_MISSING_FLAG_CC : {
-//                     ImGui::Text("Commissioning Flag         : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##Commissioning Flag", ImGuiDataType_U8, &command->fm_setcommmissingflagcmd.CommunicationMissing, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_setcommmissingflagcmd, sizeof(FM_SetCommMissingFlagCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default: {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->fm_noargscmd, sizeof(FM_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("MTQ"))
-//             {
-//                 if(gen_msgid != MTQ_CMD_MID)
-//                 {
-//                     gen_msgid = MTQ_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, MTQCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(MTQCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(MTQCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(MTQ_RESET_COMP) : {
-//                     ImGui::Text("Args");
-//                     ImGui::Text("[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_resetcompcmd0", ImGuiDataType_U8, &command->mtq_resetcompcmd.Args[0], NULL, NULL, "%u");
-//                     ImGui::Text("[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_resetcompcmd1", ImGuiDataType_U8, &command->mtq_resetcompcmd.Args[1], NULL, NULL, "%u");
-//                     ImGui::Text("[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_resetcompcmd2", ImGuiDataType_U8, &command->mtq_resetcompcmd.Args[2], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->mtq_resetcompcmd, sizeof(MTQ_ResetCompCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(MTQ_ENABLE) : {
-//                     ImGui::Text("Args");
-//                     ImGui::Text("[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_enablecmd0", ImGuiDataType_U8, &command->mtq_enablecmd.Args[0], NULL, NULL, "%u");
-//                     ImGui::Text("[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_enablecmd1", ImGuiDataType_U8, &command->mtq_enablecmd.Args[1], NULL, NULL, "%u");
-//                     ImGui::Text("[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_enablecmd2", ImGuiDataType_U8, &command->mtq_enablecmd.Args[2], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->mtq_enablecmd, sizeof(MTQ_EnableCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(MTQ_DISABLE) : {
-//                     ImGui::Text("Args");
-//                     ImGui::Text("[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_diablecmd0", ImGuiDataType_U8, &command->mtq_disablecmd.Args[0], NULL, NULL, "%u");
-//                     ImGui::Text("[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_disablecmd1", ImGuiDataType_U8, &command->mtq_disablecmd.Args[1], NULL, NULL, "%u");
-//                     ImGui::Text("[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_disablecmd2", ImGuiDataType_U8, &command->mtq_disablecmd.Args[2], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->mtq_disablecmd, sizeof(MTQ_DisableCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(MTQ_SET_POLARITY) : {
-//                     ImGui::Text("Args");
-//                     ImGui::Text("[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setpolarity0", ImGuiDataType_U8, &command->mtq_setpolaritycmd.Args[0], NULL, NULL, "%u");
-//                     ImGui::Text("[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setpolarity1", ImGuiDataType_U8, &command->mtq_setpolaritycmd.Args[1], NULL, NULL, "%u");
-//                     ImGui::Text("[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setpolarity2", ImGuiDataType_U8, &command->mtq_setpolaritycmd.Args[2], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->mtq_setpolaritycmd, sizeof(MTQ_SetPolarityCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(MTQ_SET_DUTY) : {
-//                     ImGui::Text("Args");
-//                     ImGui::Text("[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setdutycmd0", ImGuiDataType_S8, &command->mtq_setdutycmd.Args[0], NULL, NULL, "%d");
-//                     ImGui::Text("[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setdutycmd1", ImGuiDataType_S8, &command->mtq_setdutycmd.Args[1], NULL, NULL, "%d");
-//                     ImGui::Text("[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setdutycmd2", ImGuiDataType_U8, &command->mtq_setdutycmd.Args[2], NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->mtq_setdutycmd, sizeof(MTQ_SetDutyCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(MTQ_SET_PERIOD) : {
-//                     ImGui::Text("Args");
-//                     ImGui::Text("[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setperiodcmd0", ImGuiDataType_U32, &command->mtq_setperiodcmd.Args[0], NULL, NULL, "%u");
-//                     ImGui::Text("[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setperiodcmd1", ImGuiDataType_U32, &command->mtq_setperiodcmd.Args[1], NULL, NULL, "%u");
-//                     ImGui::Text("[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##mtq_setperiodcmd2", ImGuiDataType_U32, &command->mtq_setperiodcmd.Args[2], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->mtq_setperiodcmd, sizeof(MTQ_SetPeriodCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->mtq_noargscmd, sizeof(MTQ_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("Payload"))
-//             {
-//                 if(gen_msgid != PAY_CMD_MID)
-//                 {
-//                     gen_msgid = PAY_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, PAYCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(PAYCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(PAYCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(PAY_CAM_DOWNLOAD_OLD_IMG_CC) : {
-//                     ImGui::Text("Index : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##pay_camdownloadoldimg", ImGuiDataType_U16, &command->pay_camdownloadoldimgcmd.Index, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->pay_camdownloadoldimgcmd, sizeof(PAY_CamDownloadOldImgCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(PAY_CAM_SEND_NOARG_CC) : {
-//                     ImGui::Text("CMD Code : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##pay_camsendnoargcmd", ImGuiDataType_U8, &command->pay_camsendnoargcmd.CmdCode, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->pay_camsendnoargcmd, sizeof(PAY_CamDownloadOldImgCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(PAY_CAM_SET_EXPOSURE_CC) : {
-//                     ImGui::Text("Exposure : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##pay_camsetexposure", ImGuiDataType_U32, &command->pay_camsetexposurecmd.Exposure, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->pay_camsetexposurecmd, sizeof(PAY_CamSetExposureCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(PAY_CAM_SET_SCPD_CC) : {
-//                     ImGui::Text("Index : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##pay_camsetscpd", ImGuiDataType_U32, &command->pay_camsetscpdcmd.SCPD, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->pay_camsetscpdcmd, sizeof(PAY_CamSetScpdCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->pay_noargscmd, sizeof(PAY_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("RWA"))
-//             {
-//                 if(gen_msgid != RWA_CMD_MID)
-//                 {
-//                     gen_msgid = RWA_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, RWACMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(RWACMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(RWACMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(RWA_RESET_WHEEL_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_resetwheel", ImGuiDataType_U8, &command->rwa_resetwheelcmd.WhlNum, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_resetwheelcmd, sizeof(RWA_ResetWheelCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_CLEAR_ERRORS_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_clearerrors", ImGuiDataType_U8, &command->rwa_clearerrorscmd.WhlNum, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_clearerrorscmd, sizeof(RWA_ClearErrorsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_MOTOR_POWER_STATE_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setmotorpowerstate_wheelnum", ImGuiDataType_U8, &command->rwa_setmotorpowerstatecmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setmotorpowerstate_arg", ImGuiDataType_U8, &command->rwa_setmotorpowerstatecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setmotorpowerstatecmd, sizeof(RWA_SetMotorPowerStateCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_ENCODER_POWER_STATE_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setencoderpowerstate_wheelnum", ImGuiDataType_U8, &command->rwa_setencoderpowerstatecmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setencoderpowerstate_arg", ImGuiDataType_U8, &command->rwa_setencoderpowerstatecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setencoderpowerstatecmd, sizeof(RWA_SetEncoderPowerStateCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_HALL_POWER_STATE_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_sethallpowerstate_wheelnum", ImGuiDataType_U8, &command->rwa_sethallpowerstatecmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_sethallpowerstate_arg", ImGuiDataType_U8, &command->rwa_sethallpowerstatecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_sethallpowerstatecmd, sizeof(RWA_SetHallPowerStateCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_CONTROL_MODE_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setcontrolmode_wheelnum", ImGuiDataType_U8, &command->rwa_setcontrolmodecmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setcontrolmode_arg", ImGuiDataType_U8, &command->rwa_setcontrolmodecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setcontrolmodecmd, sizeof(RWA_SetControlModeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_BACKUP_WHEEL_MODE_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setbackupwheelmode_wheelnum", ImGuiDataType_U8, &command->rwa_setbackupwheelmodecmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setbackupwheelmode_arg", ImGuiDataType_U8, &command->rwa_setbackupwheelmodecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setbackupwheelmodecmd, sizeof(RWA_SetBackupWheelModeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_WHEEL_REFERENCE_SPEED_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setwheelreferencespeed_wheelnum", ImGuiDataType_U8, &command->rwa_setwheelreferencespeedcmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setwheelreferencespeed_arg", ImGuiDataType_S16, &command->rwa_setwheelreferencespeedcmd.Arg, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setwheelreferencespeedcmd, sizeof(RWA_SetWheelReferenceSpeedCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_WHEEL_COMMANDED_TORQUE_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setwheelcommandedtorque_wheelnum", ImGuiDataType_U8, &command->rwa_setwheelcommandedtorquecmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setwheelcommandedtorque_arg", ImGuiDataType_S16, &command->rwa_setwheelcommandedtorquecmd.Arg, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setwheelcommandedtorquecmd, sizeof(RWA_SetWheelCommandedTorqueCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_PWM_GAIN_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setpwmgain_wheelnum", ImGuiDataType_U8, &command->rwa_setpwmgaincmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("K : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setpwmgain_k", ImGuiDataType_S16, &command->rwa_setpwmgaincmd.Input.K, NULL, NULL, "%d");
-//                     ImGui::Text("Kmultiplier : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setpwmgain_kmultiplier", ImGuiDataType_U8, &command->rwa_setpwmgaincmd.Input.Kmultiplier, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setpwmgaincmd, sizeof(RWA_SetPwmGainCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_MAIN_GAIN_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setmaingain_wheelnum", ImGuiDataType_U8, &command->rwa_setmaingaincmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Ki : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setmaingain_ki", ImGuiDataType_U16, &command->rwa_setmaingaincmd.Input.Ki, NULL, NULL, "%u");
-//                     ImGui::Text("Kimultiplier : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setmaingain_kimultiplier", ImGuiDataType_U8, &command->rwa_setmaingaincmd.Input.KiMultiplier, NULL, NULL, "%u");
-//                     ImGui::Text("Kd : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setmaingain_kd", ImGuiDataType_U16, &command->rwa_setmaingaincmd.Input.Kd, NULL, NULL, "%u");
-//                     ImGui::Text("Kdmultiplier : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setmaingain_kdmultiplier", ImGuiDataType_U8, &command->rwa_setmaingaincmd.Input.KdMultiplier, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setmaingaincmd, sizeof(RWA_SetMainGainCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_BACKUP_GAIN_CC) : {
-//                     ImGui::Text("Wheel Num : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setbackupgain_wheelnum", ImGuiDataType_U8, &command->rwa_setbackupgaincmd.WhlNum, NULL, NULL, "%u");
-//                     ImGui::Text("Ki : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setbackupgain_ki", ImGuiDataType_U16, &command->rwa_setbackupgaincmd.Input.Ki, NULL, NULL, "%u");
-//                     ImGui::Text("Kimultiplier : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setbackupgain_kimultiplier", ImGuiDataType_U8, &command->rwa_setbackupgaincmd.Input.KiMultiplier, NULL, NULL, "%u");
-//                     ImGui::Text("Kd : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setbackupgain_kd", ImGuiDataType_U16, &command->rwa_setbackupgaincmd.Input.Kd, NULL, NULL, "%u");
-//                     ImGui::Text("Kdmultiplier : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setbackupgain_kdmultiplier", ImGuiDataType_U8, &command->rwa_setbackupgaincmd.Input.KdMultiplier, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setbackupgaincmd, sizeof(RWA_SetBackupGainCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(RWA_SET_WHEEL_REFERENCE_SPEED_ALL_AXIS_CC) : {
-//                     ImGui::Text("Wheel Ref Speed[0]: ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setwheelreferencespeedallaxis[0]", ImGuiDataType_S16, &command->rwa_setwheelreferencespeedallaxiscmd.WheelRefSpeed[0], NULL, NULL, "%d");
-//                     ImGui::Text("Wheel Ref Speed[1]: ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setwheelreferencespeedallaxis[1]", ImGuiDataType_S16, &command->rwa_setwheelreferencespeedallaxiscmd.WheelRefSpeed[1], NULL, NULL, "%d");
-//                     ImGui::Text("Wheel Ref Speed[2]: ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##rwa_setwheelreferencespeedallaxis[2]", ImGuiDataType_S16, &command->rwa_setwheelreferencespeedallaxiscmd.WheelRefSpeed[2], NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_setwheelreferencespeedallaxiscmd, sizeof(RWA_SetWheelReferenceSpeedAllAxisCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->rwa_noargscmd, sizeof(RWA_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("Sensor"))
-//             {
-//                 if(gen_msgid != SNSR_CMD_MID)
-//                 {
-//                     gen_msgid = SNSR_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, SNSRCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(SNSRCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(SNSRCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(SNSR_STT_BOOT_CC) : {
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttboot_arg", ImGuiDataType_U8, &command->snsr_stt_bootcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_stt_bootcmd, sizeof(SNSR_STT_BootCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_STT_PING_CC) : {
-//                     ImGui::Text("Arg : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttping_arg", ImGuiDataType_U32, &command->snsr_stt_pingcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_stt_pingcmd, sizeof(SNSR_STT_PingCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_STT_UNLOCK_CC) : {
-//                     ImGui::Text("Image : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttunlock_image", ImGuiDataType_U8, &command->snsr_stt_unlockcmd.Image, NULL, NULL, "%u");
-//                     ImGui::Text("Code : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttunlock_code", ImGuiDataType_U32, &command->snsr_stt_unlockcmd.Code, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_stt_unlockcmd, sizeof(SNSR_STT_UnlockCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_STT_SET_PARAM_CC) : {
-//                     ImGui::Text("Param ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttsetparam_paramid", ImGuiDataType_U8, &command->snsr_stt_setparamcmd.ParamId, NULL, NULL, "%u");
-//                     ImGui::Text("Param Size : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttsetparam_paramsize", ImGuiDataType_U16, &command->snsr_stt_setparamcmd.ParamSize, NULL, NULL, "%u");
-//                     ImGui::Text("Param : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttsetparam_param", ImGuiDataType_U8, &command->snsr_stt_setparamcmd.Param[0], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_stt_setparamcmd, sizeof(SNSR_STT_SetParamCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_STT_SEND_RS485_CC) : {
-//                     ImGui::Text("Length : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttsendrs485_length", ImGuiDataType_U16, &command->snsr_stt_sendrs485cmd.Length, NULL, NULL, "%u");
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_sttsendrs485_length", ImGuiDataType_U8, &command->snsr_stt_sendrs485cmd.Data[0], NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_stt_sendrs485cmd, sizeof(SNSR_STT_SendRS485Cmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_MMT_SET_INTERNAL_CONTROL0_CC) : {
-//                     ImGui::Text("TM_M : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_mmt_setinternalcontrol0cmd_ tm_m", &command->snsr_mmt_setinternalcontrol0cmd.TM_M);
-//                     ImGui::Text("TM_T : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_mmt_setinternalcontrol0cmd_ tm_t", &command->snsr_mmt_setinternalcontrol0cmd.TM_T);
-//                     ImGui::Text("Start_MDT : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_mmt_setinternalcontrol0cmd_ start_mdt", &command->snsr_mmt_setinternalcontrol0cmd.Start_MDT);
-//                     ImGui::Text("Set : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_mmt_setinternalcontrol0cmd_ set", &command->snsr_mmt_setinternalcontrol0cmd.Set);
-//                     ImGui::Text("Reset : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_mmt_setinternalcontrol0cmd_ reset", &command->snsr_mmt_setinternalcontrol0cmd.Reset);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_mmt_setinternalcontrol0cmd, sizeof(SNSR_MMT_SetInternalControl0Cmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;   
-//                 }
-//                 case(SNSR_MMT_SET_INTERNAL_CONTROL2_CC) : {
-//                     ImGui::Text("CM_Freq : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_mmt_setinternalcontrol2_cm_freq", ImGuiDataType_U8, &command->snsr_mmt_setinternalcontrol2cmd.CM_Freq, NULL, NULL, "%u");
-//                     ImGui::Text("INT_MDT_EN : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_mmt_setinternalcontrol2_intmdten", &command->snsr_mmt_setinternalcontrol2cmd.INT_MDT_EN);
-//                     ImGui::Text("INT_Meas_Done_EN : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_mmt_setinternalcontrol2_int_meas_done_en", &command->snsr_mmt_setinternalcontrol2cmd.INT_Meas_Done_EN);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_mmt_setinternalcontrol2cmd, sizeof(SNSR_MMT_SetInternalControl2Cmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_MMT_WRITE_TO_REGISTER_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_mmt_write_to_register_data", ImGuiDataType_U8, &command->snsr_mmt_writetoregistercmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_mmt_writetoregistercmd, sizeof(SNSR_MMT_WriteToRegisterCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_IMU_SET_GYRO_OFFSET_CC) : {
-//                     ImGui::Text("Offset[0] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setgyrooffsetcmd_offset0", ImGuiDataType_S16, &command->snsr_imu_setgyrooffsetcmd.Offset[0], NULL, NULL, "%d");
-//                     ImGui::Text("Offset[1] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setgyrooffsetcmd_offset1", ImGuiDataType_S16, &command->snsr_imu_setgyrooffsetcmd.Offset[1], NULL, NULL, "%d");
-//                     ImGui::Text("Offset[2] : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setgyrooffsetcmd_offset2", ImGuiDataType_S16, &command->snsr_imu_setgyrooffsetcmd.Offset[2], NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_imu_setgyrooffsetcmd, sizeof(SNSR_IMU_SetGyroOffsetCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_IMU_SET_CONFIGURATION_CC) : {
-//                     ImGui::Text("FifoMode : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setconfiguration_fifomode", ImGuiDataType_U8, &command->snsr_imu_setconfigurationcmd.FifoMode, NULL, NULL, "%u");
-//                     ImGui::Text("ExtSyncSet : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setconfiguration_extsyncset", ImGuiDataType_U8, &command->snsr_imu_setconfigurationcmd.ExtSyncSet, NULL, NULL, "%u");
-//                     ImGui::Text("Config DLPF : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setconfiguration_configdlpf", ImGuiDataType_U8, &command->snsr_imu_setconfigurationcmd.ConfigDLPF, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_imu_setconfigurationcmd, sizeof(SNSR_IMU_SetConfigurationCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_IMU_SET_GYRO_CONFIGURATION_CC) : {
-//                     ImGui::Text("Accel Full Scale : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setgyroconfiguration_accelfullscale", ImGuiDataType_U8, &command->snsr_imu_setgyroconfigurationcmd.AccelFullScale, NULL, NULL, "%u");
-//                     ImGui::Text("Filter Choice : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setgyroconfiguration_filterchoice", ImGuiDataType_U8, &command->snsr_imu_setgyroconfigurationcmd.FilterChoice, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_imu_setgyroconfigurationcmd, sizeof(SNSR_IMU_SetGyroConfigurationCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_IMU_SET_ACCEL_CONFIGURATION_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setaccelconfiguration_args", ImGuiDataType_U8, &command->snsr_imu_setaccelconfigurationcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_imu_setaccelconfigurationcmd, sizeof(SNSR_IMU_SetAccelConfigurationCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_IMU_SET_ACCEL_CONFIGURATION2_CC) : {
-//                     ImGui::Text("Fifo Size : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setaccelconfiguration2_fifosize", ImGuiDataType_U8, &command->snsr_imu_setaccelconfiguration2cmd.FifoSize, NULL, NULL, "%u");
-//                     ImGui::Text("DEC2_CFG : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setaccelconfiguration2_dec2cfg", ImGuiDataType_U8, &command->snsr_imu_setaccelconfiguration2cmd.DEC2_CFG, NULL, NULL, "%u");
-//                     ImGui::Text("AccelFilter Choice : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_imu_setaccelconfiguration2_accelfilterchoice", &command->snsr_imu_setaccelconfiguration2cmd.AccelFilterChoice);
-//                     ImGui::Text("A_DLPF_CFG : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_setaccelconfiguration2_adlpfcfg", ImGuiDataType_U8, &command->snsr_imu_setaccelconfiguration2cmd.A_DLPF_CFG, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_imu_setaccelconfiguration2cmd, sizeof(SNSR_IMU_SetAccelConfiguration2Cmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_IMU_SET_POWER_MANAGEMENT_CC) : {
-//                     ImGui::Text("Device Reset : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_imu_setpowermanagement_devicereset", &command->snsr_imu_setpowermanagement1cmd.DEVICE_RESET);
-//                     ImGui::Text("Sleep : ");
-//                     ImGui::SameLine();
-//                     ImGui::Checkbox("##snsr_setpowermanagement_sleep", &command->snsr_imu_setpowermanagement1cmd.SLEEP);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_imu_setpowermanagement1cmd, sizeof(SNSR_IMU_SetPowerManagement1Cmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_IMU_WRITE_TO_REGISTER_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_imu_writetoregister_data", ImGuiDataType_U8 ,&command->snsr_imu_writetoregistercmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_imu_writetoregistercmd, sizeof(SNSR_IMU_WriteToRegisterCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_FSS_ISOLATE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_fss_isolate", ImGuiDataType_U8 ,&command->snsr_fss_isolatedcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_fss_isolatedcmd, sizeof(SNSR_FSS_IsolateCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_FSS_RESTORE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_fss_restore", ImGuiDataType_U8 ,&command->snsr_fss_restorecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_fss_restorecmd, sizeof(SNSR_FSS_RestoreCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_CSS_ISOLATE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_css_isolate", ImGuiDataType_U8 ,&command->snsr_css_isolatedcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_css_isolatedcmd, sizeof(SNSR_CSS_IsolateCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SNSR_CSS_RESTORE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##snsr_css_restore", ImGuiDataType_U8 ,&command->snsr_css_restorecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_css_restorecmd, sizeof(SNSR_CSS_RestoreCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->snsr_noargscmd, sizeof(SNSR_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("STX"))
-//             {
-//                 if(gen_msgid != STX_CMD_MID)
-//                 {
-//                     gen_msgid = STX_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, STXCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(STXCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(STXCMDLabels[i], SelectedGen))
-//                                 gen_fnccode = i;
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(STX_TRANSMIT_DATA_CC) : {
-//                     ImGui::Text("Length : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitdata_length", ImGuiDataType_S16 ,&command->stx_transmitdatacmd.Length, NULL, NULL, "%d");
-//                     ImGui::Text("Buf Push Delay : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitdata_bufpushdelay", ImGuiDataType_U16 ,&command->stx_transmitdatacmd.BufPushDelay, NULL, NULL, "%u");
-//                     ImGui::Text("Data(ASCII, 16byte) : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##stx_transmitdata_data", (char *)command->stx_transmitdatacmd.Data ,sizeof(command->stx_transmitdatacmd.Data), NULL, NULL, NULL);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_transmitdatacmd, sizeof(STX_TransmitDataCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(STX_SET_CONTROL_MODE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_setcontrolmodecmd", ImGuiDataType_U8 ,&command->stx_setcontrolmodecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_setcontrolmodecmd, sizeof(STX_SetControlModeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(STX_SET_ENCODER_RATE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_setencoderrate", ImGuiDataType_U8 ,&command->stx_setencoderratecmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_setencoderratecmd, sizeof(STX_SetEncoderRateCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(STX_SET_PA_POWER_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_setpapower", ImGuiDataType_U8 ,&command->stx_setpapowercmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_setpapowercmd, sizeof(STX_SetPaPowerCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(STX_SET_SYNTH_OFFSET_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_setsynthoffset", ImGuiDataType_U8 ,&command->stx_setsynthoffsetcmd.Arg, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_setsynthoffsetcmd, sizeof(STX_SetSynthOffsetCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(STX_TRANSMIT_FILE_CC) : {
-//                     ImGui::Text("Offset : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitfile_offset", ImGuiDataType_U32 ,&command->stx_transmitfilecmd.Offset, NULL, NULL, "%u");
-//                     ImGui::Text("Length : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitfile_length", ImGuiDataType_U32 ,&command->stx_transmitfilecmd.Length, NULL, NULL, "%u");
-//                     ImGui::Text("BufPushDelay : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitfile_BufPushDelay", ImGuiDataType_U16 ,&command->stx_transmitfilecmd.BufPushDelay, NULL, NULL, "%u");
-//                     ImGui::Text("Path : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##stx_transmitfile_path", command->stx_transmitfilecmd.Path, sizeof(command->stx_transmitfilecmd.Path), NULL, NULL, NULL);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_transmitfilecmd, sizeof(STX_TransmitFileCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(STX_TRANSMIT_FILE_LONG_PATH_CC) : {
-//                     ImGui::Text("Offset : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitfilelongpath_offset", ImGuiDataType_U32 ,&command->stx_transmitfilelongpathcmd.Offset, NULL, NULL, "%u");
-//                     ImGui::Text("Length : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitfilelongpath_length", ImGuiDataType_U32 ,&command->stx_transmitfilelongpathcmd.Length, NULL, NULL, "%u");
-//                     ImGui::Text("BufPushDelay : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##stx_transmitfilelongpath_BufPushDelay", ImGuiDataType_U16 ,&command->stx_transmitfilelongpathcmd.BufPushDelay, NULL, NULL, "%u");
-//                     ImGui::Text("Path : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##stx_transmitfile_path", command->stx_transmitfilelongpathcmd.Path, sizeof(command->stx_transmitfilelongpathcmd.Path), NULL, NULL, NULL);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_transmitfilelongpathcmd, sizeof(STX_TransmitFileLongPathCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->stx_noargscmd, sizeof(STX_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("TO"))
-//             {
-//                 if(gen_msgid != TO_CMD_MID)
-//                 {
-//                     gen_msgid = TO_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, TOCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(TOCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(TOCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(TO_DOWNLINK_QUERY_REPLY_CC) : {
-//                     ImGui::Text("Target : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##to_downlinkqueryreply_target", ImGuiDataType_U16 ,&command->to_downlinkqueryreplycmd.Payload.Target, NULL, NULL, "%u");
-//                     ImGui::Text("FileStatus : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##to_downlinkqueryreply_filestatus", ImGuiDataType_U16 ,&command->to_downlinkqueryreplycmd.Payload.FileStatus, NULL, NULL, "%u");
-//                     ImGui::Text("NumFiles : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##to_downlinkqueryreply_numfiles", ImGuiDataType_U32 ,&command->to_downlinkqueryreplycmd.Payload.NumFiles, NULL, NULL, "%u");
-//                     ImGui::Text("Offset : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##to_downlinkqueryreply_offset", ImGuiDataType_U32 ,&command->to_downlinkqueryreplycmd.Payload.Offset, NULL, NULL, "%u");
-//                     ImGui::Text("Frequency : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##to_downlinkqueryreply_frequency", ImGuiDataType_U32 ,&command->to_downlinkqueryreplycmd.Payload.Frequency, NULL, NULL, "%u");
-//                     ImGui::Text("Conn(void pointer) : ");
-//                     ImGui::SameLine();
-//                     ImGui::Text("Contact To Manager.");
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->to_downlinkqueryreplycmd, sizeof(command->to_downlinkqueryreplycmd)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(TO_DISABLE_BEACON_CC): {
-//                     ImGui::Text("Timeoutsmin : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##to_disablereply_target", ImGuiDataType_S32 ,&command->to_disablebeaconcmd.timeoutsmin, NULL, NULL, "%d");
-
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->to_disablebeaconcmd, sizeof(TO_DisableBeaconCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->to_noargscmd, sizeof(TO_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("UTRX"))
-//             {
-//                 if(gen_msgid != UTRX_CMD_MID)
-//                 {
-//                     gen_msgid = UTRX_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, UTRXCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(UTRXCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(UTRXCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(UTRX_SET_TX_FREQ_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##utrx_settxfreq", ImGuiDataType_U32 ,&command->utrx_settxfreqcmd.Arg, NULL, NULL, "%u");
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_settxfreqcmd, sizeof(UTRX_SetTxFreqCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(UTRX_SET_TX_BAUD_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##utrx_settxbaud", ImGuiDataType_U32 ,&command->utrx_settxbaudcmd.Arg, NULL, NULL, "%u");
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_settxbaudcmd, sizeof(UTRX_SetTxBaudCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(UTRX_SET_TX_MODIND_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputFloat("##utrx_settxmodind", &command->utrx_settxmodindex.Arg);
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_settxmodindex, sizeof(UTRX_SetTxModIndexCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(UTRX_SET_TX_MODE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##utrx_settxmode", ImGuiDataType_U8 ,&command->utrx_settxmodecmd.Arg, NULL, NULL, "%u");
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_settxmodecmd, sizeof(UTRX_SetTxModeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(UTRX_SET_RX_FREQ_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##utrx_setrxfreq", ImGuiDataType_U32 ,&command->utrx_setrxfreqcmd.Arg, NULL, NULL, "%u");
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_setrxfreqcmd, sizeof(UTRX_SetRxFreqCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(UTRX_SET_RX_BAUD_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##utrx_setrxbaud", ImGuiDataType_U32 ,&command->utrx_setrxbaudcmd.Arg, NULL, NULL, "%u");
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_setrxbaudcmd, sizeof(UTRX_SetRxBaudCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(UTRX_SET_RX_MODIND_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputFloat("##utrx_setrxmodindex", &command->utrx_setrxmodindexcmd.Arg);
-                
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_setrxmodindexcmd, sizeof(UTRX_SetRxModIndexCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(UTRX_SET_RX_MODE_CC) : {
-//                     ImGui::Text("Data : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##utrx_setrxmode", ImGuiDataType_U8 ,&command->utrx_setrxmodecmd.Arg, NULL, NULL, "%u");                
-
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_setrxmodecmd, sizeof(UTRX_SetRxModeCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->utrx_noargscmd, sizeof(UTRX_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("TS"))
-//             {
-//                 if(gen_msgid != TS_CMD_MID)
-//                 {
-//                     gen_msgid = TS_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, TSCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(TSCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(TSCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(TS_INSERT_SCHEDULE_ENTRY_CC) : {
-//                     ImGui::Text("Execution Time : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ts_insertscheduleentry_executiontime", ImGuiDataType_U32 ,&command->ts_insertscheduleentrycmd.ExecutionTime, NULL, NULL, "%u");
-//                     ImGui::Text("Execution Window : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ts_insertscheduleentry_executionwindow", ImGuiDataType_U32 ,&command->ts_insertscheduleentrycmd.ExecutionWindow, NULL, NULL, "%u");  
-//                     ImGui::Text("Entry ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ts_insertscheduleentry_entryid", ImGuiDataType_U16 ,&command->ts_insertscheduleentrycmd.EntryId, NULL, NULL, "%u");  
-//                     ImGui::Text("Entry Group : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ts_insertscheduleentry_entrygroup", ImGuiDataType_U16 ,&command->ts_insertscheduleentrycmd.EntryGroup, NULL, NULL, "%u");
-//                     ImGui::Text("Execution Msg : ");
-//                     ImGui::SameLine();
-//                     ImGui::Text("Contact to Manager.");
-
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->ts_insertscheduleentrycmd, sizeof(TS_InsertScheduleEntryCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(TS_CLEAR_SCHEDULE_ENTRY_CC) : {
-//                     ImGui::Text("Entry ID : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ts_clearscheduleentry_entryid", ImGuiDataType_U16 ,&command->ts_clearscheduleentrycmd.EntryId, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->ts_clearscheduleentrycmd, sizeof(TS_ClearScheduleEntryCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(TS_CLEAR_SCHEDULE_GROUP_CC) : {
-//                     ImGui::Text("Entry Group : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ts_clearscheduleentry_entrygroup", ImGuiDataType_U16 ,&command->ts_clearschedulegroupcmd.EntryGroup, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->ts_clearschedulegroupcmd, sizeof(TS_ClearScheduleGroupCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->ts_noargscmd, sizeof(TS_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("ECM"))
-//             {
-//                 if(gen_msgid != ECM_CMD_MID)
-//                 {
-//                     gen_msgid = ECM_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, ECMCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(ECMCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(ECMCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-                        
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case (ECM_READ_CC) : {
-//                     ImGui::Text("TXlen : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ecm_read_txlen", ImGuiDataType_U8, &command->ecm_readcmd.txlen , NULL, NULL, "%u");
-//                     ImGui::Text("RXlen : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ecm_read_rxlen", ImGuiDataType_U8, &command->ecm_readcmd.rxlen , NULL, NULL, "%u");
-//                     ImGui::Text("CC    : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##ecm_read_cc", ImGuiDataType_U8, &command->ecm_readcmd.cc , NULL, NULL, "%u");
-//                     ImGui::Text("data(ASCII): ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##ecm_read_data", (char *)&command->ecm_readcmd.data, sizeof(command->ecm_readcmd.data));
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->ecm_readcmd, sizeof(ECM_Read_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->ecm_noargscmd, sizeof(ECM_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("ES"))
-//             {
-//                 if(gen_msgid != ES_CMD_MID)
-//                 {
-//                     gen_msgid = ES_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, ESCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(ESCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(ESCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-                        
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case (CFE_ES_RESTART_CC) : {
-//                     ImGui::Text("RestartType : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##es_restart_restarttype", ImGuiDataType_U16, &command->es_restartcmd.Payload.RestartType, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->es_restartcmd, sizeof(CFE_ES_RestartCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case (CFE_ES_RESTART_APP_CC) : {
-//                     ImGui::Text("Appname : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##es_restartapp", command->es_restartappcmd.Payload.Application, CFE_MISSION_MAX_API_LEN);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->es_restartappcmd, sizeof(CFE_ES_AppNameCmd_t)) == 0)
-//                     {
-//                         printf("%s\n", command->es_restartappcmd.Payload.Application);
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                  case (CFE_ES_STOP_APP_CC) : {
-//                     ImGui::Text("Application : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##es_stopapp", command->es_stopappcmd.Payload.Application, 19);
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->es_stopappcmd, sizeof(CFE_ES_StopAppCmd_t)) == 0)
-//                     {
-//                         printf("%s\n", command->es_stopappcmd.Payload.Application);
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case (CFE_ES_START_APP_CC) : {
-//                     ImGui::Text("Application : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##es_startapp_application", command->es_startappcmd.Payload.Application, CFE_MISSION_MAX_API_LEN);
-//                     ImGui::Text("AppEntryPoint : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##es_startapp_appentrypoint", command->es_startappcmd.Payload.AppEntryPoint, CFE_MISSION_MAX_API_LEN);
-//                     ImGui::Text("AppFileName : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputText("##es_startapp_appfilename", command->es_startappcmd.Payload.AppFileName, CFE_MISSION_MAX_PATH_LEN);
-//                     ImGui::Text("StackSize : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##es_startapp_stacksize", ImGuiDataType_U32, &command->es_startappcmd.Payload.StackSize, NULL, NULL, "%u");
-//                     ImGui::Text("ExceptionAction : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##es_startapp_exceptionaction", ImGuiDataType_U8, &command->es_startappcmd.Payload.ExceptionAction, NULL, NULL, "%u");
-//                     ImGui::Text("Priority : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##es_startapp_priority", ImGuiDataType_U16, &command->es_startappcmd.Payload.Priority, NULL, NULL, "%u");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->es_startappcmd, sizeof(CFE_ES_StartAppCmd_t)) == 0)
-//                     {
-//                         printf("%s\n", command->es_stopappcmd.Payload.Application);
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->es_noargscmd, sizeof(CFE_ES_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//             if (ImGui::BeginTabItem("SCH"))
-//             {
-//                 if(gen_msgid != SCH_CMD_MID)
-//                 {
-//                     gen_msgid = SCH_CMD_MID;
-//                     gen_fnccode = 0;
-//                 }
-
-//                 sprintf(ComboboxLabel, "##ComboCMDGEN%d", gen_msgid);
-//                 if (ImGui::BeginCombo(ComboboxLabel, SCHCMDLabels[gen_fnccode]))
-//                 {
-//                     for (int i = 0; i < 128; i++)
-//                     {
-//                         if(strlen(SCHCMDLabels[i]) == 0)
-//                             continue;
-//                         else
-//                         {
-//                             bool SelectedGen = (gen_fnccode == i);
-//                             if (ImGui::Selectable(SCHCMDLabels[i], SelectedGen))
-//                             {
-//                                 if(gen_fnccode != i)
-//                                 {
-//                                     gen_fnccode = i;
-//                                 }
-//                             }
-//                             if (SelectedGen)
-//                                 ImGui::SetItemDefaultFocus();
-//                         }
-//                     }
-//                     ImGui::EndCombo();
-//                 }
-//                 switch(gen_fnccode) {
-//                 case(SCH_ENABLE_CC) :
-//                 {
-//                     ImGui::Text("SlotNumber : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##sch_en_slotnumber", ImGuiDataType_U16, &command->sch_enablecmd.SlotNumber, NULL, NULL, "%d");
-//                     ImGui::Text("Entry : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##sch_en_entrynumber", ImGuiDataType_U16, &command->sch_enablecmd.EntryNumber, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->sch_enablecmd, sizeof(SCH_EntryCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 case(SCH_DISABLE_CC) :
-//                 {
-//                     ImGui::Text("SlotNumber : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##sch_dis_slotnumber", ImGuiDataType_U16, &command->sch_disablecmd.SlotNumber, NULL, NULL, "%d");
-//                     ImGui::Text("Entry : ");
-//                     ImGui::SameLine();
-//                     ImGui::InputScalar("##sch_dis_entrynumber", ImGuiDataType_U16, &command->sch_disablecmd.EntryNumber, NULL, NULL, "%d");
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->sch_disablecmd, sizeof(SCH_EntryCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 default : {
-//                     if(CMDDataGenerator(gen_msgid, gen_fnccode, &command->sch_noargscmd, sizeof(SCH_NoArgsCmd_t)) == 0)
-//                     {
-//                         ImGui::EndTabItem();
-//                         ImGui::EndTabBar();
-//                         ImGui::EndPopup();
-//                         return false;
-//                     }
-//                     break;
-//                 }
-//                 }
-//                 ImGui::EndTabItem();
-//             }
-//         }
-//         ImGui::EndTabBar();
-//     }
-//     ImGui::EndPopup();
-//     return true;
-
-// }
-
 
 
 bool popup_fds()

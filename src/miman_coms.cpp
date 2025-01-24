@@ -8,7 +8,9 @@
 #include "miman_radial.h"
 #include "miman_ftp.h"
 
+#define _CRT_SECURE_NO_WARNINGS
 
+extern FILE *log_ptr;
 
 //int signallen = 8;
 Beacon* beacon = (Beacon *)malloc(MIM_LEN_BEACON);
@@ -42,6 +44,7 @@ void * TRxController(void *)
     {
         if(State.downlink_mode)
         {
+            printf("Create downlink onorbit...\n");
             pthread_create(&LinkTrhead, NULL, task_downlink_onorbit, DLsocket);
             pthread_join(LinkTrhead, NULL);
             State.uplink_mode = true;
@@ -221,14 +224,18 @@ uint32_t CmdGenerator_GS::ComputeCheckSum(void) {
 csp_socket_t * DL_sock_initialize()
 {
 	csp_socket_t * sock = csp_socket(0);
-	csp_bind(sock, 12);
-    csp_bind(sock, 31);
-    while(true) {
-        if (csp_bind(sock, 23) == 0) { // Add for HVD_TMTC_TEST
-        console.AddLog("[OK]Bind Success.");
-        break;
-        };
+	if(!csp_bind(sock, 13)) {
+        console.AddLog("[OK]##TM Port 13 bind success.");
     }
+    if(!csp_bind(sock, 31)) {
+        console.AddLog("[OK]##BCN Port 31 bind success.");
+    }
+    // while(true) {
+    //     if (csp_bind(sock, 23) == 0) { // Add for HVD_TMTC_TEST
+    //     console.AddLog("[OK]Bind Success.");
+    //     break;
+    //     };
+    // }
 	csp_listen(sock, 10);
     //Fail preventation would be needed!
     return sock;
@@ -317,6 +324,7 @@ void * task_downlink_onorbit(void * socketinfo)
     //This function must be on p_thread[3]
     float seconds = 0.0f;
 	while (State.downlink_mode) {
+        //printf("Downlink ongoing...\n");
 		if ((conn = csp_accept(sock, setup->default_timeout)) == NULL)
         {
             // printf("Running...but no comming...%f\n", seconds);
@@ -338,7 +346,7 @@ void * task_downlink_onorbit(void * socketinfo)
                     memcpy(confirm, packet->data, PacketLength);
                     console.AddLog("TMTC Test Downlink requested.");
                     FILE * TMTC_fp;
-                    fopen(tmtcfilename,"wb");
+                    TMTC_fp = fopen(tmtcfilename,"wb");
                     for (int i=0; i<PacketLength; i++) {
                         fprintf(TMTC_fp, "Data %d: %u\n",i,packet->data[i]);
                     }
@@ -359,37 +367,58 @@ void * task_downlink_onorbit(void * socketinfo)
                     break;
                     
                 }
-                //Case 12 : TC Packet Downlink
                 case 12: {
-                        char dlpktfilename[128];
-                        time_t tmtime = time(0);
-                        struct tm * local = localtime(&tmtime);
-                        sprintf(dlpktfilename, "./data/dlpkt/dlpkt--%04d-%02d-%02d-%02d-%02d-%02d--", local->tm_year+1900, local->tm_mon+1, local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
-                        console.AddLog("Received DLpkt from port : 12");
-                        FILE * DL_fp;
-                        DL_fp = fopen(dlpktfilename, "wb");
-                        
-                        for(int i = 0; i < packet->length / sizeof(uint32_t); i++)
-                            packet->data32[i] = __builtin_bswap32(packet->data32[i]);
-                        fprintf(DL_fp, "CMD Cnt             : %02d\n", packet->data[0]);
-                        fprintf(DL_fp, "Reply Cnt           : %02d\n", packet->data[1]);
-                        fprintf(DL_fp, "Report Cnt          : %02d\n", packet->data[2]);
-                        fprintf(DL_fp, "CMD Err Cnt         : %02d\n", packet->data[3]);
-                        fprintf(DL_fp, "Reply Err Cnt       : %02d\n", packet->data[4]);
-                        fprintf(DL_fp, "Trans Err Cnt       : %02d\n", packet->data[5]);
-                        fprintf(DL_fp, "Packet Err Cnt      : %02d\n", packet->data[6]);
-                        fprintf(DL_fp, "Report Err Cnt      : %02d\n", packet->data[7]);
-                        fprintf(DL_fp, "Internal Last Err   : %02d\n", packet->data[8]);
-                        fprintf(DL_fp, "Last CC Reply       : %02d\n", packet->data[9]);
-                        fprintf(DL_fp, "Last Reply Length   : %02d\n", packet->data[10]);
-                        fprintf(DL_fp, "Last Reply Result   : %02d\n", packet->data[11]);
-                        fprintf(DL_fp, "Data                : ");
-                        if(packet->length > 12)
-                        {
-                            for(int i = 12; i < packet->length; i++)
-                                fprintf(DL_fp, "%02d ", packet->data[i]);
+                    console.AddLog("Signal Comming from Port 12.");
+                    if (packet != NULL)
+                        csp_buffer_free(packet);
+                    if (conn != NULL)
+                        csp_close(conn);
+                    break;
+                }
+                //Case 13 : TM Packet Downlink
+                case 13: {
+                    // char dlpktfilename[128] ={0,};
+                    // time_t tmtime = time(0);
+                    // struct tm * local = localtime(&tmtime);
+                    // sprintf(dlpktfilename, "../data/dlpkt/dlpkt--%04d-%02d-%02d-%02d-%02d-%02d--", local->tm_year+1900, local->tm_mon+1, local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
+                    // console.AddLog("Received DL pkt from port : 13");
+                    // FILE * DL_fp;
+                    // DL_fp = fopen(dlpktfilename, "wb");
+                    printf("DL Length: %u\n",packet->length);
+                    if(log_ptr == NULL) {
+                        printf("Invalid file pointer.\n");
+                        continue;
+                    }
+                    fprintf(log_ptr, "Downlink.\n");
+                    for(int i=0; i< packet->length; i++) {
+                        if(!(i%10) && i != 0) {
+                            printf("\n");
+                            fprintf(log_ptr, "\n");
                         }
-                        fprintf(DL_fp, "\n");
+                        printf("0x%x ",packet->data[i]);
+                        fprintf(log_ptr, "%02hhx\t",packet->data[i]);
+                    }
+                    // for(int i = 0; i < packet->length / sizeof(uint32_t); i++)
+                    //     packet->data32[i] = __builtin_bswap32(packet->data32[i]);
+                    // fprintf(DL_fp, "CMD Cnt             : %02d\n", packet->data[0]);
+                    // fprintf(DL_fp, "Reply Cnt           : %02d\n", packet->data[1]);
+                    // fprintf(DL_fp, "Report Cnt          : %02d\n", packet->data[2]);
+                    // fprintf(DL_fp, "CMD Err Cnt         : %02d\n", packet->data[3]);
+                    // fprintf(DL_fp, "Reply Err Cnt       : %02d\n", packet->data[4]);
+                    // fprintf(DL_fp, "Trans Err Cnt       : %02d\n", packet->data[5]);
+                    // fprintf(DL_fp, "Packet Err Cnt      : %02d\n", packet->data[6]);
+                    // fprintf(DL_fp, "Report Err Cnt      : %02d\n", packet->data[7]);
+                    // fprintf(DL_fp, "Internal Last Err   : %02d\n", packet->data[8]);
+                    // fprintf(DL_fp, "Last CC Reply       : %02d\n", packet->data[9]);
+                    // fprintf(DL_fp, "Last Reply Length   : %02d\n", packet->data[10]);
+                    // fprintf(DL_fp, "Last Reply Result   : %02d\n", packet->data[11]);
+                    // fprintf(DL_fp, "Data                : ");
+                    // if(packet->length > 12)
+                    // {
+                    //     for(int i = 12; i < packet->length; i++)
+                    //         fprintf(DL_fp, "%02d ", packet->data[i]);
+                    // }
+                    fprintf(log_ptr, "\n");
                         
 
                     /* Clean up */
@@ -403,41 +432,51 @@ void * task_downlink_onorbit(void * socketinfo)
                         csp_close(conn);
                         conn = NULL;
                     }
-                    if(DL_fp != NULL)
-                    {
-                        fclose(DL_fp);
-                    }
+                    // if(log_ptr != NULL)
+                    // {
+                    //     fclose(DL_fp);
+                    // }
+                    printf("Report DL done.\n");
                     break;
                 }
-                case 13: {
-                    console.AddLog("Signal Comming from Port 13.");
-                    if (packet != NULL)
-                        csp_buffer_free(packet);
-                    if (conn != NULL)
-                        csp_close(conn);
-                    break;
-                }
+                
                 //Case 31 : Beacon
 				case 31: {
-                    if(packet->length == MIM_LEN_BEACON)
-                    {
-                        console.AddLog("Received Beacon from port : %d.", csp_conn_dport(conn));
-                        if(State.Debugmode)
-                        {
-                            printf("Beacon Binary : \n");
-                            for(int i = 0 ; i < packet->length; i++)
-                            {
-                                printf("%x\t", packet->data[i]);
-                            }
+                    char bcnpktfilename[128];
+                    time_t tmtime = time(0);
+                    struct tm * local = localtime(&tmtime);
+                    sprintf(bcnpktfilename, "../data/bcnpkt/bcnpkt--%04d-%02d-%02d-%02d-%02d-%02d--", local->tm_year+1900, local->tm_mon+1, local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
+                    console.AddLog("Received Beacon from port : %d.", csp_conn_dport(conn));
+                    FILE * bcn_fp;
+                    bcn_fp = fopen(bcnpktfilename, "wb");
+                    printf("Beacon Length: %u",packet->length);
+                    for(int i=0; i< packet->length; i++) {
+                        if(!(i%10) && i!=0) {
                             printf("\n");
+                            fprintf(bcn_fp, "\n");
                         }
-                        memcpy(beacon, packet->data, MIM_LEN_BEACON);		
-                        BeaconSaver(beacon);
+                        printf("0x%x ",packet->data[i]);
+                        fprintf(bcn_fp, "%02hhx\t",packet->data[i]);
                     }
-                    else
-                    {
-                        console.AddLog("Received Beacon but brocken.");
-                    }
+                    // if(packet->length == MIM_LEN_BEACON)
+                    // {
+                    //     console.AddLog("Received Beacon from port : %d.", csp_conn_dport(conn));
+                    //     if(State.Debugmode)
+                    //     {
+                    //         printf("Beacon Binary : \n");
+                    //         for(int i = 0 ; i < packet->length; i++)
+                    //         {
+                    //             printf("%x\t", packet->data[i]);
+                    //         }
+                    //         printf("\n");
+                    //     }
+                    //     memcpy(beacon, packet->data, MIM_LEN_BEACON);		
+                    //     //BeaconSaver(beacon);
+                    // }
+                    // else
+                    // {
+                    //     console.AddLog("Received Beacon but brocken.");
+                    // }
 					
 
                     /* Clean up */
@@ -445,6 +484,10 @@ void * task_downlink_onorbit(void * socketinfo)
                         csp_buffer_free(packet);
                     if (conn != NULL)
                         csp_close(conn);
+                    if(bcn_fp != NULL)
+                    {
+                        fclose(bcn_fp);
+                    }
                     break;
 				}
 				default: {
@@ -467,18 +510,18 @@ void * task_downlink_onorbit(void * socketinfo)
 		}
         RSSI_Monitoring();
     }
+    printf("Downlink thread dead.\n");
     packet = NULL;
     conn = NULL;
     free(confirm);
     if (confirm != NULL)
         confirm = NULL;
-    
 }
 void * task_uplink_onorbit(void * sign_)
 {
 
     State.uplink_mode = true;
-    State.downlink_mode = false;
+    //State.downlink_mode = false;
     pthread_mutex_lock(&conn_lock);
     //while(!State.RotatorReadReady)
     //    continue;
@@ -769,7 +812,6 @@ void * task_uplink_onorbit(void * sign_)
             csp_packet_t * confirm_ = (csp_packet_t *)csp_buffer_get(MIM_LEN_PACKET);
             while(State.uplink_mode)
             {
-
                 if ((txconn = csp_connect(CSP_PRIO_HIGH, 28, 12, MIM_DEFAULT_TIMEOUT, 0)) == NULL) {
                 /*!!!!!!!!!!!Revise setup->obc_node!!!!!!!!!!*/ //-> Change to 28.
                 /*!!!!!!!!!!!!Need to revise Port!!!!!!!!!!!*/
@@ -780,10 +822,17 @@ void * task_uplink_onorbit(void * sign_)
             }
             while (State.uplink_mode && txconn != NULL)
             {
-                console.AddLog("[OK]Send Test Packet: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",
+                console.AddLog("[OK]CMD Packet Header: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",
                     packet->data[0],packet->data[1],packet->data[2],packet->data[3],packet->data[4],packet->data[5],packet->data[6],packet->data[7]);
+                fprintf(log_ptr, "Uplink packet. Length: %d\n",packet->length);
+                    for(int i=0; i<packet->length; i++) {
+                        if(!(i%10) && i !=0) {
+                            fprintf(log_ptr, "\n");
+                        }
+                        fprintf(log_ptr, "%02hhx\t",packet->data[i]);
+                    } fprintf(log_ptr,"\n\n");
                 if(csp_send(txconn, packet, setup->default_timeout)) // Success. then,
-                {
+                {   
                     packet = NULL; // discard packet and,
                     break; // End process.
                 }
@@ -952,6 +1001,7 @@ void * task_uplink_onorbit(void * sign_)
     {
         State.downlink_mode = dlstate;
     }
+    State.downlink_mode = true;
     pthread_mutex_unlock(&conn_lock);
 }
 

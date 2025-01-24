@@ -21,7 +21,7 @@
 
 #undef CSP_USE_RDP
 
-
+FILE *log_ptr;
 
 ////Temp
 StateCheckUnit State;
@@ -202,10 +202,18 @@ int main(int, char**)
 
     csp_debug_hook_set((csp_debug_hook_func_t)csp_debug_callback);
 
+    char logfilename[128] ={0,};
+    time_t tmtime = time(0);
+    struct tm * local = localtime(&tmtime);
+    sprintf(logfilename, "../data/HVD_Log/log--%04d-%02d-%02d-%02d-%02d-%02d--", local->tm_year+1900, local->tm_mon+1, local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
+    log_ptr = fopen(logfilename, "wb");
+    if(log_ptr == NULL) {
+        printf("Invalid log file pointer.\n");
+    }
     while(State.AllThread)
     {
         if(State.GUI)
-        {
+        {   
             GUIneedshutdown = true;
             State.GUI = !glfwWindowShouldClose(window);
             glfwPollEvents();
@@ -444,6 +452,7 @@ int main(int, char**)
 
         if (State.AllThread) // "Start" at popup
         {
+            printf("Ending procedure...\n");
             State.TRx_mode = false;
             State.downlink_mode = false;
             State.uplink_mode = false;
@@ -516,6 +525,7 @@ int main(int, char**)
     if(sgs != NULL)
         sgs->finSband();
     sleep(0.5);
+    fclose(log_ptr);
     printf("Finish MIMAN GS.\n");
     return 0;
     

@@ -2160,6 +2160,10 @@ typedef uint16_t                              uint16;
 typedef uint32_t                              uint32;
 typedef uint64_t                              uint64;
 
+
+/*----------------------------------------*/
+/*                   EPS                  */
+/*----------------------------------------*/
 typedef struct {
     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
 } OS_PACK HYVRID_NoArgsCmd_t;
@@ -2271,6 +2275,10 @@ typedef struct {
    bool     ChannelStatus[9];
 } OS_PACK u32bool9_t;
 
+
+/*----------------------------------------*/
+/*                   GRX                  */
+/*----------------------------------------*/
 #define GRX_CMD_OEM_HANDLER_NAME_LEN            16
 
 typedef struct {
@@ -2420,6 +2428,228 @@ typedef struct {
     GRX_LogSetHandlerStatus_t param;
 } NATURALLY_ALIGNED GRX_LogSetHandlerStatusCmd_t;
 
+/*----------------------------------------*/
+/*                  ADCS                  */
+/*----------------------------------------*/
+// ID 2
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint32 unixTimeSeconds;        /**< Current Unix time s  (measurment unit is [s]) */
+    uint32 unixTimeNanoSeconds;    /**< Current Unix time ns  (measurment unit is [ns]. valid range is between 0 ns and 999999999 ns) */
+} OS_PACK ADCS_CurrentUnixTimeCmd_t;
+
+// ID 48
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    float cmdTargetLatitude;     /**< Target latitude command  (measurment unit is [deg]. valid range is between -90 deg and 90 deg) */
+    float cmdTargetLongitude;    /**< Target longitude command  (measurment unit is [deg]. valid range is between -180 deg and 180 deg) */
+    float cmdTargetAltitude;     /**< Target altitude command  (measurment unit is [km]. valid range is between -1000 km and 1000000 km) */
+} OS_PACK ADCS_Reference_LLHTargetCommandCmd_t;
+
+//ID 49
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint32 gnssTimeSeconds;    /**< GNSS Unix time integer seconds  (measurment unit is [s]) */
+    uint32 gnssTimeNs;         /**< GNSS Unix time fraction nanoseconds  (measurment unit is [ns]) */
+    int32 gnssSatPosX;        /**< Satellite position vector X component (GNSS frame)  (measurment unit is [cm]) */
+    int32 gnssSatPosY;        /**< Satellite position vector Y component (GNSS frame)  (measurment unit is [cm]) */
+    int32 gnssSatPosZ;        /**< Satellite position vector Z component (GNSS frame)  (measurment unit is [cm]) */
+    int32 gnssSatVelX;        /**< Satellite velocity vector X component (GNSS frame)  (measurment unit is [cm/s]) */
+    int32 gnssSatVelY;        /**< Satellite velocity vector Y component (GNSS frame)  (measurment unit is [cm/s]) */
+    int32 gnssSatVelZ;        /**< Satellite velocity vector Z component (GNSS frame)  (measurment unit is [cm/s]) */
+    uint8 syncTime;       /**< Flag to indicate if RTC should sync with unix time  */
+} OS_PACK ADCS_GnssMeasurementsCmd_t;
+
+
+// ID 54
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    float cmdRpyRoll;     /**< RPY Roll command  (measurment unit is [deg]. valid range is between -180 deg and 180 deg) */
+    float cmdRpyPitch;    /**< RPY Pitch command  (measurment unit is [deg]. valid range is between -180 deg and 180 deg) */
+    float cmdRpyYaw;      /**< RPY Yaw command  (measurment unit is [deg]. valid range is between -180 deg and 180 deg) */
+} OS_PACK ADCS_ReferenceRPYValueCmd_t;
+
+// ID 55
+typedef struct
+{
+    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    int16 mtq0OnTimeCmd;    /**< MTQ0 open-loop on-time command  (measurment unit is [ms]. valid range is between -1000 ms and 1000 ms) */
+    int16 mtq1OnTimeCmd;    /**< MTQ1 open-loop on-time command  (measurment unit is [ms]. valid range is between -1000 ms and 1000 ms) */
+    int16 mtq2OnTimeCmd;    /**< MTQ2 open-loop on-time command  (measurment unit is [ms]. valid range is between -1000 ms and 1000 ms) */
+} OS_PACK ADCS_OpenLoopCommandMtqCmd_t;
+
+// ID 58
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8 controlMode;
+    uint16 magConTimeout;
+} OS_PACK ADCS_ControlModeCmd_t;
+
+//ID 61
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    float ixx;                 /**< Moment of inertia Ixx  (measurment unit is [kg.m^2]. valid range is between 0 kg.m^2 and 100 kg.m^2) */
+    float iyy;                 /**< Moment of inertia Iyy  (measurment unit is [kg.m^2]. valid range is between 0 kg.m^2 and 100 kg.m^2) */
+    float izz;                 /**< Moment of inertia Izz  (measurment unit is [kg.m^2]. valid range is between 0 kg.m^2 and 100 kg.m^2) */
+    float ixy;                 /**< Product of inertia Ixy  (measurment unit is [kg.m^2]. valid range is between -10 kg.m^2 and 10 kg.m^2) */
+    float ixz;                 /**< Product of inertia Ixz  (measurment unit is [kg.m^2]. valid range is between -10 kg.m^2 and 10 kg.m^2) */
+    float iyz;                 /**< Product of inertia Iyz  (measurment unit is [kg.m^2]. valid range is between -10 kg.m^2 and 10 kg.m^2) */
+    double sunPointBodyVecX;    /**< Sun-pointing body vector X component  */
+    double sunPointBodyVecY;    /**< Sun-pointing body vector Y component  */
+    double sunPointBodyVecZ;    /**< Sun-pointing body vector Z component  */
+    double tgtTrackBodyVecX;    /**< Target-tracking body vector X component  */
+    double tgtTrackBodyVecY;    /**< Target-tracking body vector Y component  */
+    double tgtTrackBodyVecZ;    /**< Target-tracking body vector Z component  */
+} OS_PACK ADCS_ConfigAdcsSatelliteCmd_t;
+
+
+// ID 62
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8 conModeDefault;    /**< Default control mode  */
+    float kd;                                                           /**< Detumbling damping gain (Kd)  (valid range is between 0  and 10000 ) */
+    float kdsun;                                                        /**< Sun-spin control gain (KDsun)  (valid range is between -1000  and 1000 ) */
+    float kdecl;                                                        /**< Sun-spin control gain (KDecl)  (valid range is between -1000  and 1000 ) */
+    float ks;                                                           /**< Detumbling spin gain (Ks)  (valid range is between 0  and 10000 ) */
+    float kdf;                                                          /**< Fast B-dot detumbling gain (Kdf)  (valid range is between 0  and 100 ) */
+    float kn;                                                           /**< Y-momentum nutation damping gain (Kn)  (valid range is between 0  and 10000 ) */
+    float kq;                                                           /**< Y-momentum nutation damping quaternion gain (Kq)  (valid range is between 0  and 10000 ) */
+    float kqx;                                                          /**< X-axis GG nutation damping quaternion gain (Kqx)  (valid range is between 0  and 10000 ) */
+    float kqy;                                                          /**< Y-axis GG nutation damping quaternion gain (Kqy)  (valid range is between 0  and 10000 ) */
+    float kqz;                                                          /**< Z-axis GG nutation damping quaternion gain (Kqz)  (valid range is between 0  and 10000 ) */
+    float kh;                                                           /**< Wheel momentum dumping magnetic control gain (Kh)  (valid range is between 0  and 10000 ) */
+    float kp1;                                                          /**< Y-momentum proportional gain (Kp1)  (valid range is between 0  and 100 ) */
+    float kd1;                                                          /**< Y-momentum derivative gain (Kd1)  (valid range is between 0  and 100 ) */
+    float kp2;                                                          /**< RWheel proportional gain (Kp2)  (valid range is between 0  and 100 ) */
+    float kd2;                                                          /**< RWheel derivative gain (Kd2)  (valid range is between 0  and 100 ) */
+    float kp3;                                                          /**< Tracking proportional gain (Kp3)  (valid range is between 0  and 100 ) */
+    float kd3;                                                          /**< Tracking derivative gain (Kd3)  (valid range is between 0  and 100 ) */
+    float ki3;                                                          /**< Tracking integral gain (Ki3)  (valid range is between 0  and 100 ) */
+    float wy_ref;                                                       /**< Reference spin rate (wy-ref)  (measurment unit is [degps]. valid range is between -5 degps and 5 degps) */
+    float h_ref;                                                        /**< Reference wheel momentum (H-ref). Must always be smaller than 0  (measurment unit is [Nms]. valid range is between -10 Nms and 0 Nms) */
+    float hy_bias;                                                      /**< Y-wheel bias momentum during XYZ-control (Hy-bias)  (measurment unit is [Nms]. valid range is between -10 Nms and 10 Nms) */
+    float wSunYawRef;                                                   /**< Reference spin rate for ConSunYawSpin RW control  (measurment unit is [degps]. valid range is between -20 degps and 20 degps) */
+    float sunKeepoutAng;                                                /**< Sun keep-out angle  (measurment unit is [deg]. valid range is between 0 deg and 90 deg) */
+    float rollLimit;                                                    /**< Limit roll angle in ConRollSun and ConRollTarget  (measurment unit is [deg]. valid range is between 0 deg and 180 deg) */
+    bool yawCompensate;                                            /**< Perform yaw compensation for earth rotation in 3-axis RPY control  */
+    bool sunTrackEclEn;                                            /**< Enable sun tracking during eclipse when using ConSunTrack  */
+    bool sunAvoidEn;                                               /**< Enable sun avoidance  */
+} OS_PACK ADCS_ControllerConfigurationCmd_t;
+
+// ID 63
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    float offset1;         /**< Magnetometer channel 1 offset  */
+    float offset2;         /**< Magnetometer channel 2 offset  */
+    float offset3;         /**< Magnetometer channel 3 offset  */
+    float sensMatrix11;    /**< Magnetometer sensitivity matrix S11  */
+    float sensMatrix22;    /**< Magnetometer sensitivity matrix S22  */
+    float sensMatrix33;    /**< Magnetometer sensitivity matrix S33  */
+} OS_PACK ADCS_ConfigMag0OrbitCalCmd_t;
+
+// ID 65
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8 mountStackX;          /**< StackX mounting  */
+    uint8 mountStackY;          /**< StackY mounting  */
+    uint8 mountStackZ;          /**< StackZ mounting  */
+    uint8 mountMtq0;            /**< MTQ0 mounting  */
+    uint8 mountMtq1;            /**< MTQ1 mounting  */
+    uint8 mountMtq2;            /**< MTQ2 mounting  */
+    uint8 mountRwl0;            /**< Wheel0 mounting  */
+    uint8 mountRwl1;            /**< Wheel1 mounting  */
+    uint8 mountRwl2;            /**< Wheel2 mounting  */
+    uint8 mountCss0;            /**< CSS0 mounting  */
+    uint8 mountCss1;            /**< CSS1 mounting  */
+    uint8 mountCss2;            /**< CSS2 mounting  */
+    uint8 mountCss3;            /**< CSS3 mounting  */
+    uint8 mountCss4;            /**< CSS4 mounting  */
+    uint8 mountCss5;            /**< CSS5 mounting  */
+    uint8 mountCss6;            /**< CSS6 mounting  */
+    uint8 mountCss7;            /**< CSS7 mounting  */
+    uint8 mountCss8;            /**< CSS8 mounting  */
+    uint8 mountCss9;            /**< CSS9 mounting  */
+    double mountFss0Alpha;                                               /**< FSS0 mounting alpha angle  (measurment unit is [deg]) */
+    double mountFss0Beta;                                                /**< FSS0 mounting beta angle  (measurment unit is [deg]) */
+    double mountFss0Gamma;                                               /**< FSS0 mounting gamma angle  (measurment unit is [deg]) */
+    double mountHss0Alpha;                                               /**< HSS0 mounting alpha angle  (measurment unit is [deg]) */
+    double mountHss0Beta;                                                /**< HSS0 mounting beta angle  (measurment unit is [deg]) */
+    double mountHss0Gamma;                                               /**< HSS0 mounting gamma angle  (measurment unit is [deg]) */
+    double mountMag0Alpha;                                               /**< MAG0 mounting alpha angle  (measurment unit is [deg]) */
+    double mountMag0Beta;                                                /**< MAG0 mounting beta angle  (measurment unit is [deg]) */
+    double mountMag0Gamma;                                               /**< MAG0 mounting gamma angle  (measurment unit is [deg]) */
+} OS_PACK ADCS_MountingConfigurationCmd_t;
+
+//ID 67
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8 estModeMainDefault;      /**< Default main estimator mode  */
+    uint8 estModeBackupDefault;    /**< Default backup estimator mode  */
+    bool ekfUseFss;                                                      /**< Use fine sun sensor measurements in EKF  */
+    bool ekfUseHss;                                                      /**< Use horizon sensor measurements in EKF  */
+} OS_PACK ADCS_EstimatorConfigurationCmd_t;
+
+// ID 68
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    double orbitEpoch;    /**< Orbit epoch  (measurment unit is [yyddd.ssssssss]. valid range is between 0 yyddd.ssssssss and 100000 yyddd.ssssssss) */
+    double orbitIncl;     /**< Orbit inclination  (measurment unit is [deg]. valid range is between 0 deg and 180 deg) */
+    double orbitRaan;     /**< Orbit RAAN  (measurment unit is [deg]. valid range is between 0 deg and 360 deg) */
+    double orbitEccen;    /**< Orbit eccentricity  (valid range is between 0  and 1 ) */
+    double orbitAP;       /**< Orbit argument of perigee  (measurment unit is [deg]. valid range is between 0 deg and 360 deg) */
+    double orbitMA;       /**< Orbit mean anomaly  (measurment unit is [deg]. valid range is between 0 deg and 360 deg) */
+    double orbitMM;       /**< Orbit mean motion  (measurment unit is [orbits/day]. valid range is between 0 orbits/day and 20 orbits/day) */
+    double orbitBstar;    /**< Orbit B-star drag term  (valid range is between 0  and 1 ) */
+} OS_PACK ADCS_ConfigOrbitSatParamsCmd_t;
+
+// ID 69
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8 selectRwl;     /**< RWL selection flags  */
+    uint8 selectMag;     /**< MAG selection flags  */
+    uint8 selectFss;     /**< FSS selection flags  */
+    uint8 selectHss;     /**< HSS selection flags  */
+    uint8 selectGyro;    /**< GYR selection flags  */
+    uint8 selectGnss;    /**< GNSS selection flags  */
+} OS_PACK ADCS_NodeSelectionCmd_t;
+
+// ID 70
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    float mtq0Mmax;     /**< MTQ0 maximum dipole moment  (measurment unit is [A.m^2]. valid range is between 0 A.m^2 and 400 A.m^2) */
+    float mtq1Mmax;     /**< MTQ1 maximum dipole moment  (measurment unit is [A.m^2]. valid range is between 0 A.m^2 and 400 A.m^2) */
+    float mtq2Mmax;     /**< MTQ2 maximum dipole moment  (measurment unit is [A.m^2]. valid range is between 0 A.m^2 and 400 A.m^2) */
+    uint16 onTimeMax;    /**< Maximum magnetorquer on-time  (measurment unit is [ms]) */
+    uint16 onTimeMin;    /**< Minimum magnetorquer on-time  (measurment unit is [ms]) */
+    float mtqFfac;      /**< LPF factor for magnetorquer commands. Set to zero for no filtering  (valid range is between 0  and 1 ) */
+} OS_PACK ADCS_MtqConfigCmd_t;
+
+//ID 71
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8 estModeMain;      /**< Main estimator mode  */
+    uint8 estModeBackup;    /**< Backup estimator mode  */
+} OS_PACK ADCS_EstimationModeCmd_t;
+
+// ID 74
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    float rwl0SpeedCmd;    /**< RWL0 open-loop speed command  (valid range is between -10000  and 10000 ) */
+    float rwl1SpeedCmd;    /**< RWL1 open-loop speed command  (valid range is between -10000  and 10000 ) */
+    float rwl2SpeedCmd;    /**< RWL2 open-loop speed command  (valid range is between -10000  and 10000 ) */
+} OS_PACK ADCS_OpenLoopCommandRwlCmd_t;
+
+// ID 76
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    float hx;    /**< X-momentum open-loop speed command  (measurment unit is [Nm]. valid range is between -0.1 Nm and 0.1 Nm) */
+    float hy;    /**< Y-momentum open-loop speed command  (measurment unit is [Nm]. valid range is between -0.1 Nm and 0.1 Nm) */
+    float hz;    /**< Z-momentum open-loop speed command  (measurment unit is [Nm]. valid range is between -0.1 Nm and 0.1 Nm) */
+} OS_PACK ADCS_OpenLoopCommandHxyzRwCmd_t;
+/*----------------------------*/
+/*---- < End of ADCS > -------*/
+/*----------------------------*/
+
 typedef struct {
     //eps unusual case
     u32u8bool_t u32u8bool;
@@ -2431,6 +2661,7 @@ typedef struct {
     u32bool13_t u32bool13;
     u32bool9_t u32bool9;
 
+    //grx
     GRX_AssemblePublishCmd_t grxassemblepublishcmd;
     GRX_CmdLOGCmd_t grxcmdlogcmd;
     GRX_CmdLogOnTimeCmd_t grxcmdlogontimecmd;
@@ -2446,135 +2677,25 @@ typedef struct {
     GRX_LogAddCallbackCmd_t grxlogaddcallbackcmd;
     GRX_LogSetHandlerStatusCmd_t grxlogsethandlerstatuscmd;
 
-    // ADCS_SetParamScCmd_t adcs_setparamsccmd;
-    // ADCS_SetParamTleCmd_t adcs_setparamtlecmd;
-    // ADCS_SetParamAuxCmd_t adcs_setparamauxcmd;
-    // ADCS_SetParamTargetCmd_t adcs_setparamtargetcmd;
-    // ADCS_SetParamGainCmd_t adcs_setparamgaincmd;
-    // ADCS_NoArgsCmd_t adcs_noargscmd;
-
-    // EPS_SetConfigurationParameterCmd_t eps_setconfig;
-    // EPS_ResetConfigurationParamterCmd_t eps_resetconfig;
-    // EPS_CorrectTimeCmd_t eps_correcttimecmd;
-    // EPS_OutputBusGroupOnCmd_t eps_outputbusgrouponcmd;
-    // EPS_OutputBusGroupOffCmd_t eps_outputbusgroupoffcmd;
-    // EPS_OutputBusGroupStateCmd_t eps_outputbusgroupstatecmd;
-    // EPS_OutputBusChannelOnCmd_t eps_outputbuschanneloncmd;
-    // EPS_OutputBusChannelOffCmd_t eps_outputbuschanneloffcmd;
-    // EPS_NoArgsCmd_t eps_noargscmd;
-
-    // FM_ResetAppCmd_t fm_resetappcmd;
-    // FM_ModeTransferCmd_t fm_modetransfercmd;
-    // FM_SetOperationModeCmd_t fm_setoperationmodecmd;
-    // FM_SetCommissioningPhaseCmd_t fm_setcommissioningphasecmd;
-    // FM_SetSpacecraftTimeCmd_t fm_setspacecrafttimecmd;
-    // FM_SetAntennaDeployFlagCmd_t fm_setantennadeployflagcmd;
-    // FM_SetDaylightDetectionFlagCmd_t fm_setdaylightdetectionflagcmd;
-    // FM_SetCommMissingFlagCmd_t fm_setcommmissingflagcmd;
-    // FM_NoArgsCmd_t fm_noargscmd;
-
-    // GPS_LogOnceCmd_t gps_logoncecmd;
-    // GPS_LogOntimeCmd_t gps_logontimecmd;
-    // GPS_LogOnChangeCmd_t gps_logonchangecmd;
-    // GPS_NoArgsCmd_t gps_noargscmd;
-
-    // MTQ_ResetCompCmd_t mtq_resetcompcmd;
-    // MTQ_EnableCmd_t mtq_enablecmd;
-    // MTQ_DisableCmd_t mtq_disablecmd;
-    // MTQ_SetPolarityCmd_t mtq_setpolaritycmd;
-    // MTQ_SetDutyCmd_t mtq_setdutycmd;
-    // MTQ_SetPeriodCmd_t mtq_setperiodcmd;
-    // MTQ_NoArgsCmd_t mtq_noargscmd;
-
-    // RWA_ResetWheelCmd_t rwa_resetwheelcmd;
-    // RWA_ClearErrorsCmd_t rwa_clearerrorscmd; 
-    // RWA_SetMotorPowerStateCmd_t rwa_setmotorpowerstatecmd;
-    // RWA_SetEncoderPowerStateCmd_t rwa_setencoderpowerstatecmd;
-    // RWA_SetHallPowerStateCmd_t rwa_sethallpowerstatecmd;
-    // RWA_SetControlModeCmd_t rwa_setcontrolmodecmd;
-    // RWA_SetBackupWheelModeCmd_t rwa_setbackupwheelmodecmd;
-    // RWA_SetWheelReferenceSpeedCmd_t rwa_setwheelreferencespeedcmd;
-    // RWA_SetWheelCommandedTorqueCmd_t rwa_setwheelcommandedtorquecmd;
-    // RWA_SetPwmGainCmd_t rwa_setpwmgaincmd;
-    // RWA_SetMainGainCmd_t rwa_setmaingaincmd;
-    // RWA_SetBackupGainCmd_t rwa_setbackupgaincmd;
-    // RWA_SetWheelReferenceSpeedAllAxisCmd_t rwa_setwheelreferencespeedallaxiscmd;
-    // RWA_NoArgsCmd_t rwa_noargscmd;
-
-    // PAY_CamDownloadOldImgCmd_t pay_camdownloadoldimgcmd;
-    // PAY_CamSendNoargCmd_t pay_camsendnoargcmd;
-    // PAY_CamSetExposureCmd_t pay_camsetexposurecmd;
-    // PAY_CamSetScpdCmd_t pay_camsetscpdcmd;
-    // PAY_NoArgsCmd_t pay_noargscmd;
-
-    // SNSR_STT_BootCmd_t snsr_stt_bootcmd;
-    // SNSR_STT_PingCmd_t snsr_stt_pingcmd;
-    // SNSR_STT_InitDeviceCmd_t snsr_stt_initdevicecmd;
-    // SNSR_STT_UnlockCmd_t snsr_stt_unlockcmd;
-    // SNSR_STT_SetParamCmd_t snsr_stt_setparamcmd;
-    // SNSR_STT_SendRS485Cmd_t snsr_stt_sendrs485cmd;
-    // SNSR_MMT_SetInternalControl0Cmd_t snsr_mmt_setinternalcontrol0cmd;
-    // SNSR_MMT_SetInternalControl2Cmd_t snsr_mmt_setinternalcontrol2cmd;
-    // SNSR_MMT_WriteToRegisterCmd_t snsr_mmt_writetoregistercmd;
-    // SNSR_IMU_SetGyroOffsetCmd_t snsr_imu_setgyrooffsetcmd;
-    // SNSR_IMU_SetConfigurationCmd_t snsr_imu_setconfigurationcmd;
-    // SNSR_IMU_SetGyroConfigurationCmd_t snsr_imu_setgyroconfigurationcmd;
-    // SNSR_IMU_SetAccelConfigurationCmd_t snsr_imu_setaccelconfigurationcmd;
-    // SNSR_IMU_SetAccelConfiguration2Cmd_t snsr_imu_setaccelconfiguration2cmd;
-    // SNSR_IMU_SetPowerManagement1Cmd_t snsr_imu_setpowermanagement1cmd;
-    // SNSR_IMU_WriteToRegisterCmd_t snsr_imu_writetoregistercmd;
-    // SNSR_FSS_IsolateCmd_t snsr_fss_isolatedcmd;
-    // SNSR_FSS_RestoreCmd_t snsr_fss_restorecmd;
-    // SNSR_CSS_IsolateCmd_t snsr_css_isolatedcmd;
-    // SNSR_CSS_RestoreCmd_t snsr_css_restorecmd;
-    // SNSR_NoArgsCmd_t snsr_noargscmd;
-
-    // STX_TransmitDataCmd_t stx_transmitdatacmd;
-    // STX_SetControlModeCmd_t stx_setcontrolmodecmd;
-    // STX_SetEncoderRateCmd_t stx_setencoderratecmd;
-    // STX_SetPaPowerCmd_t stx_setpapowercmd;
-    // STX_SetSynthOffsetCmd_t stx_setsynthoffsetcmd;
-    // STX_TransmitFileCmd_t stx_transmitfilecmd;
-    // STX_TransmitFileLongPathCmd_t stx_transmitfilelongpathcmd;
-    // STX_NoArgsCmd_t stx_noargscmd;
-
-    // TO_DownlinkQueryReplyCmd_Payload_t to_downlinkqueryreplypayloadcmd;
-    // TO_DownlinkQueryReplyCmd_t to_downlinkqueryreplycmd;
-    // TO_NoArgsCmd_t to_noargscmd;
-    // TO_DisableBeaconCmd_t to_disablebeaconcmd;
-
-    // UTRX_SetTxFreqCmd_t utrx_settxfreqcmd;
-    // UTRX_SetTxBaudCmd_t utrx_settxbaudcmd;
-    // UTRX_SetTxModIndexCmd_t utrx_settxmodindex;
-    // UTRX_SetTxModeCmd_t utrx_settxmodecmd;
-    // UTRX_SetRxFreqCmd_t utrx_setrxfreqcmd;
-    // UTRX_SetRxBaudCmd_t utrx_setrxbaudcmd;
-    // UTRX_SetRxModIndexCmd_t utrx_setrxmodindexcmd;
-    // UTRX_SetRxModeCmd_t utrx_setrxmodecmd;
-    // UTRX_SetRxBandwidthCmd_t utrx_setrxbandwidthcmd;
-    // UTRX_NoArgsCmd_t utrx_noargscmd;
-
-    // TS_InsertScheduleEntryCmd_t ts_insertscheduleentrycmd;
-    // TS_ClearScheduleEntryCmd_t ts_clearscheduleentrycmd;
-    // TS_ClearScheduleGroupCmd_t ts_clearschedulegroupcmd;
-    // TS_NoArgsCmd_t ts_noargscmd;
-
-    // ECM_GetHKAvgCmd_t ecm_gethkavgcmd;
-    // ECM_GetSystemStatusCmd_t ecm_getsystemstatuscmd;
-    // ECM_GetOcfStateCmd_t ecm_getocfstatecmd;
-    // ECM_Read_t ecm_readcmd;
-    // ECM_NoArgsCmd_t ecm_noargscmd;
-
-    // CFE_ES_RestartCmd_t es_restartcmd;
-    // CFE_ES_AppNameCmd_t es_restartappcmd;
-    // CFE_ES_StopAppCmd_t es_stopappcmd;
-    // CFE_ES_StartAppCmd_t es_startappcmd;
-    // CFE_ES_NoArgsCmd_t es_noargscmd;
+    /* ADCS */
+    ADCS_CurrentUnixTimeCmd_t adcs_Unixtime;
+    ADCS_Reference_LLHTargetCommandCmd_t adcs_RefLLHTarget;
+    ADCS_GnssMeasurementsCmd_t adcs_GnssMeasurements;
+    ADCS_ReferenceRPYValueCmd_t adcs_RefRPY;
+    ADCS_OpenLoopCommandMtqCmd_t adcs_OpenLoopCmdMtq;
+    ADCS_ControlModeCmd_t adcs_ControlMode;
+    ADCS_ConfigAdcsSatelliteCmd_t adcs_ConfigAdcsSat;
+    ADCS_ControllerConfigurationCmd_t adcs_ControllerConfig;
+    ADCS_ConfigMag0OrbitCalCmd_t adcs_ConfigMag0OrbitCal;
+    ADCS_MountingConfigurationCmd_t adcs_MountingConfig;
+    ADCS_EstimatorConfigurationCmd_t adcs_EstimatorConfig;
+    ADCS_ConfigOrbitSatParamsCmd_t adcs_ConfigOrbitSatParams;
+    ADCS_NodeSelectionCmd_t adcs_NodeSelection;
+    ADCS_MtqConfigCmd_t adcs_MtqConfig;
+    ADCS_EstimationModeCmd_t adcs_EstMode;
+    ADCS_OpenLoopCommandRwlCmd_t adcs_OpenLoopCmdRwl;
+    ADCS_OpenLoopCommandHxyzRwCmd_t adcs_OpenLoopCmdHxyzRw;
     
-
-    // SCH_EntryCmd_t sch_enablecmd;
-    // SCH_EntryCmd_t sch_disablecmd;
-    // SCH_NoArgsCmd_t sch_noargscmd;
 }__attribute__((packed)) Command;
 
 typedef struct __attribute__ ((packed)) {
