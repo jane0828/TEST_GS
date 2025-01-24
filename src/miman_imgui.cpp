@@ -1912,7 +1912,601 @@ void ImGui_ControlWindow(float fontscale)
                 //                command->u32bool9.Timeout, command->u32bool9.ItemSize, command->u32bool9.ItemCount, command->u32bool9.Node, command->u32bool9.TableId, command->u32bool9.Address, command->u32bool9.Type);
                 break;
             }
+            case 18: { //grx assemblepublishcmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
+                ImGui::InputScalar("mid",ImGuiDataType_S16, &command->grxassemblepublishcmd.param.mid);
+                ImGui::InputScalar("bodylength",ImGuiDataType_S16, &command->grxassemblepublishcmd.param.bodylength);
+                ImGui::InputText("body (??)", (char *)&command->grxassemblepublishcmd.param.body,sizeof(command->grxassemblepublishcmd.param.body));
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_AssemblePublishCmd_t)};
+                    memcpy(command->grxassemblepublishcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxassemblepublishcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxassemblepublishcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxassemblepublishcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_AssemblePublishCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_AssemblePublishCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_AssemblePublishCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxassemblepublishcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxassemblepublishcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxassemblepublishcmd, sizeof(GRX_AssemblePublishCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxassemblepublishcmd.CmdHeader[0],
+                //                command->grxassemblepublishcmd.CmdHeader[1], command->grxassemblepublishcmd.CmdHeader[2], command->grxassemblepublishcmd.CmdHeader[3], command->grxassemblepublishcmd.CmdHeader[4], command->grxassemblepublishcmd.CmdHeader[5], command->grxassemblepublishcmd.CmdHeader[6], command->grxassemblepublishcmd.CmdHeader[7],
+                //                command->grxassemblepublishcmd.Timeout, command->grxassemblepublishcmd.ItemSize, command->grxassemblepublishcmd.ItemCount, command->grxassemblepublishcmd.Node, command->grxassemblepublishcmd.TableId, command->grxassemblepublishcmd.Address, command->grxassemblepublishcmd.Type);
+                break;
+            }
+            case 19: { //grx cmdlog
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogcmd.param.msgId);
+                ImGui::InputScalar("type",ImGuiDataType_U8, &command->grxcmdlogcmd.param.type);
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogcmd.param.port);
+                ImGui::InputScalar("trigger", ImGuiDataType_U32, &command->grxcmdlogcmd.param.trigger);
+                ImGui::InputScalar("hold", ImGuiDataType_U32, &command->grxcmdlogcmd.param.hold);
+                ImGui::InputScalar("period", ImGuiDataType_Double, &command->grxcmdlogcmd.param.period);
+                ImGui::InputScalar("offset", ImGuiDataType_Double, &command->grxcmdlogcmd.param.offset);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLOGCmd_t)};
+                    memcpy(command->grxcmdlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLOGCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdLOGCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdLOGCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdlogcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdlogcmd, sizeof(GRX_CmdLOGCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogcmd.CmdHeader[0],
+                //                command->grxcmdlogcmd.CmdHeader[1], command->grxcmdlogcmd.CmdHeader[2], command->grxcmdlogcmd.CmdHeader[3], command->grxcmdlogcmd.CmdHeader[4], command->grxcmdlogcmd.CmdHeader[5], command->grxcmdlogcmd.CmdHeader[6], command->grxcmdlogcmd.CmdHeader[7],
+                //                command->grxcmdlogcmd.Timeout, command->grxcmdlogcmd.ItemSize, command->grxcmdlogcmd.ItemCount, command->grxcmdlogcmd.Node, command->grxcmdlogcmd.TableId, command->grxcmdlogcmd.Address, command->grxcmdlogcmd.Type);
+                break;
+            }
+            case 20: { //grx cmdlogontime
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogontimecmd.param.msgId);
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogontimecmd.param.port);
+                ImGui::InputScalar("period", ImGuiDataType_Double, &command->grxcmdlogontimecmd.param.period);
+                ImGui::InputScalar("offset", ImGuiDataType_Double, &command->grxcmdlogontimecmd.param.offset);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnTimeCmd_t)};
+                    memcpy(command->grxcmdlogontimecmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogontimecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogontimecmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogontimecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnTimeCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdLogOnTimeCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdLogOnTimeCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogontimecmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdlogontimecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdlogontimecmd, sizeof(GRX_CmdLogOnTimeCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogontimecmd.CmdHeader[0],
+                //                command->grxcmdlogontimecmd.CmdHeader[1], command->grxcmdlogontimecmd.CmdHeader[2], command->grxcmdlogontimecmd.CmdHeader[3], command->grxcmdlogontimecmd.CmdHeader[4], command->grxcmdlogontimecmd.CmdHeader[5], command->grxcmdlogontimecmd.CmdHeader[6], command->grxcmdlogontimecmd.CmdHeader[7],
+                //                command->grxcmdlogontimecmd.Timeout, command->grxcmdlogontimecmd.ItemSize, command->grxcmdlogontimecmd.ItemCount, command->grxcmdlogontimecmd.Node, command->grxcmdlogontimecmd.TableId, command->grxcmdlogontimecmd.Address, command->grxcmdlogontimecmd.Type);
+                break;
+            }
+            case 21: { //grxcmdlogonchanged
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogonchangedcmd.param.msgId);
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogonchangedcmd.param.port);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnChangedCmd_t)};
+                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnChangedCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdLogOnChangedCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdLogOnChangedCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogonchangedcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdlogonchangedcmd, sizeof(GRX_CmdLogOnChangedCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogonchangedcmd.CmdHeader[0],
+                //                command->grxcmdlogonchangedcmd.CmdHeader[1], command->grxcmdlogonchangedcmd.CmdHeader[2], command->grxcmdlogonchangedcmd.CmdHeader[3], command->grxcmdlogonchangedcmd.CmdHeader[4], command->grxcmdlogonchangedcmd.CmdHeader[5], command->grxcmdlogonchangedcmd.CmdHeader[6], command->grxcmdlogonchangedcmd.CmdHeader[7],
+                //                command->grxcmdlogonchangedcmd.Timeout, command->grxcmdlogonchangedcmd.ItemSize, command->grxcmdlogonchangedcmd.ItemCount, command->grxcmdlogonchangedcmd.Node, command->grxcmdlogonchangedcmd.TableId, command->grxcmdlogonchangedcmd.Address, command->grxcmdlogonchangedcmd.Type);
+                break;
+            }
+            case 22: { //grxcmdlogonnew
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogonnewcmd.param.msgId);
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogonnewcmd.param.port);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnNewCmd_t)};
+                    memcpy(command->grxcmdlogonnewcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogonnewcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogonnewcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdlogonnewcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnNewCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdLogOnNewCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdLogOnNewCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogonnewcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdlogonnewcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdlogonnewcmd, sizeof(GRX_CmdLogOnNewCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogonnewcmd.CmdHeader[0],
+                //                command->grxcmdlogonnewcmd.CmdHeader[1], command->grxcmdlogonnewcmd.CmdHeader[2], command->grxcmdlogonnewcmd.CmdHeader[3], command->grxcmdlogonnewcmd.CmdHeader[4], command->grxcmdlogonnewcmd.CmdHeader[5], command->grxcmdlogonnewcmd.CmdHeader[6], command->grxcmdlogonnewcmd.CmdHeader[7],
+                //                command->grxcmdlogonnewcmd.Timeout, command->grxcmdlogonnewcmd.ItemSize, command->grxcmdlogonnewcmd.ItemCount, command->grxcmdlogonnewcmd.Node, command->grxcmdlogonnewcmd.TableId, command->grxcmdlogonnewcmd.Address, command->grxcmdlogonnewcmd.Type);
+                break;
+            }
+            case 23: { //grxcmdunlogcmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdunlogcmd.param.msgId);
+                ImGui::InputScalar("msgtype",ImGuiDataType_U8, &command->grxcmdunlogcmd.param.msgType);
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdunlogcmd.param.port);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogCmd_t)};
+                    memcpy(command->grxcmdunlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdunlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdunlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdunlogcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdUnlogCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdUnlogCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdUnlogCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdunlogcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdunlogcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdunlogcmd, sizeof(GRX_CmdUnlogCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdunlogcmd.CmdHeader[0],
+                //                command->grxcmdunlogcmd.CmdHeader[1], command->grxcmdunlogcmd.CmdHeader[2], command->grxcmdunlogcmd.CmdHeader[3], command->grxcmdunlogcmd.CmdHeader[4], command->grxcmdunlogcmd.CmdHeader[5], command->grxcmdunlogcmd.CmdHeader[6], command->grxcmdunlogcmd.CmdHeader[7],
+                //                command->grxcmdunlogcmd.Timeout, command->grxcmdunlogcmd.ItemSize, command->grxcmdunlogcmd.ItemCount, command->grxcmdunlogcmd.Node, command->grxcmdunlogcmd.TableId, command->grxcmdunlogcmd.Address, command->grxcmdunlogcmd.Type);
+                break;
+            }
+            case 24: { //grxcmdunlogallcmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdunlogallcmd.param.port);
+                ImGui::Checkbox("held",&command->grxcmdunlogallcmd.param.held);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogAllCmd_t)};
+                    memcpy(command->grxcmdunlogallcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdunlogallcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdunlogallcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdunlogallcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdUnlogAllCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdUnlogAllCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdUnlogAllCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdunlogallcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdunlogallcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdunlogallcmd, sizeof(GRX_CmdUnlogAllCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdunlogallcmd.CmdHeader[0],
+                //                command->grxcmdunlogallcmd.CmdHeader[1], command->grxcmdunlogallcmd.CmdHeader[2], command->grxcmdunlogallcmd.CmdHeader[3], command->grxcmdunlogallcmd.CmdHeader[4], command->grxcmdunlogallcmd.CmdHeader[5], command->grxcmdunlogallcmd.CmdHeader[6], command->grxcmdunlogallcmd.CmdHeader[7],
+                //                command->grxcmdunlogallcmd.Timeout, command->grxcmdunlogallcmd.ItemSize, command->grxcmdunlogallcmd.ItemCount, command->grxcmdunlogallcmd.Node, command->grxcmdunlogallcmd.TableId, command->grxcmdunlogallcmd.Address, command->grxcmdunlogallcmd.Type);
+                break;
+            }
+            case 25: { //grxcmdelevationcutoffcmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("constellation", ImGuiDataType_U32, &command->grxcmdelevationcutoffcmd.param.constellation);
+                ImGui::InputScalar("cutoff", ImGuiDataType_Float, &command->grxcmdelevationcutoffcmd.param.cutoff);
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdElevationCutoffCmd_t)};
+                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdElevationCutoffCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdElevationCutoffCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdElevationCutoffCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdelevationcutoffcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdelevationcutoffcmd, sizeof(GRX_CmdElevationCutoffCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdelevationcutoffcmd.CmdHeader[0],
+                //                command->grxcmdelevationcutoffcmd.CmdHeader[1], command->grxcmdelevationcutoffcmd.CmdHeader[2], command->grxcmdelevationcutoffcmd.CmdHeader[3], command->grxcmdelevationcutoffcmd.CmdHeader[4], command->grxcmdelevationcutoffcmd.CmdHeader[5], command->grxcmdelevationcutoffcmd.CmdHeader[6], command->grxcmdelevationcutoffcmd.CmdHeader[7],
+                //                command->grxcmdelevationcutoffcmd.Timeout, command->grxcmdelevationcutoffcmd.ItemSize, command->grxcmdelevationcutoffcmd.ItemCount, command->grxcmdelevationcutoffcmd.Node, command->grxcmdelevationcutoffcmd.TableId, command->grxcmdelevationcutoffcmd.Address, command->grxcmdelevationcutoffcmd.Type);
+                break;
+            }
+            case 26: { //grxcmdinterfacemodecmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.port);
+                ImGui::InputScalar("rxtype", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.rxType);
+                ImGui::InputScalar("txtype", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.txType);
+                ImGui::InputScalar("response", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.responses);
+                
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdInterfaceModeCmd_t)};
+                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdInterfaceModeCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdInterfaceModeCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdInterfaceModeCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdinterfacemodecmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdinterfacemodecmd, sizeof(GRX_CmdInterfaceModeCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdinterfacemodecmd.CmdHeader[0],
+                //                command->grxcmdinterfacemodecmd.CmdHeader[1], command->grxcmdinterfacemodecmd.CmdHeader[2], command->grxcmdinterfacemodecmd.CmdHeader[3], command->grxcmdinterfacemodecmd.CmdHeader[4], command->grxcmdinterfacemodecmd.CmdHeader[5], command->grxcmdinterfacemodecmd.CmdHeader[6], command->grxcmdinterfacemodecmd.CmdHeader[7],
+                //                command->grxcmdinterfacemodecmd.Timeout, command->grxcmdinterfacemodecmd.ItemSize, command->grxcmdinterfacemodecmd.ItemCount, command->grxcmdinterfacemodecmd.Node, command->grxcmdinterfacemodecmd.TableId, command->grxcmdinterfacemodecmd.Address, command->grxcmdinterfacemodecmd.Type);
+                break;
+            }
+            case 27: { //grxcmdserialconfigcmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.port);
+                ImGui::InputScalar("baud", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.baud);
+                ImGui::InputScalar("parity", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.parity);
+                ImGui::InputScalar("databits", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.databits);
+                ImGui::InputScalar("stopbits", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.stopbits);
+                ImGui::InputScalar("handshake", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.handshake);
+                ImGui::InputScalar("break", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param._break);
+                
+
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_CmdSerialConfigCmd_t)};
+                    memcpy(command->grxcmdserialconfigcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxcmdserialconfigcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxcmdserialconfigcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxcmdserialconfigcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdSerialConfigCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_CmdSerialConfigCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_CmdSerialConfigCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdserialconfigcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxcmdserialconfigcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxcmdserialconfigcmd, sizeof(GRX_CmdSerialConfigCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdserialconfigcmd.CmdHeader[0],
+                //                command->grxcmdserialconfigcmd.CmdHeader[1], command->grxcmdserialconfigcmd.CmdHeader[2], command->grxcmdserialconfigcmd.CmdHeader[3], command->grxcmdserialconfigcmd.CmdHeader[4], command->grxcmdserialconfigcmd.CmdHeader[5], command->grxcmdserialconfigcmd.CmdHeader[6], command->grxcmdserialconfigcmd.CmdHeader[7],
+                //                command->grxcmdserialconfigcmd.Timeout, command->grxcmdserialconfigcmd.ItemSize, command->grxcmdserialconfigcmd.ItemCount, command->grxcmdserialconfigcmd.Node, command->grxcmdserialconfigcmd.TableId, command->grxcmdserialconfigcmd.Address, command->grxcmdserialconfigcmd.Type);
+                break;
+            }
+            case 28: { //grxlogresisterhandlercmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogresisterhandlercmd.param.id);
+                ImGui::InputScalar("mlen", ImGuiDataType_U16, &command->grxlogresisterhandlercmd.param.mlen);
+            
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogRegisterHandlerCmd_t)};
+                    memcpy(command->grxlogresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxlogresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxlogresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxlogresisterhandlercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogRegisterHandlerCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_LogRegisterHandlerCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_LogRegisterHandlerCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxlogresisterhandlercmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxlogresisterhandlercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxlogresisterhandlercmd, sizeof(GRX_LogRegisterHandlerCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxlogresisterhandlercmd.CmdHeader[0],
+                //                command->grxlogresisterhandlercmd.CmdHeader[1], command->grxlogresisterhandlercmd.CmdHeader[2], command->grxlogresisterhandlercmd.CmdHeader[3], command->grxlogresisterhandlercmd.CmdHeader[4], command->grxlogresisterhandlercmd.CmdHeader[5], command->grxlogresisterhandlercmd.CmdHeader[6], command->grxlogresisterhandlercmd.CmdHeader[7],
+                //                command->grxlogresisterhandlercmd.Timeout, command->grxlogresisterhandlercmd.ItemSize, command->grxlogresisterhandlercmd.ItemCount, command->grxlogresisterhandlercmd.Node, command->grxlogresisterhandlercmd.TableId, command->grxlogresisterhandlercmd.Address, command->grxlogresisterhandlercmd.Type);
+                break;
+            }
+            case 29: { //grxlogunresisterhandlercmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogunresisterhandlercmd.id);
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogUnregisterHandlerCmd_t)};
+                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogUnregisterHandlerCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_LogUnregisterHandlerCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_LogUnregisterHandlerCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxlogunresisterhandlercmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxlogunresisterhandlercmd, sizeof(GRX_LogUnregisterHandlerCmd_t));
+                    
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxlogunresisterhandlercmd.CmdHeader[0],
+                //                command->grxlogunresisterhandlercmd.CmdHeader[1], command->grxlogunresisterhandlercmd.CmdHeader[2], command->grxlogunresisterhandlercmd.CmdHeader[3], command->grxlogunresisterhandlercmd.CmdHeader[4], command->grxlogunresisterhandlercmd.CmdHeader[5], command->grxlogunresisterhandlercmd.CmdHeader[6], command->grxlogunresisterhandlercmd.CmdHeader[7],
+                //                command->grxlogunresisterhandlercmd.Timeout, command->grxlogunresisterhandlercmd.ItemSize, command->grxlogunresisterhandlercmd.ItemCount, command->grxlogunresisterhandlercmd.Node, command->grxlogunresisterhandlercmd.TableId, command->grxlogunresisterhandlercmd.Address, command->grxlogunresisterhandlercmd.Type);
+                break;
+            }
+            case 30: { //grxlogaddcallbackcmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogaddcallbackcmd.param.id);
+                ImGui::InputScalar("option", ImGuiDataType_S32, &command->grxlogaddcallbackcmd.param.options);
+                ImGui::InputText("libpath", command->grxlogaddcallbackcmd.param.libpath, sizeof(command->grxlogaddcallbackcmd.param.libpath));
+                ImGui::InputText("funcname", command->grxlogaddcallbackcmd.param.funcName, sizeof(command->grxlogaddcallbackcmd.param.funcName));
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogAddCallbackCmd_t)};
+                    memcpy(command->grxlogaddcallbackcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxlogaddcallbackcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxlogaddcallbackcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxlogaddcallbackcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogAddCallbackCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_LogAddCallbackCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_LogAddCallbackCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxlogaddcallbackcmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxlogaddcallbackcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxlogaddcallbackcmd, sizeof(GRX_LogAddCallbackCmd_t));
+                    
+
+                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %s %s",command->grxlogaddcallbackcmd.CmdHeader[0],
+                                command->grxlogaddcallbackcmd.CmdHeader[1], command->grxlogaddcallbackcmd.CmdHeader[2], command->grxlogaddcallbackcmd.CmdHeader[3], command->grxlogaddcallbackcmd.CmdHeader[4], command->grxlogaddcallbackcmd.CmdHeader[5], command->grxlogaddcallbackcmd.CmdHeader[6], command->grxlogaddcallbackcmd.CmdHeader[7],
+                                command->grxlogaddcallbackcmd.param.id, command->grxlogaddcallbackcmd.param.options, command->grxlogaddcallbackcmd.param.libpath, command->grxlogaddcallbackcmd.param.funcName);
+                break;
+            }
+            case 31: { //grxlogsethandlerstatuscmd
+                static uint16_t msgid = 0;
+                static uint8_t fnccode=0;
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogsethandlerstatuscmd.param.id);
+                ImGui::InputScalar("status", ImGuiDataType_U8, &command->grxlogsethandlerstatuscmd.param.status);
+                ImGui::Checkbox("override",&command->grxlogsethandlerstatuscmd.param.override);
+                
+                if(ImGui::Button("Generate CMD")) {
+                    msgid = htons(msgid);
+                    uint8_t stream[2] ={0,};
+                    uint8_t sequence[2] = {0xC0,0x00};
+                    uint8_t length[2] = {0x00, sizeof(GRX_LogSetHandlerStatusCmd_t)};
+                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+                    pthread_join(p_thread[4], NULL);
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogSetHandlerStatusCmd_t)); // 8 is for data
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = sizeof(GRX_LogSetHandlerStatusCmd_t);
+                    
+                    uint16_t len = sizeof(GRX_LogSetHandlerStatusCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->grxlogsethandlerstatuscmd;
+                    uint8_t checksum = 0xFF;
+                    while (len--) {
+                        checksum ^= *(byteptr++);
+                    }
+                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->grxlogsethandlerstatuscmd, sizeof(GRX_LogSetHandlerStatusCmd_t));
+                    
+
+                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+                }
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->grxlogsethandlerstatuscmd.CmdHeader[0],
+                                command->grxlogsethandlerstatuscmd.CmdHeader[1], command->grxlogsethandlerstatuscmd.CmdHeader[2], command->grxlogsethandlerstatuscmd.CmdHeader[3], command->grxlogsethandlerstatuscmd.CmdHeader[4], command->grxlogsethandlerstatuscmd.CmdHeader[5], command->grxlogsethandlerstatuscmd.CmdHeader[6], command->grxlogsethandlerstatuscmd.CmdHeader[7],
+                                command->grxlogsethandlerstatuscmd.param.id, command->grxlogsethandlerstatuscmd.param.status, command->grxlogsethandlerstatuscmd.param.override);
+                break;
+            }
+            
         }
         // if(ImGui::Button("Generate CMD")) {
         //     pthread_join(p_thread[4], NULL);
@@ -3318,6 +3912,20 @@ void Initialize_CMDLabels()
     snprintf(Templabels[16], 64, "EPS_P60_DockSetChannelsCmd_t");
     snprintf(Templabels[17], 64, "U32Bool9");
 
+    snprintf(Templabels[18], 64, "grx assemblepublishcmd");
+    snprintf(Templabels[19], 64, "grx cmdlog");
+    snprintf(Templabels[20], 64, "grx cmdlogontime");
+    snprintf(Templabels[21], 64, "grx cmdlogonchanged");
+    snprintf(Templabels[22], 64, "grx cmdlogon new");
+    snprintf(Templabels[23], 64, "grx cmd unlog");
+    snprintf(Templabels[24], 64, "grx cmd unlog all");
+    snprintf(Templabels[25], 64, "grx elevation cutoff");
+    snprintf(Templabels[26], 64, "grx interface mode");
+    snprintf(Templabels[27], 64, "grx serial config");
+    snprintf(Templabels[28], 64, "grx logresister handler");
+    snprintf(Templabels[29], 64, "grx logunresister handler");
+    snprintf(Templabels[30], 64, "grx log add callback");
+    snprintf(Templabels[31], 64, "grx logsethandlerstatus");
 }
 
 int CMDDataGenerator(uint32_t msgid, uint16_t fnccode, void *Requested, size_t RequestedSize) 

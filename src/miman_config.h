@@ -2150,6 +2150,7 @@ typedef struct {
 } snsr_packet_t;
 
 #define OS_PACK         __attribute__ ((packed))
+#define NATURALLY_ALIGNED
 typedef int8_t                                int8;
 typedef int16_t                               int16;
 typedef int32_t                               int32;
@@ -2270,6 +2271,155 @@ typedef struct {
    bool     ChannelStatus[9];
 } OS_PACK u32bool9_t;
 
+#define GRX_CMD_OEM_HANDLER_NAME_LEN            16
+
+typedef struct {
+    int16 mid;
+    int16 bodylength;
+    uint8 body[150];
+} OS_PACK GRX_AssemblePublish_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_AssemblePublish_t param;
+} OS_PACK GRX_AssemblePublishCmd_t;
+
+typedef struct {
+    uint16 msgId;
+    uint8  type;
+    uint8  padding[1];
+    uint32 port;
+    uint32 trigger;
+    uint32 hold;
+    double period;
+    double offset;
+} NATURALLY_ALIGNED GRX_CmdLOG_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdLOG_t param;
+} NATURALLY_ALIGNED GRX_CmdLOGCmd_t;
+
+typedef struct {
+    uint16 msgId;
+    uint8  padding[2];
+    uint32 port;
+    double period;
+    double offset;
+} NATURALLY_ALIGNED GRX_CmdLogOnTime_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdLogOnTime_t param;
+} NATURALLY_ALIGNED GRX_CmdLogOnTimeCmd_t;
+
+typedef struct {
+    uint16 msgId;
+    uint8  padding[2];
+    uint32 port;
+} NATURALLY_ALIGNED GRX_CmdLogOnChanged_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdLogOnChanged_t param;
+} NATURALLY_ALIGNED GRX_CmdLogOnChangedCmd_t;
+
+typedef struct {
+    uint16 msgId;
+    uint8  padding[2];
+    uint32 port;
+} NATURALLY_ALIGNED GRX_CmdLogOnNew_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdLogOnNew_t param;
+} NATURALLY_ALIGNED GRX_CmdLogOnNewCmd_t;
+
+typedef struct {
+    uint16 msgId;
+    uint8 msgType;
+    uint8 padding[1];
+    uint32 port;
+} NATURALLY_ALIGNED GRX_CmdUnlog_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdUnlog_t param;
+} NATURALLY_ALIGNED GRX_CmdUnlogCmd_t;
+
+typedef struct {
+    uint32 port;
+    bool held;
+} OS_PACK GRX_CmdUnlogAll_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdUnlogAll_t param;
+} OS_PACK GRX_CmdUnlogAllCmd_t;
+
+typedef struct {
+    uint32 constellation;
+    float cutoff;
+} NATURALLY_ALIGNED GRX_CmdElevationCutoff_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdElevationCutoff_t param;
+} NATURALLY_ALIGNED GRX_CmdElevationCutoffCmd_t;
+
+typedef struct {
+    uint32 port;
+    uint32 rxType;
+    uint32 txType;
+    uint32 responses;
+} NATURALLY_ALIGNED GRX_CmdInterfaceMode_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdInterfaceMode_t param;
+} NATURALLY_ALIGNED GRX_CmdInterfaceModeCmd_t;
+
+typedef struct {
+    uint32 port;
+    uint32 baud;
+    uint32 parity;
+    uint32 databits;
+    uint32 stopbits;
+    uint32 handshake;
+    uint32 _break;
+} NATURALLY_ALIGNED GRX_CmdSerialConfig_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_CmdSerialConfig_t param;
+} NATURALLY_ALIGNED GRX_CmdSerialConfigCmd_t;
+
+typedef struct {
+    char name[GRX_CMD_OEM_HANDLER_NAME_LEN];
+    uint16 id;
+    uint16 mlen;
+} NATURALLY_ALIGNED GRX_LogRegisterHandler_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_LogRegisterHandler_t param;
+} NATURALLY_ALIGNED GRX_LogRegisterHandlerCmd_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint16 id;
+} NATURALLY_ALIGNED GRX_LogUnregisterHandlerCmd_t;
+
+typedef struct {
+    uint16 id;
+    int32 options;
+    char libpath[64];
+    char funcName[32];
+} OS_PACK GRX_LogAddCallback_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_LogAddCallback_t param;
+} OS_PACK GRX_LogAddCallbackCmd_t;
+
+typedef struct {
+    uint16 id;
+    uint8_t status;
+    bool override;
+} NATURALLY_ALIGNED GRX_LogSetHandlerStatus_t;
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    GRX_LogSetHandlerStatus_t param;
+} NATURALLY_ALIGNED GRX_LogSetHandlerStatusCmd_t;
+
 typedef struct {
     //eps unusual case
     u32u8bool_t u32u8bool;
@@ -2281,7 +2431,20 @@ typedef struct {
     u32bool13_t u32bool13;
     u32bool9_t u32bool9;
 
-
+    GRX_AssemblePublishCmd_t grxassemblepublishcmd;
+    GRX_CmdLOGCmd_t grxcmdlogcmd;
+    GRX_CmdLogOnTimeCmd_t grxcmdlogontimecmd;
+    GRX_CmdLogOnChangedCmd_t grxcmdlogonchangedcmd;
+    GRX_CmdLogOnNewCmd_t grxcmdlogonnewcmd;
+    GRX_CmdUnlogCmd_t grxcmdunlogcmd;
+    GRX_CmdUnlogAllCmd_t grxcmdunlogallcmd;
+    GRX_CmdElevationCutoffCmd_t grxcmdelevationcutoffcmd;
+    GRX_CmdInterfaceModeCmd_t grxcmdinterfacemodecmd;
+    GRX_CmdSerialConfigCmd_t grxcmdserialconfigcmd;
+    GRX_LogRegisterHandlerCmd_t grxlogresisterhandlercmd;
+    GRX_LogUnregisterHandlerCmd_t grxlogunresisterhandlercmd;
+    GRX_LogAddCallbackCmd_t grxlogaddcallbackcmd;
+    GRX_LogSetHandlerStatusCmd_t grxlogsethandlerstatuscmd;
 
     // ADCS_SetParamScCmd_t adcs_setparamsccmd;
     // ADCS_SetParamTleCmd_t adcs_setparamtlecmd;
