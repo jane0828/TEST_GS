@@ -2265,6 +2265,12 @@ typedef struct {
 } OS_PACK u32bool13_t;
 
 typedef struct {
+   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+   uint32   Timeout;
+   bool     ChannelStatus[9];
+} OS_PACK u32bool9_t;
+
+typedef struct {
     //eps unusual case
     u32u8bool_t u32u8bool;
     u32u8_t u32u8;
@@ -2273,6 +2279,7 @@ typedef struct {
     u32u32u8u8u16u8_t u32u32u8u8u16u8;
     u32u32u32u8u8u16u8_t u32u32u32u8u8u16u8;
     u32bool13_t u32bool13;
+    u32bool9_t u32bool9;
 
 
 
