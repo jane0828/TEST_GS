@@ -68,7 +68,7 @@ void Initialize_ConfigSettings()
     memset(setup->S_Username, 0, sizeof(setup->S_Username));
     memset(setup->S_Address, 0, sizeof(setup->S_Address));
     memset(setup->S_passwd, 0, sizeof(setup->S_passwd));
-    sprintf(setup->Transciever_devname, "/dev/GS102");
+    sprintf(setup->Transciever_devname, "/dev/ttyUSB0");
     sprintf(setup->Switch_devname, "/dev/KTA223");
     sprintf(setup->Rotator_devname, "/dev/GS232B");
     sprintf(setup->S_Username, "s-band");
@@ -197,11 +197,10 @@ int main(int, char**)
     // memset(State.gsmkdir, 0, sizeof(gsftp_mkdir_t));
     // memset(State.gsrmdir, 0, sizeof(gsftp_rmdir_t));
 
-    // command = new Command;
-    // memset(command, 0, sizeof(Command));
+    command = new Command;
+    memset(command, 0, sizeof(Command));
 
     csp_debug_hook_set((csp_debug_hook_func_t)csp_debug_callback);
-
 
     while(State.AllThread)
     {
@@ -274,8 +273,8 @@ int main(int, char**)
             if (State.Display_paramt5)
                 State.Display_paramt5 = popup_param_table5();
 
-            if (State.Display_CMD)
-                State.Display_CMD = popup_cmd();
+            // if (State.Display_CMD)
+            //     State.Display_CMD = popup_cmd();
 
             if (State.Display_Setup)
                 State.Display_Setup = popup_setup(setup);
@@ -507,7 +506,7 @@ int main(int, char**)
     // Polarmap2D_azNS = NULL;
     // delete Polarmap2D_azEW;
     // Polarmap2D_azEW = NULL;
-
+    free(command);
     for(int i = 0; i < sizeof(State.Satellites) / sizeof(SatelliteObject *); i++)
     {
         delete State.Satellites[i];

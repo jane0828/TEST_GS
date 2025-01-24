@@ -476,9 +476,12 @@ void * task_downlink_onorbit(void * socketinfo)
 }
 void * task_uplink_onorbit(void * sign_)
 {
+
+    State.uplink_mode = true;
+    State.downlink_mode = false;
     pthread_mutex_lock(&conn_lock);
-    while(!State.RotatorReadReady)
-        continue;
+    //while(!State.RotatorReadReady)
+    //    continue;
     bool dlstate = true;
 
 
@@ -766,19 +769,21 @@ void * task_uplink_onorbit(void * sign_)
             csp_packet_t * confirm_ = (csp_packet_t *)csp_buffer_get(MIM_LEN_PACKET);
             while(State.uplink_mode)
             {
-                if ((txconn = csp_connect(CSP_PRIO_HIGH, 28, TX_PORT, MIM_DEFAULT_TIMEOUT, 0)) == NULL) 
+
+                if ((txconn = csp_connect(CSP_PRIO_HIGH, 28, 12, MIM_DEFAULT_TIMEOUT, 0)) == NULL) {
                 /*!!!!!!!!!!!Revise setup->obc_node!!!!!!!!!!*/ //-> Change to 28.
                 /*!!!!!!!!!!!!Need to revise Port!!!!!!!!!!!*/
                     continue;
+                }
                 else
                     break;
             }
             while (State.uplink_mode && txconn != NULL)
             {
+                console.AddLog("[OK]Send Test Packet: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",
+                    packet->data[0],packet->data[1],packet->data[2],packet->data[3],packet->data[4],packet->data[5],packet->data[6],packet->data[7]);
                 if(csp_send(txconn, packet, setup->default_timeout)) // Success. then,
                 {
-                    console.AddLog("[OK]Send Test Packet: %x %x %x %x %x %x %x %x",
-                    packet->data[0],packet->data[1],packet->data[2],packet->data[3],packet->data[4],packet->data[5],packet->data[6],packet->data[7]);
                     packet = NULL; // discard packet and,
                     break; // End process.
                 }
@@ -795,26 +800,26 @@ void * task_uplink_onorbit(void * sign_)
                 }
                 break;
             }
-            if((confirm_ = csp_read(txconn, rx_delay_ms(Plen, setup->ax100_node))) != NULL)
-            {
-                packetsign* confirmlist =  PacketDecoder(confirm_);
-                uint8_t * retcode = (uint8_t *)&confirmlist->Data[0];
-                console.AddLog("[OK]Received Command Reply. Retcode %d CMD Count %d", *retcode, State.CMDCount);
-                State.CMDCount ++;
-                if(confirmlist!=NULL)
-                {
-                    free(confirmlist);
-                    confirmlist = NULL;
-                    sign = NULL;
-                } 
-                if(confirm_!=NULL)
-                {
-                    csp_buffer_free(confirm_);
-                    confirm_ = NULL;
-                }
-            }
-            else
-                console.AddLog("[ERROR]##No Command Reply.");
+            // if((confirm_ = csp_read(txconn, rx_delay_ms(Plen, setup->ax100_node))) != NULL)
+            // {
+            //     packetsign* confirmlist =  PacketDecoder(confirm_);
+            //     uint8_t * retcode = (uint8_t *)&confirmlist->Data[0];
+            //     console.AddLog("[OK]Received Command Reply. Retcode %d CMD Count %d", *retcode, State.CMDCount);
+            //     State.CMDCount ++;
+            //     if(confirmlist!=NULL)
+            //     {
+            //         free(confirmlist);
+            //         confirmlist = NULL;
+            //         sign = NULL;
+            //     } 
+            //     if(confirm_!=NULL)
+            //     {
+            //         csp_buffer_free(confirm_);
+            //         confirm_ = NULL;
+            //     }
+            // }
+            // else
+            //     console.AddLog("[ERROR]##No Command Reply.");
             break;
         }
         case MIM_PT_STCMD : {
@@ -1020,20 +1025,27 @@ packetsign * PingInit(FSWTle * FSWTleinfo)
     return sign;
 }
 
-csp_packet_t * PacketEncoder(packetsign * sign, bool freeer)
+csp_packet_t * PacketEncoder(packetsign * sign,bool freeer)
 {
     if(sign == NULL)
     {
         console.AddLog("[DEBUG]##NULL POINTER GIVEN TO PACKETENCODER");
         return NULL;
     }
-    uint32_t packetsignlen = sign->Length +4; // Data size + Identifier(uint16) + PacketType(uint16)
-    csp_packet_t * packet = (csp_packet_t *)csp_buffer_get(packetsignlen);
-    packet->length = packetsignlen;
-    console.AddLog("[DEBUG]##Encoding Pakcets...Lnegth : %u", packetsignlen);
-    //Copy Header
-    memcpy((packet->data), sign, 4);
-    memcpy((packet->data) + 4, sign->Data, packetsignlen-4 ); // copy data
+    uint32_t len = sign->Length;
+    csp_packet_t *packet = (csp_packet_t *)csp_buffer_get(len);
+    packet->length = len;
+    memcpy(packet->data, sign->Data, len);
+    // uint32_t packetsignlen = sign->Length +4; // Data size + Identifier(uint16) + PacketType(uint16)
+    // csp_packet_t * packet = (csp_packet_t *)csp_buffer_get(packetsignlen);
+    // packet->length = packetsignlen;
+    // console.AddLog("[DEBUG]##Encoding Pakcets...Lnegth : %u", packetsignlen);
+    // //Copy Header
+    // memcpy((packet->data), sign, 4);
+    // memcpy((packet->data) + 4, sign->Data, packetsignlen-4 ); // copy data
+    for (int i =0; i < packet->length; i++) {
+        printf("0x%x ", packet->data[i]);
+    }printf("\n");
     if(freeer)
         sign = NULL;
     return packet;
