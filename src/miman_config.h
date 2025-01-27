@@ -924,11 +924,26 @@ uint32_t chksum_crc32(uint8_t *block, unsigned int length);
 #define ECM_GET_OCF_STATE_CC            3
 #define ECM_READ_CC                     4
 
+// typedef struct {
+//     uint8_t StreamId[2];
+//     uint8_t Sequence[2];
+//     uint8_t Length[2];
+// } CCSDS_PrimaryHeader_t;
+
 typedef struct {
-    uint8_t StreamId[2];
-    uint8_t Sequence[2];
-    uint8_t Length[2];
-} CCSDS_PrimaryHeader_t;
+    union {
+        uint8_t StreamId[2];
+        uint16_t stream;
+    };
+    union {
+        uint8_t Sequence[2];
+        uint16_t sequence;
+    };
+    union {
+        uint8_t Length[2];
+        uint16_t length;
+    };
+} __attribute__((packed)) CCSDS_PrimaryHeader_t;
 
 typedef struct {
     CCSDS_PrimaryHeader_t Pri;
@@ -2149,6 +2164,9 @@ typedef struct {
     SNSR_Meas_Payload_t snsr;
 } snsr_packet_t;
 
+#define CFE_SB_TLM_HDR_SIZE             12
+#define CCSDS_TIME_SIZE                 6
+
 #define OS_PACK         __attribute__ ((packed))
 #define NATURALLY_ALIGNED
 typedef int8_t                                int8;
@@ -2160,6 +2178,35 @@ typedef uint16_t                              uint16;
 typedef uint32_t                              uint32;
 typedef uint64_t                              uint64;
 
+
+
+typedef struct {
+
+   uint8  Time[CCSDS_TIME_SIZE];
+
+} CCSDS_TlmSecHdr_t;
+
+typedef struct {
+    CCSDS_PrimaryHeader_t pri;
+    CCSDS_TlmSecHdr_t sec;
+} OS_PACK CCSDS_hdr_t;
+
+typedef struct {
+    uint8 RetCodeType;
+    int32 RetCode;
+    uint16 MsgId;
+    uint16 CommandCode;
+    uint16 DataSize;
+    uint8 UsedState;
+} OS_PACK HYVRID_CmdExecutionReportMsg_t;
+
+typedef struct {
+    union {
+        uint8 TlmHeader[CFE_SB_TLM_HDR_SIZE];
+        CCSDS_hdr_t Tlmhdr;
+    };
+    HYVRID_CmdExecutionReportMsg_t Report;
+} OS_PACK HYVRID_TelemetryHeader_t;
 
 /*----------------------------------------*/
 /*                   EPS                  */
@@ -2275,6 +2322,16 @@ typedef struct {
    bool     ChannelStatus[9];
 } OS_PACK u32bool9_t;
 
+typedef struct {
+   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+   uint32   Timeout;
+   uint32   Size;
+   uint8    Node;
+   uint8    TableId;
+   uint16   Address;
+   uint8    Type;
+   uint8    Value[128];
+} OS_PACK EPS_P60_ParamSetCmd_t;
 
 /*----------------------------------------*/
 /*                   GRX                  */
@@ -2545,6 +2602,12 @@ typedef struct {
     float sensMatrix11;    /**< Magnetometer sensitivity matrix S11  */
     float sensMatrix22;    /**< Magnetometer sensitivity matrix S22  */
     float sensMatrix33;    /**< Magnetometer sensitivity matrix S33  */
+    float sensMatrix12;    /**< Magnetometer sensitivity matrix S12  */
+    float sensMatrix13;    /**< Magnetometer sensitivity matrix S13  */
+    float sensMatrix21;    /**< Magnetometer sensitivity matrix S21  */
+    float sensMatrix23;    /**< Magnetometer sensitivity matrix S23  */
+    float sensMatrix31;    /**< Magnetometer sensitivity matrix S31  */
+    float sensMatrix32;    /**< Magnetometer sensitivity matrix int32  */
 } OS_PACK ADCS_ConfigMag0OrbitCalCmd_t;
 
 // ID 65
@@ -2585,8 +2648,21 @@ typedef struct {
     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
     uint8 estModeMainDefault;      /**< Default main estimator mode  */
     uint8 estModeBackupDefault;    /**< Default backup estimator mode  */
+    float magR;                                                               /**< Magnetometer measurement noise  (valid range is between 0  and 1 ) */
+    float cssR;                                                               /**< Coarse sun sensor measurement noise  (valid range is between 0  and 10 ) */
+    float fssR;                                                               /**< Fine sun sensor measurement noise  (valid range is between 0  and 1 ) */
+    float hssR;                                                               /**< Horizon sensor measurement noise  (valid range is between 0  and 1 ) */
+    float strR;                                                               /**< Star tracker measurement noise  (valid range is between 0  and 0.1 ) */
+    float rkfQ;                                                               /**< Magnetometer RKF system noise  (valid range is between 0  and 0.01 ) */
+    float ekfQ;                                                               /**< EKF system noise  (valid range is between 0  and 0.01 ) */
+    float nutDeps;                                                            /**< Polar nutation Epsilon correction  (measurment unit is [rad]. valid range is between -0.1 rad and 0.1 rad) */
+    float nutDpsi;                                                            /**< Polar nutation Psi correction  (measurment unit is [rad]. valid range is between -0.1 rad and 0.1 rad) */
     bool ekfUseFss;                                                      /**< Use fine sun sensor measurements in EKF  */
+    bool ekfUseCss;                                                      /**< Use coarse sun sensor measurements in EKF  */
     bool ekfUseHss;                                                      /**< Use horizon sensor measurements in EKF  */
+    bool ekfUseStr;                                                      /**< Use star tracker measurements in EKF  */
+    uint8 tVec1;                       /**< Vector 1 selection for Triad  */
+    uint8 tVec2;                       /**< Vector 2 selection for Triad  */
 } OS_PACK ADCS_EstimatorConfigurationCmd_t;
 
 // ID 68
@@ -2610,7 +2686,9 @@ typedef struct {
     uint8 selectFss;     /**< FSS selection flags  */
     uint8 selectHss;     /**< HSS selection flags  */
     uint8 selectGyro;    /**< GYR selection flags  */
+    uint8 selectStr;     /**< STR selection flags  */
     uint8 selectGnss;    /**< GNSS selection flags  */
+    uint8 selectExt;     /**< External sensor selection flags  */
 } OS_PACK ADCS_NodeSelectionCmd_t;
 
 // ID 70
@@ -2650,7 +2728,248 @@ typedef struct {
 /*---- < End of ADCS > -------*/
 /*----------------------------*/
 
+/*----------------------------------------*/
+/*                 IFC app                */
+/*----------------------------------------*/
 typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char HandleName[16];
+} IFC_HandleNoArgsCmd_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char HandleName[16];
+    uint8 Arg;
+} IFC_HandleU8ArgsCmd_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char HandleName[16];
+    uint32 Arg;
+} IFC_HandleU32ArgsCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char    HandleName[16];
+    uint16  Size;
+    uint8   Data[128]; 
+} IFC_WriteCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char    HandleName[16];
+    uint16  Size;
+    uint16  Timeout;
+} IFC_ReadCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    int     GpioNum;
+} IFC_GpioNumCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char    HandleName[16];
+    char    DeviceName[16];
+    int     OpenOpt;
+} IFC_IoOpenCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    int     GpioNum;
+    bool    Value;
+} IFC_GpioWriteCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char    HandleName[16];
+    uint8   Termios[64];
+} IFC_UartSetTermiosCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char    HandleName[16];
+    uint16  TxSize;
+    uint16  RxSize;
+    uint8   Address;
+    uint8   TxData[128];
+} IFC_I2cDuplexTransferCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char    HandleName[16];
+    uint16  TxSize;
+    uint16  RxSize;
+    uint8   TxData[128];
+} IFC_SpiDuplexTransferCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    char    HandleName[16];
+    char    DevName[32];
+    uint8   devType;
+    uint8   MutexId;
+} IFC_IoHandleAllocateCmd_t;
+
+/*----------------------------------------*/
+/*                  PAYS                  */
+/*----------------------------------------*/
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint16  NumReads;
+    uint16  IntervalMs;
+    bool    IgnoreErrors;
+    bool    Pack;
+    char    FileName[128];
+} OS_PACK PAYS_D1064_ReadSaveStatusCmd_t;
+
+
+/*----------------------------------------*/
+/*                  PAYC                  */
+/*----------------------------------------*/
+//Other Definitions
+#define PAYC_STORE_FILENAME_SIZE        32
+#define PAYC_FILE_LIST_PATH_SIZE        64
+#define PAYC_REMOTE_DIRNAME_SIZE        64
+#define PAYC_LOCAL_DIRNAME_SIZE         64
+typedef struct {
+    uint16_t delay;
+    uint32_t snap_flags;
+    uint8_t snap_format;
+    uint32_t store_flags;
+    uint8_t store_format;
+} OS_PACK PAYC_Conf_t;
+
+typedef struct{
+    uint8_t count;
+    uint16_t width;
+    uint16_t height;
+    uint16_t leftedge;
+    uint16_t topedge;
+} OS_PACK PAYC_Snap_t;
+
+typedef struct{
+    uint8_t format;
+    uint8_t scale;
+    char filename[PAYC_STORE_FILENAME_SIZE];
+} OS_PACK PAYC_Store_t;
+
+typedef struct{
+    char StoredFileListLocation[PAYC_FILE_LIST_PATH_SIZE];
+} OS_PACK PAYC_StoreFileListLocation_t;
+
+typedef struct{
+    char remote_dirname[PAYC_REMOTE_DIRNAME_SIZE];
+    char local_dirname[PAYC_LOCAL_DIRNAME_SIZE];
+} OS_PACK PAYC_DirPath_t;
+
+typedef struct{
+    char filename[PAYC_STORE_FILENAME_SIZE];
+} OS_PACK PAYC_DownloadwithFileName_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    PAYC_Conf_t Payload;
+}OS_PACK PAYC_SetConfCmd_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    PAYC_Snap_t Payload;
+} OS_PACK PAYC_SnapCmd_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    PAYC_Store_t Payload;
+} OS_PACK PAYC_StoreCmd_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    PAYC_StoreFileListLocation_t Payload;
+} OS_PACK PAYC_StoreFileListLocationCmd_t;
+
+typedef struct {
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    PAYC_DirPath_t Payload;
+} OS_PACK PAYC_SetDirPathCmd_t;
+
+typedef struct
+{
+    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    PAYC_DownloadwithFileName_t Payload;
+} OS_PACK PAYC_DownloadCmd_t;
+
+/*----------------------------------------*/
+/*                  STX                   */
+/*----------------------------------------*/
+typedef struct {
+   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+   uint8    Reg;
+   uint8    Val;
+} STX_PULSAR_GenericSetValueCmd_t;
+
+typedef struct {
+   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+   bool     Val;
+} STX_PULSAR_SetValueBoolCmd_t;
+
+typedef struct {
+   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+   uint8    Reg;
+   uint8    Size;
+} STX_PULSAR_GenericGetValueCmd_t;
+
+
+/*----------------------------------------*/
+/*                  PAYR                  */
+/*----------------------------------------*/
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8   Chip;
+    uint8   Pins;
+} PAYR_BurnCmd_t;
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint8   Chip;
+    bool    MainBurn;
+    uint8_t BurnTimeSeconds;
+} PAYR_BurnLoopCmd_t;
+
+typedef struct {
+    /* PAYR */
+    PAYR_BurnCmd_t payrburncmd;
+    PAYR_BurnLoopCmd_t payrburnloofcmd;
+
+    /* STX */
+    STX_PULSAR_GenericSetValueCmd_t stxgenericsetvalue;
+    STX_PULSAR_SetValueBoolCmd_t    stxsetvaluebool;
+    STX_PULSAR_GenericGetValueCmd_t stxgenericgetvalue;
+    
+    /* PAYC*/
+    PAYC_SetConfCmd_t paycsetconfcmd;
+    PAYC_SnapCmd_t paycsnapcmd;
+    PAYC_StoreCmd_t paycstorecmd;
+    PAYC_StoreFileListLocationCmd_t paycstorefilelistlocationcmd;
+    PAYC_SetDirPathCmd_t paycsetdirpathcmd;
+    PAYC_DownloadCmd_t paycdownloadcmd;
+
+    /* PAYS */
+    PAYS_D1064_ReadSaveStatusCmd_t paysd1064readsavestatuscmd;
+
+    /* IFC app */
+    IFC_HandleNoArgsCmd_t ifchandlenoarg;
+    IFC_HandleU8ArgsCmd_t ifchandleu8arg;
+    IFC_HandleU32ArgsCmd_t ifchandleu32arg;
+    IFC_WriteCmd_t ifcwritecmd;
+    IFC_ReadCmd_t ifcreadcmd;
+    IFC_GpioNumCmd_t ifcgpionumcmd;
+    IFC_IoOpenCmd_t ifcioopencmd;
+    IFC_GpioWriteCmd_t ifcgpiowritecmd;
+    IFC_UartSetTermiosCmd_t ifcuartsettermioscmd;
+    IFC_I2cDuplexTransferCmd_t ifci2cduplextransfercmd;
+    IFC_SpiDuplexTransferCmd_t ifcspiduplextransfercmd;
+    IFC_IoHandleAllocateCmd_t ifciohandleallocatecmd;
+
     //eps unusual case
     u32u8bool_t u32u8bool;
     u32u8_t u32u8;
@@ -2660,6 +2979,7 @@ typedef struct {
     u32u32u32u8u8u16u8_t u32u32u32u8u8u16u8;
     u32bool13_t u32bool13;
     u32bool9_t u32bool9;
+    EPS_P60_ParamSetCmd_t epsp60paramsetcmd;
 
     //grx
     GRX_AssemblePublishCmd_t grxassemblepublishcmd;

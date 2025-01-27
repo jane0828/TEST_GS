@@ -8,6 +8,8 @@
 #include "miman_radial.h"
 #include "miman_ftp.h"
 
+#include <netinet/in.h>
+
 #define _CRT_SECURE_NO_WARNINGS
 
 extern FILE *log_ptr;
@@ -377,19 +379,90 @@ void * task_downlink_onorbit(void * socketinfo)
                 }
                 //Case 13 : TM Packet Downlink
                 case 13: {
-                    // char dlpktfilename[128] ={0,};
-                    // time_t tmtime = time(0);
-                    // struct tm * local = localtime(&tmtime);
-                    // sprintf(dlpktfilename, "../data/dlpkt/dlpkt--%04d-%02d-%02d-%02d-%02d-%02d--", local->tm_year+1900, local->tm_mon+1, local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
-                    // console.AddLog("Received DL pkt from port : 13");
-                    // FILE * DL_fp;
-                    // DL_fp = fopen(dlpktfilename, "wb");
                     printf("DL Length: %u\n",packet->length);
                     if(log_ptr == NULL) {
                         printf("Invalid file pointer.\n");
                         continue;
                     }
-                    fprintf(log_ptr, "Downlink.\n");
+                    fprintf(log_ptr, "Downlink. Packet Length: %u\n",packet->length);
+                    // Parsing & write header
+                    //HYVRID_TelemetryHeader_t *hdr = (HYVRID_TelemetryHeader_t *)packet;
+                    HYVRID_TelemetryHeader_t hdr = {0,};
+                    memcpy(&hdr, packet->data, sizeof(HYVRID_TelemetryHeader_t));
+                    fprintf(log_ptr, "Header Info.\n");
+                    fprintf(log_ptr, "Stream ID: %x\n", htons(hdr.Tlmhdr.pri.stream));
+                    fprintf(log_ptr, "Sequence: %x\n", htons(hdr.Tlmhdr.pri.sequence));
+                    fprintf(log_ptr, "Length: %x\n", htons(hdr.Tlmhdr.pri.length));
+                    fprintf(log_ptr, "Time Stamp: %x\t%x\t%x\t%x\t%x\t%x\n\n",
+                            hdr.Tlmhdr.sec.Time[0],hdr.Tlmhdr.sec.Time[1],hdr.Tlmhdr.sec.Time[2],
+                            hdr.Tlmhdr.sec.Time[3],hdr.Tlmhdr.sec.Time[4],hdr.Tlmhdr.sec.Time[5]);
+
+                    fprintf(log_ptr, "HYVRID Header Info.\n");
+                    fprintf(log_ptr, "RetCodeType: %x\n", hdr.Report.RetCodeType);
+                    fprintf(log_ptr, "RetCode: %x\n", hdr.Report.RetCode);
+                    fprintf(log_ptr, "MsgId: %x\t", hdr.Report.MsgId);
+                    if (hdr.Report.MsgId <= 6260 || 6257 <= hdr.Report.MsgId) {
+                        fprintf(log_ptr, "IFC (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6261 && hdr.Report.MsgId <= 6266) {
+                        fprintf(log_ptr, "FM (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6267 && hdr.Report.MsgId <= 6272) {
+                        fprintf(log_ptr, "EPS (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6273 && hdr.Report.MsgId <= 6279) {
+                        fprintf(log_ptr, "ADCS (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6280 && hdr.Report.MsgId <= 6285) {
+                        fprintf(log_ptr, "GRX (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6286 && hdr.Report.MsgId <= 6291) {
+                        fprintf(log_ptr, "STX (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6292 && hdr.Report.MsgId <= 6297) {
+                        fprintf(log_ptr, "UANT (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6298 && hdr.Report.MsgId <= 6303) {
+                        fprintf(log_ptr, "UTRX (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6304 && hdr.Report.MsgId <= 6309) {
+                        fprintf(log_ptr, "PAYC (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6310 && hdr.Report.MsgId <= 6315) {
+                        fprintf(log_ptr, "PAYR (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6316 && hdr.Report.MsgId <= 6321) {
+                        fprintf(log_ptr, "PAYS (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6322 && hdr.Report.MsgId <= 6324) {
+                        fprintf(log_ptr, "CI (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6325 && hdr.Report.MsgId <= 6328) {
+                        fprintf(log_ptr, "TO (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6329 && hdr.Report.MsgId <= 6330) {
+                        fprintf(log_ptr, "SN (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6331 && hdr.Report.MsgId <= 6333) {
+                        fprintf(log_ptr, "HK (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6334 && hdr.Report.MsgId <= 6335) {
+                        fprintf(log_ptr, "SCH (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6336 && hdr.Report.MsgId <= 6337) {
+                        fprintf(log_ptr, "DS (%x)\n",hdr.Report.MsgId);
+                    }
+                    else if(hdr.Report.MsgId >=6338 && hdr.Report.MsgId <= 6339) {
+                        fprintf(log_ptr, "LOG (%x)\n",hdr.Report.MsgId);
+                    }
+                    else fprintf(log_ptr, "Unknown MsgID\n");
+                    fprintf(log_ptr, "CC: %x\n", hdr.Report.CommandCode);
+                    fprintf(log_ptr, "DataSize (Exclude header): %x\n", hdr.Report.DataSize);
+                    fprintf(log_ptr, "Used State: %x\n\n", hdr.Report.UsedState);
+                    fprintf(log_ptr, "Output Data.\n");
+                    
+                    
+                    
                     for(int i=0; i< packet->length; i++) {
                         if(!(i%10) && i != 0) {
                             printf("\n");
@@ -1083,8 +1156,9 @@ csp_packet_t * PacketEncoder(packetsign * sign,bool freeer)
         return NULL;
     }
     uint32_t len = sign->Length;
-    csp_packet_t *packet = (csp_packet_t *)csp_buffer_get(len);
+    csp_packet_t *packet = (csp_packet_t *)csp_buffer_get(len);    
     packet->length = len;
+    printf("packet len: %u\n", packet->length);
     memcpy(packet->data, sign->Data, len);
     // uint32_t packetsignlen = sign->Length +4; // Data size + Identifier(uint16) + PacketType(uint16)
     // csp_packet_t * packet = (csp_packet_t *)csp_buffer_get(packetsignlen);

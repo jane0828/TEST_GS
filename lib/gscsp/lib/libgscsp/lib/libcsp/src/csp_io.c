@@ -359,7 +359,7 @@ int csp_send_direct(csp_id_t idout, csp_packet_t * packet, csp_iface_t * ifout, 
 	if ((*ifout->nexthop)(ifout, packet, timeout) != CSP_ERR_NONE)
 		goto tx_err;
 
-	usleep(tx_delay(packet->length, idout.dst));
+	// usleep(tx_delay(packet->length, idout.dst));
 	ifout->tx++;
 	ifout->txbytes += bytes;
 	if(get_now_streaming() == 0 || get_now_streaming == 2)
@@ -659,7 +659,7 @@ int csp_send_direct_streaming(csp_id_t idout, csp_packet_t * packet, csp_iface_t
 	if ((*ifout->nexthop)(ifout, packet, timeout) != CSP_ERR_NONE)
 		goto tx_err;
 
-	usleep(tx_delay(packet->length, idout.dst));
+	// usleep(tx_delay(packet->length, idout.dst));
 	ifout->tx++;
 	ifout->txbytes += bytes;
 	return CSP_ERR_NONE;

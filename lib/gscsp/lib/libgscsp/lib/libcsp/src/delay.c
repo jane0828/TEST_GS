@@ -68,9 +68,9 @@ uint32_t tx_delay(uint16_t packetlength, uint8_t node)
 #ifdef CSP_USE_CRC32
 	real_length += crc_bytes;
 #endif
-
     uint32_t result = real_length * (8000000 / kiss_baud + 8000000 / tx_baud) + queue_delay;
     csp_log_lock("TX Delay : %u microsecond.", result);
+
     return result;
 }
 

@@ -256,9 +256,9 @@ int main(int, char**)
             console.Draw("General Console", &Showstate, ReactiveHeight * 0.6);
 
             //Show Beacon State Window
-            //ImGui::SetNextWindowPos(ImVec2(DISPLAY_COL3 * ReactiveWidth, MENUPADDING), ImGuiCond_Always);
-            //ImGui::SetNextWindowSize(ImVec2(DISPLAY_STATE_W * ReactiveWidth, ReactiveHeight * DISPLAY_STATE_H), ImGuiCond_Always);
-            //ImGui_BeaconWindow(ReactiveHeight * 0.65);
+            ImGui::SetNextWindowPos(ImVec2(DISPLAY_COL3 * ReactiveWidth, MENUPADDING), ImGuiCond_Always);
+            ImGui::SetNextWindowSize(ImVec2(DISPLAY_STATE_W * ReactiveWidth, ReactiveHeight * DISPLAY_STATE_H), ImGuiCond_Always);
+            ImGui_BeaconWindow(ReactiveHeight * 0.65);
 
             //Show Control Window
             ImGui::SetNextWindowPos(ImVec2(DISPLAY_COL2 * ReactiveWidth, DISPLAY_ROW2 * ReactiveHeight), ImGuiCond_Always);
