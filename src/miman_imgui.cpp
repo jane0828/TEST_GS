@@ -1225,7 +1225,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd[8] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd, &msgid, sizeof(uint16_t));
-                    memcpy(cmd+7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd+6, &fnccode, sizeof(uint8_t));
                     cmd[2] = 0xc0;
                     cmd[3] = 0x00;
                     cmd[4] = 0x00;
@@ -1236,7 +1236,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd[6]=checksum; // checksum
+                    cmd[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd,sizeof(cmd));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd[i]);
@@ -1264,7 +1264,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint8_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(uint8_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1276,7 +1276,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         if(i < 8) {
@@ -1308,7 +1308,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint8_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(uint16_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1320,7 +1320,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         if(i < 8) {
@@ -1352,7 +1352,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint32_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(uint32_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1364,7 +1364,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd2[i]);
@@ -1391,7 +1391,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(uint64_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(uint64_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1403,7 +1403,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd2[i]);
@@ -1430,7 +1430,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(int8_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(int8_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1442,7 +1442,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd2[i]);
@@ -1469,7 +1469,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[CFE_SB_CMD_HDR_SIZE+sizeof(int16_t)] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(int16_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1481,7 +1481,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd2[i]);
@@ -1508,7 +1508,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[12] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(int32_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1520,7 +1520,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd2[i]);
@@ -1547,7 +1547,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[16] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(int64_t));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1559,7 +1559,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd2[i]);
@@ -1586,7 +1586,7 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t cmd2[12] = {0,};
                     msgid = htons(msgid);
                     memcpy(cmd2, &msgid, sizeof(uint16_t));
-                    memcpy(cmd2 + 7, &fnccode, sizeof(uint8_t));
+                    memcpy(cmd2 + 6, &fnccode, sizeof(uint8_t));
                     memcpy(cmd2 + 8, &arg, sizeof(float));
                     cmd2[2] = 0xc0;
                     cmd2[3] = 0x00;
@@ -1598,7 +1598,7 @@ void ImGui_ControlWindow(float fontscale)
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    cmd2[6]=checksum; // checksum
+                    cmd2[7]=checksum; // checksum
                     memcpy(TestPacket->Data,cmd2,sizeof(cmd2));
                     for(int i=0; i<TestPacket->Length; i++) {
                         printf("0x%x ",cmd2[i]);
@@ -1607,6 +1607,8 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                 }
                 break;
+
+// 여기까지 cc와 crc 순서 바꾸기 완료
             }
             case 10: { //u32u8bool
                 static uint16_t msgid = 0;
