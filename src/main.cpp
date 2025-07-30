@@ -77,10 +77,10 @@ void Initialize_ConfigSettings()
     setup->Transceiver_baud = 500000; // These three baud rate is between computer & GS machine - USART
     setup->Rotator_baud = 9600; 
     setup->Switch_baud = 115200; 
-    setup->gs100_node = 20;
-    setup->kiss_node = 8;
+    setup->gs100_node = 5;
+    setup->kiss_node = 28;
     setup->obc_node = 3;
-    setup->ax100_node = 5;
+    setup->ax100_node = 20;
     setup->default_freq = 436500000; // UHF freq?
     setup->default_timeout = 1000;
     setup->pingsize = 4;

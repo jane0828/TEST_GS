@@ -496,7 +496,7 @@ uint32_t chksum_crc32(uint8_t *block, unsigned int length);
 
 /* Packet Configurations */
 // Packet ID Configuration
-#define MIM_ID                      42
+#define MIM_ID                     42
 #define HVD_TEST                   23
 
 // Packet Type Configuration
@@ -2370,6 +2370,7 @@ typedef struct {
     double period;
     double offset;
 } NATURALLY_ALIGNED GRX_CmdLogOnTime_t;
+
 typedef struct {
     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
     GRX_CmdLogOnTime_t param;
@@ -3016,6 +3017,19 @@ typedef struct {
     ADCS_OpenLoopCommandRwlCmd_t adcs_OpenLoopCmdRwl;
     ADCS_OpenLoopCommandHxyzRwCmd_t adcs_OpenLoopCmdHxyzRw;
     
+
+
+
+    // THIS PART IS ADDED FOR COSMIC
+
+    /* SANT*/
+    SANT_DeployBurnCmd_t santdeployburncmd;
+
+
+
+
+
+
 }__attribute__((packed)) Command;
 
 typedef struct __attribute__ ((packed)) {
@@ -3053,6 +3067,23 @@ typedef struct __attribute__ ((packed)) {
     uint8_t result;
     int retcode;
 } reply_packet_t;
+
+
+
+
+
+// THIS PART IS ADDED FOR COSMIC
+
+/*----------------------------------------*/
+/*                  SANT                  */
+/*----------------------------------------*/
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint16  min_deploy;
+    uint8   backup;
+    uint8   max_burn_duration;
+} SANT_DeployBurnCmd_t;
 
 
 #endif
