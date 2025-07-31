@@ -2936,6 +2936,43 @@ typedef struct {
     uint8_t BurnTimeSeconds;
 } PAYR_BurnLoopCmd_t;
 
+
+
+
+
+
+
+
+
+
+
+
+// THIS PART IS ADDED FOR COSMIC
+
+/*----------------------------------------*/
+/*                  SANT                  */
+/*----------------------------------------*/
+
+typedef struct {
+    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+    uint16  min_deploy;
+    uint8   backup;
+    uint8   max_burn_duration;
+} SANT_DeployBurnCmd_t;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 typedef struct {
     /* PAYR */
     PAYR_BurnCmd_t payrburncmd;
@@ -3071,19 +3108,6 @@ typedef struct __attribute__ ((packed)) {
 
 
 
-
-// THIS PART IS ADDED FOR COSMIC
-
-/*----------------------------------------*/
-/*                  SANT                  */
-/*----------------------------------------*/
-
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint16  min_deploy;
-    uint8   backup;
-    uint8   max_burn_duration;
-} SANT_DeployBurnCmd_t;
 
 
 #endif

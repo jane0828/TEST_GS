@@ -4685,8 +4685,8 @@ void ImGui_ControlWindow(float fontscale)
                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("min_deploy u16",ImGuiDataType_U8,&command->santdeployburncmd.min_deploy);
-                ImGui::Checkbox("backup u8", &command->santdeployburncmd.backup);
+                ImGui::InputScalar("min_deploy u16",ImGuiDataType_U16,&command->santdeployburncmd.min_deploy);
+                ImGui::InputScalar("backup u8", ImGuiDataType_U8, &command->santdeployburncmd.backup);
                 ImGui::InputScalar("max_burn_duration u8",ImGuiDataType_U8,&command->santdeployburncmd.max_burn_duration);
 
                 if(ImGui::Button("Generate CMD")) {
@@ -6122,6 +6122,7 @@ void Initialize_CMDLabels()
     snprintf(Templabels[7], 64, "s32");
     snprintf(Templabels[8], 64, "s64");
     snprintf(Templabels[9], 64, "float");
+    snprintf(Templabels[74], 64, "SANT Deploy/Burn Command");
 
     // EPS unusual
     snprintf(Templabels[10], 64, "EPS_P60_Dock(PDU)SetChannelSingle");
