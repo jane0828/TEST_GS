@@ -490,6 +490,12 @@ uint32_t chksum_crc32(uint8_t *block, unsigned int length);
 #define TASK_EAK                    0x04
 #define TASK_RST	                0x08
 
+
+// ADDED FOR COSMIC
+#define RPT_PORT                    25
+
+
+
 /* Time Settings*/
 #define DOPPLER_TIMESTEP            500
 
@@ -678,6 +684,7 @@ uint32_t chksum_crc32(uint8_t *block, unsigned int length);
 ** EPS App command codes
 */
 #define EPS_NOOP_CC                     0
+
 #define EPS_RESET_COUNTERS_CC           1
 #define EPS_RESERVED_CC                 2
 #define EPS_SYSTEM_RESET_CC             3
@@ -3109,5 +3116,593 @@ typedef struct __attribute__ ((packed)) {
 
 
 
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// FOR COSMIC & BEE-1000 GS
+
+
+
+/****************************************** For BOTH COSMIC & BEE-1000 ******************************************/
+/**********************************/
+/*                                */
+/*   UT(R)X (COSMIC & BEE-1000)   */
+/*        GomSpace AX100          */
+/*                                */
+/**********************************/
+
+// Define MSGID
+
+#define ADCS_HK_TLM_MID         0x0820
+#define ADCS_REF_TLM_WHL_MID    0x0821
+#define ADCS_REF_TLM_MTQ_MID    0x0822
+#define ADCS_LOOP_WAKEUP_MID    0x0823
+#define ADCS_OUT_TLM_MID        0x0824
+
+
+
+// Define Function Codes
+
+#define UTRX_APP_NOOP_CC                      0  //set
+#define UTRX_APP_RESET_COUNTERS_CC            1  //set
+#define UTRX_APP_RESET_APP_CMD_COUNTERS_CC    2  //set
+#define UTRX_APP_RESET_DEVICE_CMD_COUNTERS_CC 3  //set
+#define UTRX_APP_PROCESS_CC                   4 //set
+#define UTRX_APP_DISPLAY_PARAM_CC             5 //set
+#define UTRX_GNDWDT_CLEAR_CC                  6 //set
+#define UTRX_REBOOT_CC                        7 //set
+#define UTRX_RXCONF_SET_BAUD_CC               8 //set
+#define UTRX_TXCONF_SET_BAUD_CC               9 //set
+#define UTRX_SET_DEFAULT_BAUD_CC              10 //set
+#define UTRX_RPARAM_SAVE_1_CC                 11 //set
+#define UTRX_RPARAM_SAVE_5_CC                 12 //set
+#define UTRX_RPARAM_SAVE_ALL_CC               13 //set
+#define UTRX_RXCONF_SET_FREQ_CC               14 //set
+#define UTRX_TXCONF_SET_FREQ_CC               15 //set
+#define UTRX_CHECK_STATE_PING_CC              32 //set
+
+
+#define UTRX_RXCONF_GET_BAUD_CC           16 //get
+#define UTRX_RXCONF_GET_GUARD_CC          17 //get
+#define UTRX_TXCONF_GET_BAUD_CC           18 //get
+#define UTRX_TLM_GET_TEMP_BRD_CC          19 //get
+#define UTRX_TLM_GET_LAST_RSSI_CC         20 //get
+#define UTRX_TLM_GET_LAST_RFERR_CC        21 //get
+#define UTRX_TLM_GET_ACTIVE_CONF_CC       22 //get
+#define UTRX_TLM_GET_BOOT_COUNT_CC        23 //get
+#define UTRX_TLM_GET_BOOT_CAUSE_CC        24 //get
+#define UTRX_TLM_GET_LAST_CONTACT_CC      25 //get
+#define UTRX_TLM_GET_TOT_TX_BYTES_CC      26 //get
+#define UTRX_TLM_GET_TOT_RX_BYTES_CC      27 //get
+#define UTRX_GET_STATUS_CONFIGURATION_CC  28 //get
+#define UTRX_RXCONF_GET_FREQ_CC           29 //get
+#define UTRX_TXCONF_GET_FREQ_CC           30 //get
+
+#define UTRX_SEND_HK_CC                   31//hk data
+
+
+
+// Define CMD Structure
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint8_t Arg;
+} __attribute__((packed)) EPS_U8ArgCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint16_t Arg;
+} __attribute__((packed)) EPS_U16ArgCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    int32_t Arg;
+} __attribute__((packed)) EPS_I32ArgCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint16_t ParameterID;
+    uint8_t ParameterLength;
+    uint8_t Parameter[8];
+} __attribute__((packed)) EPS_SetConfigurationParameterCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint8_t ParameterLength;
+    uint16_t ParameterID;
+} __attribute__((packed)) EPS_ResetConfigurationParamterCmd_t;
+
+typedef EPS_NoArgsCmd_t EPS_NoopCmd_t;
+typedef EPS_NoArgsCmd_t EPS_ResetCountersCmd_t;
+typedef EPS_NoArgsCmd_t EPS_SystemResetCmd_t;
+typedef EPS_NoArgsCmd_t EPS_NoOperationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_CancelOperationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_WatchdogCmd_t;
+
+typedef EPS_I32ArgCmd_t EPS_CorrectTimeCmd_t;
+
+typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOnCmd_t;
+typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOffCmd_t;
+typedef EPS_U16ArgCmd_t EPS_OutputBusGroupStateCmd_t;
+
+typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOnCmd_t;
+typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOffCmd_t;
+
+typedef EPS_NoArgsCmd_t EPS_SwitchToNominalModeCmd_t;
+typedef EPS_NoArgsCmd_t EPS_SwitchToSafetyModeCmd_t;
+typedef EPS_NoArgsCmd_t EPS_ResetConfigurationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_LoadConfigurationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
+
+
+
+
+/****************************************** For COSMIC ******************************************/
+
+/**********************************/
+/*                                */
+/*         STRX (COSMIC)          */
+/*        GomSpace AX2150         */
+/*                                */
+/**********************************/
+
+// Define MSGID
+
+// Define Function Codes
+#define STRX_APP_NOOP_CC                      0  //set
+#define STRX_APP_RESET_COUNTERS_CC            1  //set
+#define STRX_APP_RESET_APP_CMD_COUNTERS_CC    2  //set
+#define STRX_APP_RESET_DEVICE_CMD_COUNTERS_CC 3  //set
+// #define STRX_APP_PROCESS_CC                   4 //set
+#define STRX_APP_DISPLAY_PARAM_CC             5 //set
+#define STRX_GNDWDT_CLEAR_CC                  6 //set
+#define STRX_REBOOT_CC                        7 //set
+#define STRX_RXCONF_SET_BAUD_CC               8 //set
+#define STRX_TXCONF_SET_BAUD_CC               9 //set
+#define STRX_SET_DEFAULT_BAUD_CC              10 //set
+#define STRX_RPARAM_SAVE_1_CC                 11 //set
+#define STRX_RPARAM_SAVE_5_CC                 12 //set
+#define STRX_RPARAM_SAVE_ALL_CC               13 //set
+#define STRX_RXCONF_SET_FREQ_CC               14 //set
+#define STRX_TXCONF_SET_FREQ_CC               15 //set
+#define STRX_CHECK_STATE_PING_CC              32 //set
+
+
+#define STRX_RXCONF_GET_BAUD_CC           16 //get
+#define STRX_RXCONF_GET_GUARD_CC          17 //get
+#define STRX_TXCONF_GET_BAUD_CC           18 //get
+#define STRX_TLM_GET_TEMP_BRD_CC          19 //get
+#define STRX_TLM_GET_LAST_RSSI_CC         20 //get
+#define STRX_TLM_GET_LAST_RFERR_CC        21 //get
+// #define STRX_TLM_GET_ACTIVE_CONF_CC       22 //get
+#define STRX_TLM_GET_BOOT_COUNT_CC        23 //get
+#define STRX_TLM_GET_BOOT_CAUSE_CC        24 //get
+#define STRX_TLM_GET_LAST_CONTACT_CC      25 //get
+#define STRX_TLM_GET_TOT_TX_BYTES_CC      26 //get
+#define STRX_TLM_GET_TOT_RX_BYTES_CC      27 //get
+#define STRX_GET_STATUS_CONFIGURATION_CC  28 //get
+#define STRX_RXCONF_GET_FREQ_CC           29 //get
+#define STRX_TXCONF_GET_FREQ_CC           30 //get
+#define STRX_TLM_RXMODE_CC                32 //get
+#define STRX_TLM_GET_GNDWDT_CNT_CC        33 //get
+#define STRX_TLM_GET_GNDWDT_LEFT_CC       34 //get
+
+#define STRX_SEND_HK_CC                   31//hk data
+
+// Define CMD Structure
+
+
+
+
+/*******************************************/
+/*                                         */
+/*              UANT (COSMIC)              */
+/*    ISISpace Deployable Antenna System   */
+/*                                         */
+/*******************************************/
+
+// Define MSGID
+
+// Define Function Codes
+#define UANT_APP_NOOP_CC                          1
+#define UANT_APP_RESET_COUNTERS_CC                2
+#define UANT_APP_RESET_CC                         3
+#define UANT_APP_GET_DEPLOYMENT_STATUS_CC         4
+#define UANT_APP_ARM_ANTENNA_SYSTEMS_CC           5
+#define UANT_APP_DISARM_CC                        6
+#define UANT_APP_AUTOMATED_DEPLOYMENT_CC          7
+#define UANT_APP_CANCEL_DEPLOYMENT_ACTIVATION_CC  8
+#define UANT_APP_DEPLOY_ANT1_CC                   9
+#define UANT_APP_DEPLOY_ANT2_CC                   10
+#define UANT_APP_DEPLOY_ANT3_CC                   11
+#define UANT_APP_DEPLOY_ANT4_CC                   12
+#define UANT_APP_DEPLOY_ANT1_OVERRIDE_CC          13
+#define UANT_APP_DEPLOY_ANT2_OVERRIDE_CC          14
+#define UANT_APP_DEPLOY_ANT3_OVERRIDE_CC          15
+#define UANT_APP_DEPLOY_ANT4_OVERRIDE_CC          16
+#define UANT_APP_REPORT_ANT_ACTIVATION_CNT_CC     17
+#define UANT_APP_REPORT_ANT_ACTIVATION_TIME_CC    18
+#define UANT_APP_MEASURE_SYSTEM_TEMPERATURE_CC    19
+
+// Define CMD Structure
+
+
+/*******************************************/
+/*                                         */
+/*              SANT (COSMIC)              */
+/*        GomSpace NanoCom AM2150-O        */
+/*                                         */
+/*******************************************/
+// Define MSGID
+
+// Define Function Codes
+#define SANT_APP_NOOP_CC                0
+#define SANT_APP_RESET_COUNTERS_CC      1
+#define SANT_APP_SOFT_REBOOT_CC         2
+#define SANT_APP_BURN_CC                3
+#define SANT_APP_STOP_BURN_CC           4
+#define SANT_APP_GET_STATUS_CC          5
+#define SANT_APP_GET_BACKUP_STATUS_CC   6
+#define SANT_APP_GET_BOARD_STATUS_CC    7
+#define SANT_APP_GET_TEMPERATURE_CC     8
+#define SANT_APP_GET_SETTINGS_CC        9
+#define SANT_APP_SET_SETTINGS_CC        10
+
+
+// Define CMD Structure
+
+
+
+
+
+
+/****************************************** For BEE-1000 ******************************************/
+
+/**********************************/
+/*                                */
+/*         STX (BEE-1000)         */
+/*       Endurohat S-band Tx      */
+/*                                */
+/**********************************/
+
+// Define MSGID
+
+// Define Function Codes
+#define STX_NOOP_CC           0
+#define STX_RESET_COUNTERS_CC 1
+//#define STX_PROCESS_CC        2
+#define STX_DISPLAY_PARAM_CC  3
+
+/**set**/
+#define STX_SET_SYMBOLRATE      10
+#define STX_SET_TRANSMITPW      11
+#define STX_SET_CENTERFREQ      12
+#define STX_SET_MODCOD          13
+#define STX_SET_ROLLOFF         14
+#define STX_SET_PILOTSIG        15
+#define STX_SET_FECFRAMESZ      16
+#define STX_SET_PRETX_DELAY               17
+#define STX_SET_ALL_PRAMETERS            18
+#define STX_SET_RS485BAUD                19
+#define STX_SET_MODULATOR_DATA_INTERFACE 20
+
+/**get**/
+#define STX_GET_SYMBOL_RATE     30
+#define STX_GET_TX_POWER        31
+#define STX_GET_CENTER_FREQ     32
+#define STX_GET_MODCOD          33
+#define STX_GET_ROLL_OFF        34
+#define STX_GET_PILOT_SIGNAL    35
+#define STX_GET_FEC_FRAME_SIZE  36
+#define STX_GET_PRETX_DELAY     37
+#define STX_GET_ALL_PRAMETERS           38
+#define STX_GET_REPORT                  39
+#define STX_GET_MODULATOR_DATA_INTERFACE 40
+
+#define STX_FILESYS_CC_DIR               50
+#define STX_FILESYS_CC_DIRNEXT           51
+#define STX_FILESYS_CC_DELFILE           52
+#define STX_FILESYS_CC_DELALLFILE        53
+#define STX_FILESYS_CC_CREATEFILE        54
+#define STX_FILESYS_CC_WRITEFILE         55
+#define STX_FILESYS_CC_OPENFILE          56
+#define STX_FILESYS_CC_READFILE          57
+#define STX_FILESYS_CC_SENDFILE          58
+// #define STX_FILESYS_CC_SENDFILEPI        59
+// #define STX_FILESYS_CC_SENDFILERTI       60
+// #define STX_FILESYS_CC_SENDFILEAI        61
+
+#define STX_SYSCONF_CC_TRANSMITMODE      62
+#define STX_SYSCONF_CC_IDLEMODE          63
+#define STX_SYSCONF_CC_UPDATEFW          64
+#define STX_SYSCONF_CC_SAFESHUTDOWN      65
+
+// (주석 처리된 부분 기준)
+#define STX_GETRES_CC_GETRES             66
+
+// Define CMD Structure
+
+
+
+
+
+
+/*******************************************/
+/*                                         */
+/*             UANT (BEE-1000)             */
+/*      GomSpace NanoCom ANT-6F UHF VHF    */
+/*                                         */
+/*******************************************/
+
+// Define MSGID
+
+// Define Function Codes
+#define   UANT_APP_NOOP_CC                 1         
+#define   UANT_APP_RESET_COUNTERS_CC       2   
+#define   UANT_APP_SOFT_REBOOT_CC          3      
+
+    /* Burn control */
+#define   UANT_APP_BURN_CHANNEL_CC         4      
+#define   UANT_APP_STOP_BURN_CC            5        
+
+    /* Telemetry */
+#define   UANT_APP_GET_STATUS_CC           6        
+#define   UANT_APP_GET_BACKUP_STATUS_CC    7 
+#define   UANT_APP_GET_BOARD_STATUS_CC     8  
+#define   UANT_APP_GET_TEMPERATURE_CC      9  
+#define   UANT_APP_GET_SETTINGS_CC         10 
+#define   UANT_APP_SET_SETTINGS_CC         11 
+#define   UANT_APP_AUTODEPLOY_CC           12  
+
+// Define CMD Structure
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+/*
+** CI App command codes
+*/
+#define CI_NOOP_CC              0
+#define CI_RESET_COUNTERS_CC    1
+#define CI_RESERVED_CC          2
+
+
+#define CI_GATE_NOOP_CC         20
+
+/*
+** EPS App command codes
+*/
+#define EPS_NOOP_CC                     0
+
+#define EPS_RESET_COUNTERS_CC           1
+#define EPS_RESERVED_CC                 2
+#define EPS_SYSTEM_RESET_CC             3
+#define EPS_HW_NOOP_CC                  4
+
+
+
+/*************************************************************************/
+/*
+** ADCS system
+*/
+/*************************************************************************/ 
+
+typedef struct
+{
+    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+} ADCS_NoArgsCmd_t;
+
+typedef ADCS_NoArgsCmd_t ADCS_NoopCmd_t;
+typedef ADCS_NoArgsCmd_t ADCS_ResetCountersCmd_t;
+typedef ADCS_NoArgsCmd_t ADCS_ProcessCmd_t;
+
+
+typedef struct {
+	double mass, MOI[3][3], inv_MOI[3][3];
+	double css_sf[5], mmt_A[3][3], mmt_bias[3], gyro_bias_a[3], gyro_bias_b[3];
+} ADCS_ParamsSC;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    ADCS_ParamsSC           Params;
+} ADCS_SetParamScCmd_t;
+
+
+typedef struct {
+	uint32_t epochYear;
+	float epochDay;
+	double Bstar, INC, RAAN, ECC, AOP, MA, MM;
+} ADCS_ParamsTLE;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    ADCS_ParamsTLE          Params;
+} ADCS_SetParamTleCmd_t;
+
+
+typedef struct {
+    double mu_E, R_E, coef_J2, w_E, wn;
+	double tstp;
+	uint32_t quit_TRIAD;
+	uint8_t num_AD_loop, num_AC_loop, option_prg_orb_est, option_gyroless, option_ignoreSTT, option_ignoreCSS;
+	double est_P_atd_STT_initial, est_P_atd_FSS_initial, est_P_atd_CSS_initial, est_P_atd_WSS_initial;
+	double GS_sband[3], GS_uhf[3];
+	double wrpm_WHLdot_dump, wrpm_WHL_dump_crit, wrpm_WHL_dump_goal;
+	double w_standby_detumbling_start, w_standby_detumbling_goal, w_standby_forcedSpin_start, angle_standby_forcedSpin_start, M_standby_forcedSpin[3];
+} ADCS_ParamsAux;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    ADCS_ParamsAux          Params;
+} ADCS_SetParamAuxCmd_t;
+
+
+typedef struct {
+	double r_Target[3];
+    double q_Target[4];
+} ADCS_ParamsTarget;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    ADCS_ParamsTarget       Params;
+} ADCS_SetParamTargetCmd_t;
+
+
+typedef struct {
+    uint8_t       WhichGain;
+    uint8_t       Mode;
+    uint16_t      Num;
+    double      Gain[31];
+} ADCS_SetParamGainPayload_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader     CmdHeader;
+    ADCS_SetParamGainPayload_t  Payload;
+} ADCS_SetParamGainCmd_t;
+
+
+
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint8_t Arg;
+} __attribute__((packed)) EPS_U8ArgCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint16_t Arg;
+} __attribute__((packed)) EPS_U16ArgCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    int32_t Arg;
+} __attribute__((packed)) EPS_I32ArgCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint16_t ParameterID;
+    uint8_t ParameterLength;
+    uint8_t Parameter[8];
+} __attribute__((packed)) EPS_SetConfigurationParameterCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+    uint8_t ParameterLength;
+    uint16_t ParameterID;
+} __attribute__((packed)) EPS_ResetConfigurationParamterCmd_t;
+
+typedef EPS_NoArgsCmd_t EPS_NoopCmd_t;
+typedef EPS_NoArgsCmd_t EPS_ResetCountersCmd_t;
+typedef EPS_NoArgsCmd_t EPS_SystemResetCmd_t;
+typedef EPS_NoArgsCmd_t EPS_NoOperationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_CancelOperationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_WatchdogCmd_t;
+
+typedef EPS_I32ArgCmd_t EPS_CorrectTimeCmd_t;
+
+typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOnCmd_t;
+typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOffCmd_t;
+typedef EPS_U16ArgCmd_t EPS_OutputBusGroupStateCmd_t;
+
+typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOnCmd_t;
+typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOffCmd_t;
+
+typedef EPS_NoArgsCmd_t EPS_SwitchToNominalModeCmd_t;
+typedef EPS_NoArgsCmd_t EPS_SwitchToSafetyModeCmd_t;
+typedef EPS_NoArgsCmd_t EPS_ResetConfigurationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_LoadConfigurationCmd_t;
+typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
+
+
+
+/*************************************************************************/
+/*
+** UTRX system
+*/
+/*************************************************************************/
+
+/*
+** Type definition (generic "no arguments" command)
+*/
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+} UTRX_NoArgsCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader; 
+    uint8_t                   Arg;
+} UTRX_u8Cmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader; 
+    uint32_t                  Arg;
+} UTRX_u32Cmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader; 
+    float                   Arg;
+} UTRX_fCmd_t;
+
+
+typedef UTRX_NoArgsCmd_t    UTRX_NoopCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_ResetCountersCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_RebootCmd_t;
+
+typedef UTRX_u32Cmd_t       UTRX_SetTxFreqCmd_t;
+typedef UTRX_u32Cmd_t       UTRX_SetTxBaudCmd_t;
+
+typedef UTRX_fCmd_t         UTRX_SetTxModIndexCmd_t;
+
+typedef UTRX_u8Cmd_t        UTRX_SetTxModeCmd_t;
+
+typedef UTRX_u32Cmd_t       UTRX_SetRxFreqCmd_t;
+typedef UTRX_u32Cmd_t       UTRX_SetRxBaudCmd_t;
+
+typedef UTRX_fCmd_t         UTRX_SetRxModIndexCmd_t;
+
+typedef UTRX_u8Cmd_t        UTRX_SetRxModeCmd_t;
+
+typedef UTRX_u32Cmd_t       UTRX_SetRxBandwidthCmd_t;
 
 #endif

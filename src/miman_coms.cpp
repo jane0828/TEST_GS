@@ -923,6 +923,37 @@ void * task_uplink_onorbit(void * sign_)
                 }
                 break;
             }
+            
+
+            // Reply(added for TCTM TEST)
+            if ((confirm_ = csp_read(txconn, rx_delay_ms(Plen, setup->ax100_node))) != NULL)
+            {
+                console.AddLog("[OK]Received Command Reply. Length = %d", confirm_->length);
+
+                char hexstr[confirm_->length * 3 + 1]; // 각 바이트당 2자리 + 공백 + 널종료
+                for (int i = 0; i < confirm_->length; i++) {
+                    sprintf(&hexstr[i * 3], "%02X ", confirm_->data[i]);
+                }
+                hexstr[confirm_->length * 3] = '\0';
+
+                console.AddLog("[HEX] %s", hexstr);
+
+                csp_buffer_free(confirm_);
+                confirm_ = NULL;
+            }
+            else {
+                console.AddLog("[ERROR]##No Command Reply.");
+            }
+
+
+
+
+
+
+
+
+
+
             // if((confirm_ = csp_read(txconn, rx_delay_ms(Plen, setup->ax100_node))) != NULL)
             // {
             //     packetsign* confirmlist =  PacketDecoder(confirm_);
@@ -943,6 +974,12 @@ void * task_uplink_onorbit(void * sign_)
             // }
             // else
             //     console.AddLog("[ERROR]##No Command Reply.");
+
+
+
+
+
+
             break;
         }
         case MIM_PT_STCMD : {
