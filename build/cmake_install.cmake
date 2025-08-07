@@ -1,4 +1,4 @@
-# Install script for directory: /home/hyvrid/Desktop/COS_GS/COS_B16_GS
+# Install script for directory: /home/hyvrid/Desktop/TEST_GS
 
 # Set the install prefix
 if(NOT DEFINED CMAKE_INSTALL_PREFIX)
@@ -50,5 +50,5 @@ endif()
 
 string(REPLACE ";" "\n" CMAKE_INSTALL_MANIFEST_CONTENT
        "${CMAKE_INSTALL_MANIFEST_FILES}")
-file(WRITE "/home/hyvrid/Desktop/COS_GS/COS_B16_GS/build/${CMAKE_INSTALL_MANIFEST}"
+file(WRITE "/home/hyvrid/Desktop/TEST_GS/build/${CMAKE_INSTALL_MANIFEST}"
      "${CMAKE_INSTALL_MANIFEST_CONTENT}")
