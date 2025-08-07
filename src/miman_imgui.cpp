@@ -1608,2691 +1608,3134 @@ void ImGui_ControlWindow(float fontscale)
                 }
                 break;
 
-// 여기까지 cc와 crc 순서 바꾸기 완료
-            }
-            case 10: { //u32u8bool
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("u32",ImGuiDataType_U32, &command->u32u8bool.Timeout);
-                ImGui::InputScalar("u8",ImGuiDataType_U8, &command->u32u8bool.Channel);
-                ImGui::InputScalar("bool",ImGuiDataType_U8, &command->u32u8bool.Status);
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u8bool_t)-7};
-                    memcpy(command->u32u8bool.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32u8bool.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32u8bool.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32u8bool.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u8bool_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32u8bool_t);
+// // 여기까지 cc와 crc 순서 바꾸기 완료
+//             }
+//             case 10: { //u32u8bool
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("u32",ImGuiDataType_U32, &command->u32u8bool.Timeout);
+//                 ImGui::InputScalar("u8",ImGuiDataType_U8, &command->u32u8bool.Channel);
+//                 ImGui::InputScalar("bool",ImGuiDataType_U8, &command->u32u8bool.Status);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32u8bool_t)-7};
+//                     memcpy(command->u32u8bool.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32u8bool.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32u8bool.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32u8bool.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u8bool_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32u8bool_t);
                     
-                    uint16_t len = sizeof(u32u8bool_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32u8bool;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32u8bool.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32u8bool, sizeof(u32u8bool_t));
-                    
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                                command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                                command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-                break;
-            }
-            case 11: { // u32u8
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("u32",ImGuiDataType_U32, &command->u32u8.Timeout);
-                ImGui::InputScalar("u8",ImGuiDataType_U8, &command->u32u8.Channel);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u8_t)-7};
-                    memcpy(command->u32u8.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32u8.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32u8.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u8_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32u8_t);
-                    
-                    uint16_t len = sizeof(u32u8_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32u8;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32u8.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u8_t));
+//                     uint16_t len = sizeof(u32u8bool_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32u8bool;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32u8bool.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32u8bool, sizeof(u32u8bool_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->u32u8.CmdHeader[0],
-                                command->u32u8.CmdHeader[1], command->u32u8.CmdHeader[2], command->u32u8.CmdHeader[3], command->u32u8.CmdHeader[4], command->u32u8.CmdHeader[5], command->u32u8.CmdHeader[6], command->u32u8.CmdHeader[7],
-                                command->u32u8.Timeout, command->u32u8.Channel);
-                break;
-            }
-            case 12: { //u32u32u8u8
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-                ImGui::InputScalar("size",ImGuiDataType_U32, &command->u32u32u8u8.Size);
-                ImGui::InputScalar("timeout",ImGuiDataType_U32, &command->u32u32u8u8.Timeout);
-                ImGui::InputScalar("node",ImGuiDataType_U8, &command->u32u32u8u8.Node);
-                ImGui::InputScalar("tableid",ImGuiDataType_U8, &command->u32u32u8u8.TableId);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                                 command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                                 command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+//                 break;
+//             }
+//             case 11: { // u32u8
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("u32",ImGuiDataType_U32, &command->u32u8.Timeout);
+//                 ImGui::InputScalar("u8",ImGuiDataType_U8, &command->u32u8.Channel);
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u32u8u8_t)-7};
-                    memcpy(command->u32u32u8u8.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32u32u8u8.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32u32u8u8.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32u32u8u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u32u8u8_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32u32u8u8_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32u8_t)-7};
+//                     memcpy(command->u32u8.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32u8.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32u8.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u8_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32u8_t);
                     
-                    uint16_t len = sizeof(u32u32u8u8_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32u32u8u8;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32u32u8u8.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u32u8u8_t));
+//                     uint16_t len = sizeof(u32u8_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32u8;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32u8.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u8_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->u32u32u8u8.CmdHeader[0],
-                                command->u32u32u8u8.CmdHeader[1], command->u32u32u8u8.CmdHeader[2], command->u32u32u8u8.CmdHeader[3], command->u32u32u8u8.CmdHeader[4], command->u32u32u8u8.CmdHeader[5], command->u32u32u8u8.CmdHeader[6], command->u32u32u8u8.CmdHeader[7],
-                                command->u32u32u8u8.Size, command->u32u32u8u8.Timeout, command->u32u32u8u8.Node, command->u32u32u8u8.TableId);
-                break;
-            }
-            case 13: { //u32u8u8u8
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->u32u8.CmdHeader[0],
+//                                 command->u32u8.CmdHeader[1], command->u32u8.CmdHeader[2], command->u32u8.CmdHeader[3], command->u32u8.CmdHeader[4], command->u32u8.CmdHeader[5], command->u32u8.CmdHeader[6], command->u32u8.CmdHeader[7],
+//                                 command->u32u8.Timeout, command->u32u8.Channel);
+//                 break;
+//             }
+//             case 12: { //u32u32u8u8
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("size",ImGuiDataType_U32, &command->u32u32u8u8.Size);
+//                 ImGui::InputScalar("timeout",ImGuiDataType_U32, &command->u32u32u8u8.Timeout);
+//                 ImGui::InputScalar("node",ImGuiDataType_U8, &command->u32u32u8u8.Node);
+//                 ImGui::InputScalar("tableid",ImGuiDataType_U8, &command->u32u32u8u8.TableId);
 
-                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u8u8u8.Timeout);
-                ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u8u8u8.Node);
-                ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u8u8u8.TableId);
-                ImGui::InputScalar("destination u8",ImGuiDataType_U8, &command->u32u8u8u8.Destination);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u8u8u8_t)-7};
-                    memcpy(command->u32u8u8u8.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32u8u8u8.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32u8u8u8.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32u8u8u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u8u8u8_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32u8u8u8_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32u32u8u8_t)-7};
+//                     memcpy(command->u32u32u8u8.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32u32u8u8.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32u32u8u8.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32u32u8u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u32u8u8_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32u32u8u8_t);
                     
-                    uint16_t len = sizeof(u32u8u8u8_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32u8u8u8;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32u8u8u8.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u8u8u8_t));
-                    
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->u32u8u8u8.CmdHeader[0],
-                                command->u32u8u8u8.CmdHeader[1], command->u32u8u8u8.CmdHeader[2], command->u32u8u8u8.CmdHeader[3], command->u32u8u8u8.CmdHeader[4], command->u32u8u8u8.CmdHeader[5], command->u32u8u8u8.CmdHeader[6], command->u32u8u8u8.CmdHeader[7],
-                                command->u32u8u8u8.Timeout, command->u32u8u8u8.Node, command->u32u8u8u8.TableId, command->u32u8u8u8.Destination);
-                break;
-            }
-            case 14: { //u32u32u8u8u16u8
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Timeout);
-                ImGui::InputScalar("size u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Size);
-                ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Node);
-                ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.TableId);
-                ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->u32u32u8u8u16u8.Address);
-                ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Type);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u32u8u8u16u8_t)-7};
-                    memcpy(command->u32u32u8u8u16u8.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32u32u8u8u16u8.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32u32u8u8u16u8.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32u32u8u8u16u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u32u8u8u16u8_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32u32u8u8u16u8_t);
-                    
-                    uint16_t len = sizeof(u32u32u8u8u16u8_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32u32u8u8u16u8;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32u32u8u8u16u8.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u32u8u8u16u8_t));
+//                     uint16_t len = sizeof(u32u32u8u8_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32u32u8u8;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32u32u8u8.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u32u8u8_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u",command->u32u32u8u8u16u8.CmdHeader[0],
-                                command->u32u32u8u8u16u8.CmdHeader[1], command->u32u32u8u8u16u8.CmdHeader[2], command->u32u32u8u8u16u8.CmdHeader[3], command->u32u32u8u8u16u8.CmdHeader[4], command->u32u32u8u8u16u8.CmdHeader[5], command->u32u32u8u8u16u8.CmdHeader[6], command->u32u32u8u8u16u8.CmdHeader[7],
-                                command->u32u32u8u8u16u8.Timeout, command->u32u32u8u8u16u8.Size, command->u32u32u8u8u16u8.Node, command->u32u32u8u8u16u8.TableId, command->u32u32u8u8u16u8.Address, command->u32u32u8u8u16u8.Type);
-                break;
-            }
-            case 15: { //u32u32u32u8u8u16u8
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->u32u32u8u8.CmdHeader[0],
+//                                 command->u32u32u8u8.CmdHeader[1], command->u32u32u8u8.CmdHeader[2], command->u32u32u8u8.CmdHeader[3], command->u32u32u8u8.CmdHeader[4], command->u32u32u8u8.CmdHeader[5], command->u32u32u8u8.CmdHeader[6], command->u32u32u8u8.CmdHeader[7],
+//                                 command->u32u32u8u8.Size, command->u32u32u8u8.Timeout, command->u32u32u8u8.Node, command->u32u32u8u8.TableId);
+//                 break;
+//             }
+//             case 13: { //u32u8u8u8
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.Timeout);
-                ImGui::InputScalar("itemsize u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemSize);
-                ImGui::InputScalar("itemcount u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemCount);
-                ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Node);
-                ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.TableId);
-                ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->u32u32u32u8u8u16u8.Address);
-                ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Type);
+//                 ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u8u8u8.Timeout);
+//                 ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u8u8u8.Node);
+//                 ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u8u8u8.TableId);
+//                 ImGui::InputScalar("destination u8",ImGuiDataType_U8, &command->u32u8u8u8.Destination);
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32u32u32u8u8u16u8_t)-7};
-                    memcpy(command->u32u32u32u8u8u16u8.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u32u32u8u8u16u8_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32u32u32u8u8u16u8_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32u8u8u8_t)-7};
+//                     memcpy(command->u32u8u8u8.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32u8u8u8.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32u8u8u8.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32u8u8u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u8u8u8_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32u8u8u8_t);
                     
-                    uint16_t len = sizeof(u32u32u32u8u8u16u8_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32u32u32u8u8u16u8;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32u32u32u8u8u16u8.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32u32u32u8u8u16u8, sizeof(u32u32u32u8u8u16u8_t));
+//                     uint16_t len = sizeof(u32u8u8u8_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32u8u8u8;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32u8u8u8.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u8u8u8_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->u32u32u32u8u8u16u8.CmdHeader[0],
-                                command->u32u32u32u8u8u16u8.CmdHeader[1], command->u32u32u32u8u8u16u8.CmdHeader[2], command->u32u32u32u8u8u16u8.CmdHeader[3], command->u32u32u32u8u8u16u8.CmdHeader[4], command->u32u32u32u8u8u16u8.CmdHeader[5], command->u32u32u32u8u8u16u8.CmdHeader[6], command->u32u32u32u8u8u16u8.CmdHeader[7],
-                                command->u32u32u32u8u8u16u8.Timeout, command->u32u32u32u8u8u16u8.ItemSize, command->u32u32u32u8u8u16u8.ItemCount, command->u32u32u32u8u8u16u8.Node, command->u32u32u32u8u8u16u8.TableId, command->u32u32u32u8u8u16u8.Address, command->u32u32u32u8u8u16u8.Type);
-                break;
-            }
-            case 16: { //u32bool13
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->u32u8u8u8.CmdHeader[0],
+//                                 command->u32u8u8u8.CmdHeader[1], command->u32u8u8u8.CmdHeader[2], command->u32u8u8u8.CmdHeader[3], command->u32u8u8u8.CmdHeader[4], command->u32u8u8u8.CmdHeader[5], command->u32u8u8u8.CmdHeader[6], command->u32u8u8u8.CmdHeader[7],
+//                                 command->u32u8u8u8.Timeout, command->u32u8u8u8.Node, command->u32u8u8u8.TableId, command->u32u8u8u8.Destination);
+//                 break;
+//             }
+//             case 14: { //u32u32u8u8u16u8
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32bool13.Timeout);
-                for (uint8_t i =0; i<13; i++) {
-                    char temp[10] ={0,};
-                    sprintf(temp, "channel status bool%d",i);
-                    ImGui::Checkbox(temp, &command->u32bool13.ChannelStatus[i]);
-                }
+//                 ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Timeout);
+//                 ImGui::InputScalar("size u32",ImGuiDataType_U32, &command->u32u32u8u8u16u8.Size);
+//                 ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Node);
+//                 ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.TableId);
+//                 ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->u32u32u8u8u16u8.Address);
+//                 ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->u32u32u8u8u16u8.Type);
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32bool13_t)-7};
-                    memcpy(command->u32bool13.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32bool13.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32bool13.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32bool13.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32bool13_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32bool13_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32u32u8u8u16u8_t)-7};
+//                     memcpy(command->u32u32u8u8u16u8.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32u32u8u8u16u8.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32u32u8u8u16u8.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32u32u8u8u16u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u32u8u8u16u8_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32u32u8u8u16u8_t);
                     
-                    uint16_t len = sizeof(u32bool13_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32bool13;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32bool13.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32bool13, sizeof(u32bool13_t));
-                    
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %d %d %d %d %d %d %d %d %d %d %d %d",command->u32bool13.CmdHeader[0],
-                                command->u32bool13.CmdHeader[1], command->u32bool13.CmdHeader[2], command->u32bool13.CmdHeader[3], command->u32bool13.CmdHeader[4], command->u32bool13.CmdHeader[5], command->u32bool13.CmdHeader[6], command->u32bool13.CmdHeader[7],
-                                command->u32bool13.Timeout, command->u32bool13.ChannelStatus[0], command->u32bool13.ChannelStatus[1], command->u32bool13.ChannelStatus[2], command->u32bool13.ChannelStatus[3], command->u32bool13.ChannelStatus[4], command->u32bool13.ChannelStatus[5],
-                                command->u32bool13.ChannelStatus[6], command->u32bool13.ChannelStatus[7], command->u32bool13.ChannelStatus[8], command->u32bool13.ChannelStatus[9], command->u32bool13.ChannelStatus[10], command->u32bool13.ChannelStatus[11], command->u32bool13.ChannelStatus[12], command->u32bool13.ChannelStatus[13]);
-                break;
-            }
-            case 17: { //u32bool9
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32bool9.Timeout);
-                for (uint8_t i =0; i<9; i++) {
-                    char temp[10] ={0,};
-                    sprintf(temp, "channel status bool%d",i);
-                    ImGui::Checkbox(temp, &command->u32bool9.ChannelStatus[i]);
-                }
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(u32bool9_t)-7};
-                    memcpy(command->u32bool9.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->u32bool9.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->u32bool9.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->u32bool9.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32bool9_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(u32bool9_t);
-                    
-                    uint16_t len = sizeof(u32bool9_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->u32bool9;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->u32bool9.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->u32bool9, sizeof(u32bool9_t));
+//                     uint16_t len = sizeof(u32u32u8u8u16u8_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32u32u8u8u16u8;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32u32u8u8u16u8.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32u8, sizeof(u32u32u8u8u16u8_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %d %d %d %d %d %d %d %d",command->u32bool9.CmdHeader[0],
-                                command->u32bool9.CmdHeader[1], command->u32bool9.CmdHeader[2], command->u32bool9.CmdHeader[3], command->u32bool9.CmdHeader[4], command->u32bool9.CmdHeader[5], command->u32bool9.CmdHeader[6], command->u32bool9.CmdHeader[7],
-                                command->u32bool9.Timeout, command->u32bool9.ChannelStatus[0], command->u32bool9.ChannelStatus[1], command->u32bool9.ChannelStatus[2], command->u32bool9.ChannelStatus[3], command->u32bool9.ChannelStatus[4], command->u32bool9.ChannelStatus[5],
-                                command->u32bool9.ChannelStatus[6],command->u32bool9.ChannelStatus[7],command->u32bool9.ChannelStatus[8]);
-                break;
-            }
-            case 18: { //grx assemblepublishcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u",command->u32u32u8u8u16u8.CmdHeader[0],
+//                                 command->u32u32u8u8u16u8.CmdHeader[1], command->u32u32u8u8u16u8.CmdHeader[2], command->u32u32u8u8u16u8.CmdHeader[3], command->u32u32u8u8u16u8.CmdHeader[4], command->u32u32u8u8u16u8.CmdHeader[5], command->u32u32u8u8u16u8.CmdHeader[6], command->u32u32u8u8u16u8.CmdHeader[7],
+//                                 command->u32u32u8u8u16u8.Timeout, command->u32u32u8u8u16u8.Size, command->u32u32u8u8u16u8.Node, command->u32u32u8u8u16u8.TableId, command->u32u32u8u8u16u8.Address, command->u32u32u8u8u16u8.Type);
+//                 break;
+//             }
+//             case 15: { //u32u32u32u8u8u16u8
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("mid",ImGuiDataType_S16, &command->grxassemblepublishcmd.param.mid);
-                ImGui::InputScalar("bodylength",ImGuiDataType_S16, &command->grxassemblepublishcmd.param.bodylength);
-                ImGui::InputText("body (??)", (char *)&command->grxassemblepublishcmd.param.body,sizeof(command->grxassemblepublishcmd.param.body));
+//                 ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.Timeout);
+//                 ImGui::InputScalar("itemsize u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemSize);
+//                 ImGui::InputScalar("itemcount u32",ImGuiDataType_U32, &command->u32u32u32u8u8u16u8.ItemCount);
+//                 ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Node);
+//                 ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.TableId);
+//                 ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->u32u32u32u8u8u16u8.Address);
+//                 ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->u32u32u32u8u8u16u8.Type);
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_AssemblePublishCmd_t)-7};
-                    memcpy(command->grxassemblepublishcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxassemblepublishcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxassemblepublishcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxassemblepublishcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_AssemblePublishCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_AssemblePublishCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32u32u32u8u8u16u8_t)-7};
+//                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32u32u32u8u8u16u8_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32u32u32u8u8u16u8_t);
                     
-                    uint16_t len = sizeof(GRX_AssemblePublishCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxassemblepublishcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxassemblepublishcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxassemblepublishcmd, sizeof(GRX_AssemblePublishCmd_t));
-                    
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxassemblepublishcmd.CmdHeader[0],
-                //                command->grxassemblepublishcmd.CmdHeader[1], command->grxassemblepublishcmd.CmdHeader[2], command->grxassemblepublishcmd.CmdHeader[3], command->grxassemblepublishcmd.CmdHeader[4], command->grxassemblepublishcmd.CmdHeader[5], command->grxassemblepublishcmd.CmdHeader[6], command->grxassemblepublishcmd.CmdHeader[7],
-                //                command->grxassemblepublishcmd.Timeout, command->grxassemblepublishcmd.ItemSize, command->grxassemblepublishcmd.ItemCount, command->grxassemblepublishcmd.Node, command->grxassemblepublishcmd.TableId, command->grxassemblepublishcmd.Address, command->grxassemblepublishcmd.Type);
-                break;
-            }
-            case 19: { //grx cmdlog
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogcmd.param.msgId);
-                ImGui::InputScalar("type",ImGuiDataType_U8, &command->grxcmdlogcmd.param.type);
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogcmd.param.port);
-                ImGui::InputScalar("trigger", ImGuiDataType_U32, &command->grxcmdlogcmd.param.trigger);
-                ImGui::InputScalar("hold", ImGuiDataType_U32, &command->grxcmdlogcmd.param.hold);
-                ImGui::InputScalar("period", ImGuiDataType_Double, &command->grxcmdlogcmd.param.period);
-                ImGui::InputScalar("offset", ImGuiDataType_Double, &command->grxcmdlogcmd.param.offset);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLOGCmd_t)-7};
-                    memcpy(command->grxcmdlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLOGCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdLOGCmd_t);
-                    
-                    uint16_t len = sizeof(GRX_CmdLOGCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdlogcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdlogcmd, sizeof(GRX_CmdLOGCmd_t));
+//                     uint16_t len = sizeof(u32u32u32u8u8u16u8_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32u32u32u8u8u16u8;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32u32u32u8u8u16u8.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32u32u32u8u8u16u8, sizeof(u32u32u32u8u8u16u8_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogcmd.CmdHeader[0],
-                                command->grxcmdlogcmd.CmdHeader[1], command->grxcmdlogcmd.CmdHeader[2], command->grxcmdlogcmd.CmdHeader[3], command->grxcmdlogcmd.CmdHeader[4], command->grxcmdlogcmd.CmdHeader[5], command->grxcmdlogcmd.CmdHeader[6], command->grxcmdlogcmd.CmdHeader[7],
-                                command->grxcmdlogcmd.param.msgId, command->grxcmdlogcmd.param.type, command->grxcmdlogcmd.param.port, command->grxcmdlogcmd.param.trigger, 
-                                command->grxcmdlogcmd.param.hold, command->grxcmdlogcmd.param.period, command->grxcmdlogcmd.param.offset);
-                break;
-            }
-            case 20: { //grx cmdlogontime
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->u32u32u32u8u8u16u8.CmdHeader[0],
+//                                 command->u32u32u32u8u8u16u8.CmdHeader[1], command->u32u32u32u8u8u16u8.CmdHeader[2], command->u32u32u32u8u8u16u8.CmdHeader[3], command->u32u32u32u8u8u16u8.CmdHeader[4], command->u32u32u32u8u8u16u8.CmdHeader[5], command->u32u32u32u8u8u16u8.CmdHeader[6], command->u32u32u32u8u8u16u8.CmdHeader[7],
+//                                 command->u32u32u32u8u8u16u8.Timeout, command->u32u32u32u8u8u16u8.ItemSize, command->u32u32u32u8u8u16u8.ItemCount, command->u32u32u32u8u8u16u8.Node, command->u32u32u32u8u8u16u8.TableId, command->u32u32u32u8u8u16u8.Address, command->u32u32u32u8u8u16u8.Type);
+//                 break;
+//             }
+//             case 16: { //u32bool13
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogontimecmd.param.msgId);
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogontimecmd.param.port);
-                ImGui::InputScalar("period", ImGuiDataType_Double, &command->grxcmdlogontimecmd.param.period);
-                ImGui::InputScalar("offset", ImGuiDataType_Double, &command->grxcmdlogontimecmd.param.offset);
+//                 ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32bool13.Timeout);
+//                 for (uint8_t i =0; i<13; i++) {
+//                     char temp[10] ={0,};
+//                     sprintf(temp, "channel status bool%d",i);
+//                     ImGui::Checkbox(temp, &command->u32bool13.ChannelStatus[i]);
+//                 }
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnTimeCmd_t)-7};
-                    memcpy(command->grxcmdlogontimecmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogontimecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogontimecmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogontimecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnTimeCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdLogOnTimeCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32bool13_t)-7};
+//                     memcpy(command->u32bool13.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32bool13.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32bool13.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32bool13.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32bool13_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32bool13_t);
                     
-                    uint16_t len = sizeof(GRX_CmdLogOnTimeCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogontimecmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdlogontimecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdlogontimecmd, sizeof(GRX_CmdLogOnTimeCmd_t));
-                    
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %lf %lf",command->grxcmdlogontimecmd.CmdHeader[0],
-                                command->grxcmdlogontimecmd.CmdHeader[1], command->grxcmdlogontimecmd.CmdHeader[2], command->grxcmdlogontimecmd.CmdHeader[3], command->grxcmdlogontimecmd.CmdHeader[4], command->grxcmdlogontimecmd.CmdHeader[5], command->grxcmdlogontimecmd.CmdHeader[6], command->grxcmdlogontimecmd.CmdHeader[7],
-                                command->grxcmdlogontimecmd.param.msgId, command->grxcmdlogontimecmd.param.port, command->grxcmdlogontimecmd.param.period, command->grxcmdlogontimecmd.param.offset);
-                break;
-            }
-            case 21: { //grxcmdlogonchanged
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogonchangedcmd.param.msgId);
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogonchangedcmd.param.port);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnChangedCmd_t)-7};
-                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnChangedCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdLogOnChangedCmd_t);
-                    
-                    uint16_t len = sizeof(GRX_CmdLogOnChangedCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogonchangedcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdlogonchangedcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdlogonchangedcmd, sizeof(GRX_CmdLogOnChangedCmd_t));
+//                     uint16_t len = sizeof(u32bool13_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32bool13;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32bool13.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32bool13, sizeof(u32bool13_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxcmdlogonchangedcmd.CmdHeader[0],
-                                command->grxcmdlogonchangedcmd.CmdHeader[1], command->grxcmdlogonchangedcmd.CmdHeader[2], command->grxcmdlogonchangedcmd.CmdHeader[3], command->grxcmdlogonchangedcmd.CmdHeader[4], command->grxcmdlogonchangedcmd.CmdHeader[5], command->grxcmdlogonchangedcmd.CmdHeader[6], command->grxcmdlogonchangedcmd.CmdHeader[7],
-                                command->grxcmdlogonchangedcmd.param.msgId, command->grxcmdlogonchangedcmd.param.port);
-                break;
-            }
-            case 22: { //grxcmdlogonnew
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %d %d %d %d %d %d %d %d %d %d %d %d",command->u32bool13.CmdHeader[0],
+//                                 command->u32bool13.CmdHeader[1], command->u32bool13.CmdHeader[2], command->u32bool13.CmdHeader[3], command->u32bool13.CmdHeader[4], command->u32bool13.CmdHeader[5], command->u32bool13.CmdHeader[6], command->u32bool13.CmdHeader[7],
+//                                 command->u32bool13.Timeout, command->u32bool13.ChannelStatus[0], command->u32bool13.ChannelStatus[1], command->u32bool13.ChannelStatus[2], command->u32bool13.ChannelStatus[3], command->u32bool13.ChannelStatus[4], command->u32bool13.ChannelStatus[5],
+//                                 command->u32bool13.ChannelStatus[6], command->u32bool13.ChannelStatus[7], command->u32bool13.ChannelStatus[8], command->u32bool13.ChannelStatus[9], command->u32bool13.ChannelStatus[10], command->u32bool13.ChannelStatus[11], command->u32bool13.ChannelStatus[12], command->u32bool13.ChannelStatus[13]);
+//                 break;
+//             }
+//             case 17: { //u32bool9
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogonnewcmd.param.msgId);
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogonnewcmd.param.port);
+//                 ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->u32bool9.Timeout);
+//                 for (uint8_t i =0; i<9; i++) {
+//                     char temp[10] ={0,};
+//                     sprintf(temp, "channel status bool%d",i);
+//                     ImGui::Checkbox(temp, &command->u32bool9.ChannelStatus[i]);
+//                 }
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnNewCmd_t)-7};
-                    memcpy(command->grxcmdlogonnewcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogonnewcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogonnewcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdlogonnewcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnNewCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdLogOnNewCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(u32bool9_t)-7};
+//                     memcpy(command->u32bool9.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->u32bool9.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->u32bool9.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->u32bool9.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(u32bool9_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(u32bool9_t);
                     
-                    uint16_t len = sizeof(GRX_CmdLogOnNewCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogonnewcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdlogonnewcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdlogonnewcmd, sizeof(GRX_CmdLogOnNewCmd_t));
-                    
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxcmdlogonnewcmd.CmdHeader[0],
-                                command->grxcmdlogonnewcmd.CmdHeader[1], command->grxcmdlogonnewcmd.CmdHeader[2], command->grxcmdlogonnewcmd.CmdHeader[3], command->grxcmdlogonnewcmd.CmdHeader[4], command->grxcmdlogonnewcmd.CmdHeader[5], command->grxcmdlogonnewcmd.CmdHeader[6], command->grxcmdlogonnewcmd.CmdHeader[7],
-                                command->grxcmdlogonnewcmd.param.msgId, command->grxcmdlogonnewcmd.param.port);
-                break;
-            }
-            case 23: { //grxcmdunlogcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdunlogcmd.param.msgId);
-                ImGui::InputScalar("msgtype",ImGuiDataType_U8, &command->grxcmdunlogcmd.param.msgType);
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdunlogcmd.param.port);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogCmd_t)-7};
-                    memcpy(command->grxcmdunlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdunlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdunlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdunlogcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdUnlogCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdUnlogCmd_t);
-                    
-                    uint16_t len = sizeof(GRX_CmdUnlogCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdunlogcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdunlogcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdunlogcmd, sizeof(GRX_CmdUnlogCmd_t));
+//                     uint16_t len = sizeof(u32bool9_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->u32bool9;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->u32bool9.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->u32bool9, sizeof(u32bool9_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->grxcmdunlogcmd.CmdHeader[0],
-                                command->grxcmdunlogcmd.CmdHeader[1], command->grxcmdunlogcmd.CmdHeader[2], command->grxcmdunlogcmd.CmdHeader[3], command->grxcmdunlogcmd.CmdHeader[4], command->grxcmdunlogcmd.CmdHeader[5], command->grxcmdunlogcmd.CmdHeader[6], command->grxcmdunlogcmd.CmdHeader[7],
-                                command->grxcmdunlogcmd.param.msgId, command->grxcmdunlogcmd.param.msgType, command->grxcmdunlogcmd.param.port);
-                break;
-            }
-            case 24: { //grxcmdunlogallcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %d %d %d %d %d %d %d %d",command->u32bool9.CmdHeader[0],
+//                                 command->u32bool9.CmdHeader[1], command->u32bool9.CmdHeader[2], command->u32bool9.CmdHeader[3], command->u32bool9.CmdHeader[4], command->u32bool9.CmdHeader[5], command->u32bool9.CmdHeader[6], command->u32bool9.CmdHeader[7],
+//                                 command->u32bool9.Timeout, command->u32bool9.ChannelStatus[0], command->u32bool9.ChannelStatus[1], command->u32bool9.ChannelStatus[2], command->u32bool9.ChannelStatus[3], command->u32bool9.ChannelStatus[4], command->u32bool9.ChannelStatus[5],
+//                                 command->u32bool9.ChannelStatus[6],command->u32bool9.ChannelStatus[7],command->u32bool9.ChannelStatus[8]);
+//                 break;
+//             }
+//             case 18: { //grx assemblepublishcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdunlogallcmd.param.port);
-                ImGui::Checkbox("held",&command->grxcmdunlogallcmd.param.held);
+//                 ImGui::InputScalar("mid",ImGuiDataType_S16, &command->grxassemblepublishcmd.param.mid);
+//                 ImGui::InputScalar("bodylength",ImGuiDataType_S16, &command->grxassemblepublishcmd.param.bodylength);
+//                 ImGui::InputText("body (??)", (char *)&command->grxassemblepublishcmd.param.body,sizeof(command->grxassemblepublishcmd.param.body));
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogAllCmd_t)-7};
-                    memcpy(command->grxcmdunlogallcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdunlogallcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdunlogallcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdunlogallcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdUnlogAllCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdUnlogAllCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_AssemblePublishCmd_t)-7};
+//                     memcpy(command->grxassemblepublishcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxassemblepublishcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxassemblepublishcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxassemblepublishcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_AssemblePublishCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_AssemblePublishCmd_t);
                     
-                    uint16_t len = sizeof(GRX_CmdUnlogAllCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdunlogallcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdunlogallcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdunlogallcmd, sizeof(GRX_CmdUnlogAllCmd_t));
-                    
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d",command->grxcmdunlogallcmd.CmdHeader[0],
-                                command->grxcmdunlogallcmd.CmdHeader[1], command->grxcmdunlogallcmd.CmdHeader[2], command->grxcmdunlogallcmd.CmdHeader[3], command->grxcmdunlogallcmd.CmdHeader[4], command->grxcmdunlogallcmd.CmdHeader[5], command->grxcmdunlogallcmd.CmdHeader[6], command->grxcmdunlogallcmd.CmdHeader[7],
-                                command->grxcmdunlogallcmd.param.port, command->grxcmdunlogallcmd.param.held);
-                break;
-            }
-            case 25: { //grxcmdelevationcutoffcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("constellation", ImGuiDataType_U32, &command->grxcmdelevationcutoffcmd.param.constellation);
-                ImGui::InputScalar("cutoff", ImGuiDataType_Float, &command->grxcmdelevationcutoffcmd.param.cutoff);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdElevationCutoffCmd_t)-7};
-                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdElevationCutoffCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdElevationCutoffCmd_t);
-                    
-                    uint16_t len = sizeof(GRX_CmdElevationCutoffCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdelevationcutoffcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdelevationcutoffcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdelevationcutoffcmd, sizeof(GRX_CmdElevationCutoffCmd_t));
+//                     uint16_t len = sizeof(GRX_AssemblePublishCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxassemblepublishcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxassemblepublishcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxassemblepublishcmd, sizeof(GRX_AssemblePublishCmd_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %f",command->grxcmdelevationcutoffcmd.CmdHeader[0],
-                                command->grxcmdelevationcutoffcmd.CmdHeader[1], command->grxcmdelevationcutoffcmd.CmdHeader[2], command->grxcmdelevationcutoffcmd.CmdHeader[3], command->grxcmdelevationcutoffcmd.CmdHeader[4], command->grxcmdelevationcutoffcmd.CmdHeader[5], command->grxcmdelevationcutoffcmd.CmdHeader[6], command->grxcmdelevationcutoffcmd.CmdHeader[7],
-                                command->grxcmdelevationcutoffcmd.param.constellation, command->grxcmdelevationcutoffcmd.param.cutoff);
-                break;
-            }
-            case 26: { //grxcmdinterfacemodecmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 //ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxassemblepublishcmd.CmdHeader[0],
+//                 //                command->grxassemblepublishcmd.CmdHeader[1], command->grxassemblepublishcmd.CmdHeader[2], command->grxassemblepublishcmd.CmdHeader[3], command->grxassemblepublishcmd.CmdHeader[4], command->grxassemblepublishcmd.CmdHeader[5], command->grxassemblepublishcmd.CmdHeader[6], command->grxassemblepublishcmd.CmdHeader[7],
+//                 //                command->grxassemblepublishcmd.Timeout, command->grxassemblepublishcmd.ItemSize, command->grxassemblepublishcmd.ItemCount, command->grxassemblepublishcmd.Node, command->grxassemblepublishcmd.TableId, command->grxassemblepublishcmd.Address, command->grxassemblepublishcmd.Type);
+//                 break;
+//             }
+//             case 19: { //grx cmdlog
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.port);
-                ImGui::InputScalar("rxtype", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.rxType);
-                ImGui::InputScalar("txtype", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.txType);
-                ImGui::InputScalar("response", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.responses);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogcmd.param.msgId);
+//                 ImGui::InputScalar("type",ImGuiDataType_U8, &command->grxcmdlogcmd.param.type);
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogcmd.param.port);
+//                 ImGui::InputScalar("trigger", ImGuiDataType_U32, &command->grxcmdlogcmd.param.trigger);
+//                 ImGui::InputScalar("hold", ImGuiDataType_U32, &command->grxcmdlogcmd.param.hold);
+//                 ImGui::InputScalar("period", ImGuiDataType_Double, &command->grxcmdlogcmd.param.period);
+//                 ImGui::InputScalar("offset", ImGuiDataType_Double, &command->grxcmdlogcmd.param.offset);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdLOGCmd_t)-7};
+//                     memcpy(command->grxcmdlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLOGCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdLOGCmd_t);
+                    
+//                     uint16_t len = sizeof(GRX_CmdLOGCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdlogcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdlogcmd, sizeof(GRX_CmdLOGCmd_t));
+                    
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdlogcmd.CmdHeader[0],
+//                                 command->grxcmdlogcmd.CmdHeader[1], command->grxcmdlogcmd.CmdHeader[2], command->grxcmdlogcmd.CmdHeader[3], command->grxcmdlogcmd.CmdHeader[4], command->grxcmdlogcmd.CmdHeader[5], command->grxcmdlogcmd.CmdHeader[6], command->grxcmdlogcmd.CmdHeader[7],
+//                                 command->grxcmdlogcmd.param.msgId, command->grxcmdlogcmd.param.type, command->grxcmdlogcmd.param.port, command->grxcmdlogcmd.param.trigger, 
+//                                 command->grxcmdlogcmd.param.hold, command->grxcmdlogcmd.param.period, command->grxcmdlogcmd.param.offset);
+//                 break;
+//             }
+//             case 20: { //grx cmdlogontime
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogontimecmd.param.msgId);
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogontimecmd.param.port);
+//                 ImGui::InputScalar("period", ImGuiDataType_Double, &command->grxcmdlogontimecmd.param.period);
+//                 ImGui::InputScalar("offset", ImGuiDataType_Double, &command->grxcmdlogontimecmd.param.offset);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnTimeCmd_t)-7};
+//                     memcpy(command->grxcmdlogontimecmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogontimecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogontimecmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogontimecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnTimeCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdLogOnTimeCmd_t);
+                    
+//                     uint16_t len = sizeof(GRX_CmdLogOnTimeCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogontimecmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdlogontimecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdlogontimecmd, sizeof(GRX_CmdLogOnTimeCmd_t));
+                    
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %lf %lf",command->grxcmdlogontimecmd.CmdHeader[0],
+//                                 command->grxcmdlogontimecmd.CmdHeader[1], command->grxcmdlogontimecmd.CmdHeader[2], command->grxcmdlogontimecmd.CmdHeader[3], command->grxcmdlogontimecmd.CmdHeader[4], command->grxcmdlogontimecmd.CmdHeader[5], command->grxcmdlogontimecmd.CmdHeader[6], command->grxcmdlogontimecmd.CmdHeader[7],
+//                                 command->grxcmdlogontimecmd.param.msgId, command->grxcmdlogontimecmd.param.port, command->grxcmdlogontimecmd.param.period, command->grxcmdlogontimecmd.param.offset);
+//                 break;
+//             }
+//             case 21: { //grxcmdlogonchanged
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogonchangedcmd.param.msgId);
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogonchangedcmd.param.port);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnChangedCmd_t)-7};
+//                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnChangedCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdLogOnChangedCmd_t);
+                    
+//                     uint16_t len = sizeof(GRX_CmdLogOnChangedCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogonchangedcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdlogonchangedcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdlogonchangedcmd, sizeof(GRX_CmdLogOnChangedCmd_t));
+                    
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxcmdlogonchangedcmd.CmdHeader[0],
+//                                 command->grxcmdlogonchangedcmd.CmdHeader[1], command->grxcmdlogonchangedcmd.CmdHeader[2], command->grxcmdlogonchangedcmd.CmdHeader[3], command->grxcmdlogonchangedcmd.CmdHeader[4], command->grxcmdlogonchangedcmd.CmdHeader[5], command->grxcmdlogonchangedcmd.CmdHeader[6], command->grxcmdlogonchangedcmd.CmdHeader[7],
+//                                 command->grxcmdlogonchangedcmd.param.msgId, command->grxcmdlogonchangedcmd.param.port);
+//                 break;
+//             }
+//             case 22: { //grxcmdlogonnew
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdlogonnewcmd.param.msgId);
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdlogonnewcmd.param.port);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdLogOnNewCmd_t)-7};
+//                     memcpy(command->grxcmdlogonnewcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogonnewcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogonnewcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdlogonnewcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdLogOnNewCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdLogOnNewCmd_t);
+                    
+//                     uint16_t len = sizeof(GRX_CmdLogOnNewCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdlogonnewcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdlogonnewcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdlogonnewcmd, sizeof(GRX_CmdLogOnNewCmd_t));
+                    
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxcmdlogonnewcmd.CmdHeader[0],
+//                                 command->grxcmdlogonnewcmd.CmdHeader[1], command->grxcmdlogonnewcmd.CmdHeader[2], command->grxcmdlogonnewcmd.CmdHeader[3], command->grxcmdlogonnewcmd.CmdHeader[4], command->grxcmdlogonnewcmd.CmdHeader[5], command->grxcmdlogonnewcmd.CmdHeader[6], command->grxcmdlogonnewcmd.CmdHeader[7],
+//                                 command->grxcmdlogonnewcmd.param.msgId, command->grxcmdlogonnewcmd.param.port);
+//                 break;
+//             }
+//             case 23: { //grxcmdunlogcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &command->grxcmdunlogcmd.param.msgId);
+//                 ImGui::InputScalar("msgtype",ImGuiDataType_U8, &command->grxcmdunlogcmd.param.msgType);
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdunlogcmd.param.port);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogCmd_t)-7};
+//                     memcpy(command->grxcmdunlogcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdunlogcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdunlogcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdunlogcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdUnlogCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdUnlogCmd_t);
+                    
+//                     uint16_t len = sizeof(GRX_CmdUnlogCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdunlogcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdunlogcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdunlogcmd, sizeof(GRX_CmdUnlogCmd_t));
+                    
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->grxcmdunlogcmd.CmdHeader[0],
+//                                 command->grxcmdunlogcmd.CmdHeader[1], command->grxcmdunlogcmd.CmdHeader[2], command->grxcmdunlogcmd.CmdHeader[3], command->grxcmdunlogcmd.CmdHeader[4], command->grxcmdunlogcmd.CmdHeader[5], command->grxcmdunlogcmd.CmdHeader[6], command->grxcmdunlogcmd.CmdHeader[7],
+//                                 command->grxcmdunlogcmd.param.msgId, command->grxcmdunlogcmd.param.msgType, command->grxcmdunlogcmd.param.port);
+//                 break;
+//             }
+//             case 24: { //grxcmdunlogallcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdunlogallcmd.param.port);
+//                 ImGui::Checkbox("held",&command->grxcmdunlogallcmd.param.held);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdUnlogAllCmd_t)-7};
+//                     memcpy(command->grxcmdunlogallcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdunlogallcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdunlogallcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdunlogallcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdUnlogAllCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdUnlogAllCmd_t);
+                    
+//                     uint16_t len = sizeof(GRX_CmdUnlogAllCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdunlogallcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdunlogallcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdunlogallcmd, sizeof(GRX_CmdUnlogAllCmd_t));
+                    
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d",command->grxcmdunlogallcmd.CmdHeader[0],
+//                                 command->grxcmdunlogallcmd.CmdHeader[1], command->grxcmdunlogallcmd.CmdHeader[2], command->grxcmdunlogallcmd.CmdHeader[3], command->grxcmdunlogallcmd.CmdHeader[4], command->grxcmdunlogallcmd.CmdHeader[5], command->grxcmdunlogallcmd.CmdHeader[6], command->grxcmdunlogallcmd.CmdHeader[7],
+//                                 command->grxcmdunlogallcmd.param.port, command->grxcmdunlogallcmd.param.held);
+//                 break;
+//             }
+//             case 25: { //grxcmdelevationcutoffcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("constellation", ImGuiDataType_U32, &command->grxcmdelevationcutoffcmd.param.constellation);
+//                 ImGui::InputScalar("cutoff", ImGuiDataType_Float, &command->grxcmdelevationcutoffcmd.param.cutoff);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdElevationCutoffCmd_t)-7};
+//                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdElevationCutoffCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdElevationCutoffCmd_t);
+                    
+//                     uint16_t len = sizeof(GRX_CmdElevationCutoffCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdelevationcutoffcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdelevationcutoffcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdelevationcutoffcmd, sizeof(GRX_CmdElevationCutoffCmd_t));
+                    
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %f",command->grxcmdelevationcutoffcmd.CmdHeader[0],
+//                                 command->grxcmdelevationcutoffcmd.CmdHeader[1], command->grxcmdelevationcutoffcmd.CmdHeader[2], command->grxcmdelevationcutoffcmd.CmdHeader[3], command->grxcmdelevationcutoffcmd.CmdHeader[4], command->grxcmdelevationcutoffcmd.CmdHeader[5], command->grxcmdelevationcutoffcmd.CmdHeader[6], command->grxcmdelevationcutoffcmd.CmdHeader[7],
+//                                 command->grxcmdelevationcutoffcmd.param.constellation, command->grxcmdelevationcutoffcmd.param.cutoff);
+//                 break;
+//             }
+//             case 26: { //grxcmdinterfacemodecmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.port);
+//                 ImGui::InputScalar("rxtype", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.rxType);
+//                 ImGui::InputScalar("txtype", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.txType);
+//                 ImGui::InputScalar("response", ImGuiDataType_U32, &command->grxcmdinterfacemodecmd.param.responses);
                 
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdInterfaceModeCmd_t)-7};
-                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdInterfaceModeCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdInterfaceModeCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdInterfaceModeCmd_t)-7};
+//                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdInterfaceModeCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdInterfaceModeCmd_t);
                     
-                    uint16_t len = sizeof(GRX_CmdInterfaceModeCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdinterfacemodecmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdinterfacemodecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdinterfacemodecmd, sizeof(GRX_CmdInterfaceModeCmd_t));
+//                     uint16_t len = sizeof(GRX_CmdInterfaceModeCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdinterfacemodecmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdinterfacemodecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdinterfacemodecmd, sizeof(GRX_CmdInterfaceModeCmd_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->grxcmdinterfacemodecmd.CmdHeader[0],
-                                command->grxcmdinterfacemodecmd.CmdHeader[1], command->grxcmdinterfacemodecmd.CmdHeader[2], command->grxcmdinterfacemodecmd.CmdHeader[3], command->grxcmdinterfacemodecmd.CmdHeader[4], command->grxcmdinterfacemodecmd.CmdHeader[5], command->grxcmdinterfacemodecmd.CmdHeader[6], command->grxcmdinterfacemodecmd.CmdHeader[7],
-                                command->grxcmdinterfacemodecmd.param.port, command->grxcmdinterfacemodecmd.param.rxType, command->grxcmdinterfacemodecmd.param.txType, command->grxcmdinterfacemodecmd.param.responses);
-                break;
-            }
-            case 27: { //grxcmdserialconfigcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u",command->grxcmdinterfacemodecmd.CmdHeader[0],
+//                                 command->grxcmdinterfacemodecmd.CmdHeader[1], command->grxcmdinterfacemodecmd.CmdHeader[2], command->grxcmdinterfacemodecmd.CmdHeader[3], command->grxcmdinterfacemodecmd.CmdHeader[4], command->grxcmdinterfacemodecmd.CmdHeader[5], command->grxcmdinterfacemodecmd.CmdHeader[6], command->grxcmdinterfacemodecmd.CmdHeader[7],
+//                                 command->grxcmdinterfacemodecmd.param.port, command->grxcmdinterfacemodecmd.param.rxType, command->grxcmdinterfacemodecmd.param.txType, command->grxcmdinterfacemodecmd.param.responses);
+//                 break;
+//             }
+//             case 27: { //grxcmdserialconfigcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.port);
-                ImGui::InputScalar("baud", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.baud);
-                ImGui::InputScalar("parity", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.parity);
-                ImGui::InputScalar("databits", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.databits);
-                ImGui::InputScalar("stopbits", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.stopbits);
-                ImGui::InputScalar("handshake", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.handshake);
-                ImGui::InputScalar("break", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param._break);
+//                 ImGui::InputScalar("port", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.port);
+//                 ImGui::InputScalar("baud", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.baud);
+//                 ImGui::InputScalar("parity", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.parity);
+//                 ImGui::InputScalar("databits", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.databits);
+//                 ImGui::InputScalar("stopbits", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.stopbits);
+//                 ImGui::InputScalar("handshake", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param.handshake);
+//                 ImGui::InputScalar("break", ImGuiDataType_U32, &command->grxcmdserialconfigcmd.param._break);
                 
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_CmdSerialConfigCmd_t)-7};
-                    memcpy(command->grxcmdserialconfigcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxcmdserialconfigcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxcmdserialconfigcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxcmdserialconfigcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdSerialConfigCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_CmdSerialConfigCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_CmdSerialConfigCmd_t)-7};
+//                     memcpy(command->grxcmdserialconfigcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxcmdserialconfigcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxcmdserialconfigcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxcmdserialconfigcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_CmdSerialConfigCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_CmdSerialConfigCmd_t);
                     
-                    uint16_t len = sizeof(GRX_CmdSerialConfigCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxcmdserialconfigcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxcmdserialconfigcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxcmdserialconfigcmd, sizeof(GRX_CmdSerialConfigCmd_t));
+//                     uint16_t len = sizeof(GRX_CmdSerialConfigCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxcmdserialconfigcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxcmdserialconfigcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxcmdserialconfigcmd, sizeof(GRX_CmdSerialConfigCmd_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdserialconfigcmd.CmdHeader[0],
-                                command->grxcmdserialconfigcmd.CmdHeader[1], command->grxcmdserialconfigcmd.CmdHeader[2], command->grxcmdserialconfigcmd.CmdHeader[3], command->grxcmdserialconfigcmd.CmdHeader[4], command->grxcmdserialconfigcmd.CmdHeader[5], command->grxcmdserialconfigcmd.CmdHeader[6], command->grxcmdserialconfigcmd.CmdHeader[7],
-                                command->grxcmdserialconfigcmd.param.port, command->grxcmdserialconfigcmd.param.baud, command->grxcmdserialconfigcmd.param.parity, command->grxcmdserialconfigcmd.param.databits, command->grxcmdserialconfigcmd.param.stopbits, command->grxcmdserialconfigcmd.param.handshake, command->grxcmdserialconfigcmd.param._break);
-                break;
-            }
-            case 28: { //grxlogresisterhandlercmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u %u",command->grxcmdserialconfigcmd.CmdHeader[0],
+//                                 command->grxcmdserialconfigcmd.CmdHeader[1], command->grxcmdserialconfigcmd.CmdHeader[2], command->grxcmdserialconfigcmd.CmdHeader[3], command->grxcmdserialconfigcmd.CmdHeader[4], command->grxcmdserialconfigcmd.CmdHeader[5], command->grxcmdserialconfigcmd.CmdHeader[6], command->grxcmdserialconfigcmd.CmdHeader[7],
+//                                 command->grxcmdserialconfigcmd.param.port, command->grxcmdserialconfigcmd.param.baud, command->grxcmdserialconfigcmd.param.parity, command->grxcmdserialconfigcmd.param.databits, command->grxcmdserialconfigcmd.param.stopbits, command->grxcmdserialconfigcmd.param.handshake, command->grxcmdserialconfigcmd.param._break);
+//                 break;
+//             }
+//             case 28: { //grxlogresisterhandlercmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogresisterhandlercmd.param.id);
-                ImGui::InputScalar("mlen", ImGuiDataType_U16, &command->grxlogresisterhandlercmd.param.mlen);
+//                 ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogresisterhandlercmd.param.id);
+//                 ImGui::InputScalar("mlen", ImGuiDataType_U16, &command->grxlogresisterhandlercmd.param.mlen);
             
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogRegisterHandlerCmd_t)-7};
-                    memcpy(command->grxlogresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxlogresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxlogresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxlogresisterhandlercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogRegisterHandlerCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_LogRegisterHandlerCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_LogRegisterHandlerCmd_t)-7};
+//                     memcpy(command->grxlogresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxlogresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxlogresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxlogresisterhandlercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogRegisterHandlerCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_LogRegisterHandlerCmd_t);
                     
-                    uint16_t len = sizeof(GRX_LogRegisterHandlerCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxlogresisterhandlercmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxlogresisterhandlercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxlogresisterhandlercmd, sizeof(GRX_LogRegisterHandlerCmd_t));
+//                     uint16_t len = sizeof(GRX_LogRegisterHandlerCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxlogresisterhandlercmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxlogresisterhandlercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxlogresisterhandlercmd, sizeof(GRX_LogRegisterHandlerCmd_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxlogresisterhandlercmd.CmdHeader[0],
-                                command->grxlogresisterhandlercmd.CmdHeader[1], command->grxlogresisterhandlercmd.CmdHeader[2], command->grxlogresisterhandlercmd.CmdHeader[3], command->grxlogresisterhandlercmd.CmdHeader[4], command->grxlogresisterhandlercmd.CmdHeader[5], command->grxlogresisterhandlercmd.CmdHeader[6], command->grxlogresisterhandlercmd.CmdHeader[7],
-                                command->grxlogresisterhandlercmd.param.id, command->grxlogresisterhandlercmd.param.mlen);
-                break;
-            }
-            case 29: { //grxlogunresisterhandlercmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->grxlogresisterhandlercmd.CmdHeader[0],
+//                                 command->grxlogresisterhandlercmd.CmdHeader[1], command->grxlogresisterhandlercmd.CmdHeader[2], command->grxlogresisterhandlercmd.CmdHeader[3], command->grxlogresisterhandlercmd.CmdHeader[4], command->grxlogresisterhandlercmd.CmdHeader[5], command->grxlogresisterhandlercmd.CmdHeader[6], command->grxlogresisterhandlercmd.CmdHeader[7],
+//                                 command->grxlogresisterhandlercmd.param.id, command->grxlogresisterhandlercmd.param.mlen);
+//                 break;
+//             }
+//             case 29: { //grxlogunresisterhandlercmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogunresisterhandlercmd.id);
+//                 ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogunresisterhandlercmd.id);
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogUnregisterHandlerCmd_t)-7};
-                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogUnregisterHandlerCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_LogUnregisterHandlerCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_LogUnregisterHandlerCmd_t)-7};
+//                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogUnregisterHandlerCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_LogUnregisterHandlerCmd_t);
                     
-                    uint16_t len = sizeof(GRX_LogUnregisterHandlerCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxlogunresisterhandlercmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxlogunresisterhandlercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxlogunresisterhandlercmd, sizeof(GRX_LogUnregisterHandlerCmd_t));
+//                     uint16_t len = sizeof(GRX_LogUnregisterHandlerCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxlogunresisterhandlercmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxlogunresisterhandlercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxlogunresisterhandlercmd, sizeof(GRX_LogUnregisterHandlerCmd_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u",command->grxlogunresisterhandlercmd.CmdHeader[0],
-                                command->grxlogunresisterhandlercmd.CmdHeader[1], command->grxlogunresisterhandlercmd.CmdHeader[2], command->grxlogunresisterhandlercmd.CmdHeader[3], command->grxlogunresisterhandlercmd.CmdHeader[4], command->grxlogunresisterhandlercmd.CmdHeader[5], command->grxlogunresisterhandlercmd.CmdHeader[6], command->grxlogunresisterhandlercmd.CmdHeader[7],
-                                command->grxlogunresisterhandlercmd.id);
-                break;
-            }
-            case 30: { //grxlogaddcallbackcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u",command->grxlogunresisterhandlercmd.CmdHeader[0],
+//                                 command->grxlogunresisterhandlercmd.CmdHeader[1], command->grxlogunresisterhandlercmd.CmdHeader[2], command->grxlogunresisterhandlercmd.CmdHeader[3], command->grxlogunresisterhandlercmd.CmdHeader[4], command->grxlogunresisterhandlercmd.CmdHeader[5], command->grxlogunresisterhandlercmd.CmdHeader[6], command->grxlogunresisterhandlercmd.CmdHeader[7],
+//                                 command->grxlogunresisterhandlercmd.id);
+//                 break;
+//             }
+//             case 30: { //grxlogaddcallbackcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogaddcallbackcmd.param.id);
-                ImGui::InputScalar("option", ImGuiDataType_S32, &command->grxlogaddcallbackcmd.param.options);
-                ImGui::InputText("libpath", command->grxlogaddcallbackcmd.param.libpath, sizeof(command->grxlogaddcallbackcmd.param.libpath));
-                ImGui::InputText("funcname", command->grxlogaddcallbackcmd.param.funcName, sizeof(command->grxlogaddcallbackcmd.param.funcName));
+//                 ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogaddcallbackcmd.param.id);
+//                 ImGui::InputScalar("option", ImGuiDataType_S32, &command->grxlogaddcallbackcmd.param.options);
+//                 ImGui::InputText("libpath", command->grxlogaddcallbackcmd.param.libpath, sizeof(command->grxlogaddcallbackcmd.param.libpath));
+//                 ImGui::InputText("funcname", command->grxlogaddcallbackcmd.param.funcName, sizeof(command->grxlogaddcallbackcmd.param.funcName));
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogAddCallbackCmd_t)-7};
-                    memcpy(command->grxlogaddcallbackcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxlogaddcallbackcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxlogaddcallbackcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxlogaddcallbackcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogAddCallbackCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_LogAddCallbackCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_LogAddCallbackCmd_t)-7};
+//                     memcpy(command->grxlogaddcallbackcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxlogaddcallbackcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxlogaddcallbackcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxlogaddcallbackcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogAddCallbackCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_LogAddCallbackCmd_t);
                     
-                    uint16_t len = sizeof(GRX_LogAddCallbackCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxlogaddcallbackcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxlogaddcallbackcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxlogaddcallbackcmd, sizeof(GRX_LogAddCallbackCmd_t));
+//                     uint16_t len = sizeof(GRX_LogAddCallbackCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxlogaddcallbackcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxlogaddcallbackcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxlogaddcallbackcmd, sizeof(GRX_LogAddCallbackCmd_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %s %s",command->grxlogaddcallbackcmd.CmdHeader[0],
-                                command->grxlogaddcallbackcmd.CmdHeader[1], command->grxlogaddcallbackcmd.CmdHeader[2], command->grxlogaddcallbackcmd.CmdHeader[3], command->grxlogaddcallbackcmd.CmdHeader[4], command->grxlogaddcallbackcmd.CmdHeader[5], command->grxlogaddcallbackcmd.CmdHeader[6], command->grxlogaddcallbackcmd.CmdHeader[7],
-                                command->grxlogaddcallbackcmd.param.id, command->grxlogaddcallbackcmd.param.options, command->grxlogaddcallbackcmd.param.libpath, command->grxlogaddcallbackcmd.param.funcName);
-                break;
-            }
-            case 31: { //grxlogsethandlerstatuscmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode=0;
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %d %s %s",command->grxlogaddcallbackcmd.CmdHeader[0],
+//                                 command->grxlogaddcallbackcmd.CmdHeader[1], command->grxlogaddcallbackcmd.CmdHeader[2], command->grxlogaddcallbackcmd.CmdHeader[3], command->grxlogaddcallbackcmd.CmdHeader[4], command->grxlogaddcallbackcmd.CmdHeader[5], command->grxlogaddcallbackcmd.CmdHeader[6], command->grxlogaddcallbackcmd.CmdHeader[7],
+//                                 command->grxlogaddcallbackcmd.param.id, command->grxlogaddcallbackcmd.param.options, command->grxlogaddcallbackcmd.param.libpath, command->grxlogaddcallbackcmd.param.funcName);
+//                 break;
+//             }
+//             case 31: { //grxlogsethandlerstatuscmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode=0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogsethandlerstatuscmd.param.id);
-                ImGui::InputScalar("status", ImGuiDataType_U8, &command->grxlogsethandlerstatuscmd.param.status);
-                ImGui::Checkbox("override",&command->grxlogsethandlerstatuscmd.param.override);
+//                 ImGui::InputScalar("id", ImGuiDataType_U16, &command->grxlogsethandlerstatuscmd.param.id);
+//                 ImGui::InputScalar("status", ImGuiDataType_U8, &command->grxlogsethandlerstatuscmd.param.status);
+//                 ImGui::Checkbox("override",&command->grxlogsethandlerstatuscmd.param.override);
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    uint8_t length[2] = {0x00, sizeof(GRX_LogSetHandlerStatusCmd_t)-7};
-                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogSetHandlerStatusCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(GRX_LogSetHandlerStatusCmd_t);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(GRX_LogSetHandlerStatusCmd_t)-7};
+//                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader + 7, &fnccode, sizeof(uint8_t));
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(GRX_LogSetHandlerStatusCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(GRX_LogSetHandlerStatusCmd_t);
                     
-                    uint16_t len = sizeof(GRX_LogSetHandlerStatusCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->grxlogsethandlerstatuscmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->grxlogsethandlerstatuscmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->grxlogsethandlerstatuscmd, sizeof(GRX_LogSetHandlerStatusCmd_t));
+//                     uint16_t len = sizeof(GRX_LogSetHandlerStatusCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->grxlogsethandlerstatuscmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->grxlogsethandlerstatuscmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->grxlogsethandlerstatuscmd, sizeof(GRX_LogSetHandlerStatusCmd_t));
                     
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->grxlogsethandlerstatuscmd.CmdHeader[0],
-                                command->grxlogsethandlerstatuscmd.CmdHeader[1], command->grxlogsethandlerstatuscmd.CmdHeader[2], command->grxlogsethandlerstatuscmd.CmdHeader[3], command->grxlogsethandlerstatuscmd.CmdHeader[4], command->grxlogsethandlerstatuscmd.CmdHeader[5], command->grxlogsethandlerstatuscmd.CmdHeader[6], command->grxlogsethandlerstatuscmd.CmdHeader[7],
-                                command->grxlogsethandlerstatuscmd.param.id, command->grxlogsethandlerstatuscmd.param.status, command->grxlogsethandlerstatuscmd.param.override);
-                break;
-            }
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->grxlogsethandlerstatuscmd.CmdHeader[0],
+//                                 command->grxlogsethandlerstatuscmd.CmdHeader[1], command->grxlogsethandlerstatuscmd.CmdHeader[2], command->grxlogsethandlerstatuscmd.CmdHeader[3], command->grxlogsethandlerstatuscmd.CmdHeader[4], command->grxlogsethandlerstatuscmd.CmdHeader[5], command->grxlogsethandlerstatuscmd.CmdHeader[6], command->grxlogsethandlerstatuscmd.CmdHeader[7],
+//                                 command->grxlogsethandlerstatuscmd.param.id, command->grxlogsethandlerstatuscmd.param.status, command->grxlogsethandlerstatuscmd.param.override);
+//                 break;
+//             }
 
-            //ADCS
-            case 32: {
-                //ID 2
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             //ADCS
+//             case 32: {
+//                 //ID 2
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("unixTimeSeconds",ImGuiDataType_U32, &command->adcs_Unixtime.unixTimeSeconds);
-                ImGui::InputScalar("unixTimeNanoSeconds",ImGuiDataType_U32, &command->adcs_Unixtime.unixTimeNanoSeconds);
+//                 ImGui::InputScalar("unixTimeSeconds",ImGuiDataType_U32, &command->adcs_Unixtime.unixTimeSeconds);
+//                 ImGui::InputScalar("unixTimeNanoSeconds",ImGuiDataType_U32, &command->adcs_Unixtime.unixTimeNanoSeconds);
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_CurrentUnixTimeCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_CurrentUnixTimeCmd_t)-7};
                     
                     
-                    memcpy(command->adcs_Unixtime.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_Unixtime.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_Unixtime.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_Unixtime.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_CurrentUnixTimeCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_CurrentUnixTimeCmd_t);
+//                     memcpy(command->adcs_Unixtime.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_Unixtime.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_Unixtime.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_Unixtime.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_CurrentUnixTimeCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_CurrentUnixTimeCmd_t);
                     
-                    uint16_t len = sizeof(ADCS_CurrentUnixTimeCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_Unixtime;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_Unixtime.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_Unixtime, sizeof(ADCS_CurrentUnixTimeCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+//                     uint16_t len = sizeof(ADCS_CurrentUnixTimeCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_Unixtime;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_Unixtime.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_Unixtime, sizeof(ADCS_CurrentUnixTimeCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
 
-            }
+//             }
 
-            case 33: {
-                //ID 48
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 33: {
+//                 //ID 48
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("TargetLatitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetLatitude);
-                ImGui::InputScalar("TargetLongitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetLongitude);
-                ImGui::InputScalar("TargetAltitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetAltitude);
+//                 ImGui::InputScalar("TargetLatitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetLatitude);
+//                 ImGui::InputScalar("TargetLongitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetLongitude);
+//                 ImGui::InputScalar("TargetAltitude",ImGuiDataType_Float, &command->adcs_RefLLHTarget.cmdTargetAltitude);
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_Reference_LLHTargetCommandCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_Reference_LLHTargetCommandCmd_t)-7};
                     
                     
-                    memcpy(command->adcs_RefLLHTarget.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_RefLLHTarget.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_RefLLHTarget.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_RefLLHTarget.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_Reference_LLHTargetCommandCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_Reference_LLHTargetCommandCmd_t);
+//                     memcpy(command->adcs_RefLLHTarget.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_RefLLHTarget.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_RefLLHTarget.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_RefLLHTarget.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_Reference_LLHTargetCommandCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_Reference_LLHTargetCommandCmd_t);
                     
-                    uint16_t len = sizeof(ADCS_Reference_LLHTargetCommandCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_RefLLHTarget;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_RefLLHTarget.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_RefLLHTarget, sizeof(ADCS_Reference_LLHTargetCommandCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+//                     uint16_t len = sizeof(ADCS_Reference_LLHTargetCommandCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_RefLLHTarget;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_RefLLHTarget.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_RefLLHTarget, sizeof(ADCS_Reference_LLHTargetCommandCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
 
-            }
+//             }
 
-            case 34: {
-                //ID 49
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 34: {
+//                 //ID 49
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("gnssTimeSeconds(U32)",ImGuiDataType_U32, &command->adcs_GnssMeasurements.gnssTimeSeconds);
-                ImGui::InputScalar("gnssTimeNs(U32)",ImGuiDataType_U32, &command->adcs_GnssMeasurements.gnssTimeNs);
-                ImGui::InputScalar("gnssSatPosX(S32)",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosX);
-                ImGui::InputScalar("gnssSatPosY",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosY);
-                ImGui::InputScalar("gnssSatPosZ",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosZ);
-                ImGui::InputScalar("gnssSatVelX",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelX);
-                ImGui::InputScalar("gnssSatVelY",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelY);
-                ImGui::InputScalar("gnssSatVelZ",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelZ);
-                ImGui::InputScalar("syncTime",ImGuiDataType_U8, &command->adcs_GnssMeasurements.syncTime);
+//                 ImGui::InputScalar("gnssTimeSeconds(U32)",ImGuiDataType_U32, &command->adcs_GnssMeasurements.gnssTimeSeconds);
+//                 ImGui::InputScalar("gnssTimeNs(U32)",ImGuiDataType_U32, &command->adcs_GnssMeasurements.gnssTimeNs);
+//                 ImGui::InputScalar("gnssSatPosX(S32)",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosX);
+//                 ImGui::InputScalar("gnssSatPosY",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosY);
+//                 ImGui::InputScalar("gnssSatPosZ",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatPosZ);
+//                 ImGui::InputScalar("gnssSatVelX",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelX);
+//                 ImGui::InputScalar("gnssSatVelY",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelY);
+//                 ImGui::InputScalar("gnssSatVelZ",ImGuiDataType_S32, &command->adcs_GnssMeasurements.gnssSatVelZ);
+//                 ImGui::InputScalar("syncTime",ImGuiDataType_U8, &command->adcs_GnssMeasurements.syncTime);
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_GnssMeasurementsCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_GnssMeasurementsCmd_t)-7};
                     
                     
-                    memcpy(command->adcs_GnssMeasurements.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_GnssMeasurements.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_GnssMeasurements.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_GnssMeasurements.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_GnssMeasurementsCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_GnssMeasurementsCmd_t);
+//                     memcpy(command->adcs_GnssMeasurements.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_GnssMeasurements.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_GnssMeasurements.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_GnssMeasurements.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_GnssMeasurementsCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_GnssMeasurementsCmd_t);
                     
-                    uint16_t len = sizeof(ADCS_GnssMeasurementsCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_GnssMeasurements;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_GnssMeasurements.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_GnssMeasurements, sizeof(ADCS_GnssMeasurementsCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+//                     uint16_t len = sizeof(ADCS_GnssMeasurementsCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_GnssMeasurements;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_GnssMeasurements.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_GnssMeasurements, sizeof(ADCS_GnssMeasurementsCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
 
-            case 35: {
-                //ID 54
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 35: {
+//                 //ID 54
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("cmdRpyRoll(F32)",ImGuiDataType_U32, &command->adcs_RefRPY.cmdRpyRoll);
-                ImGui::InputScalar("cmdRpyPitch(F32)",ImGuiDataType_U32, &command->adcs_RefRPY.cmdRpyPitch);
-                ImGui::InputScalar("cmdRpyYaw(F32)",ImGuiDataType_S32, &command->adcs_RefRPY.cmdRpyYaw);
+//                 ImGui::InputScalar("cmdRpyRoll(F32)",ImGuiDataType_U32, &command->adcs_RefRPY.cmdRpyRoll);
+//                 ImGui::InputScalar("cmdRpyPitch(F32)",ImGuiDataType_U32, &command->adcs_RefRPY.cmdRpyPitch);
+//                 ImGui::InputScalar("cmdRpyYaw(F32)",ImGuiDataType_S32, &command->adcs_RefRPY.cmdRpyYaw);
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_ReferenceRPYValueCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_ReferenceRPYValueCmd_t)-7};
                     
                     
-                    memcpy(command->adcs_RefRPY.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_RefRPY.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_RefRPY.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_RefRPY.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ReferenceRPYValueCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_ReferenceRPYValueCmd_t);
+//                     memcpy(command->adcs_RefRPY.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_RefRPY.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_RefRPY.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_RefRPY.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ReferenceRPYValueCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_ReferenceRPYValueCmd_t);
                     
-                    uint16_t len = sizeof(ADCS_ReferenceRPYValueCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_RefRPY;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_RefRPY.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_RefRPY, sizeof(ADCS_ReferenceRPYValueCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+//                     uint16_t len = sizeof(ADCS_ReferenceRPYValueCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_RefRPY;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_RefRPY.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_RefRPY, sizeof(ADCS_ReferenceRPYValueCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
 
-            case 36: {
-                //ID 55
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 36: {
+//                 //ID 55
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("mtq0OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq0OnTimeCmd);
-                ImGui::InputScalar("mtq1OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq1OnTimeCmd);
-                ImGui::InputScalar("mtq2OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq2OnTimeCmd);
+//                 ImGui::InputScalar("mtq0OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq0OnTimeCmd);
+//                 ImGui::InputScalar("mtq1OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq1OnTimeCmd);
+//                 ImGui::InputScalar("mtq2OnTimeCmd(S16)[ms]",ImGuiDataType_S16, &command->adcs_OpenLoopCmdMtq.mtq2OnTimeCmd);
                 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandMtqCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandMtqCmd_t)-7};
                     
                     
-                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandMtqCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_OpenLoopCommandMtqCmd_t);
+//                     memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandMtqCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_OpenLoopCommandMtqCmd_t);
                     
-                    uint16_t len = sizeof(ADCS_OpenLoopCommandMtqCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdMtq;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdMtq, sizeof(ADCS_OpenLoopCommandMtqCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+//                     uint16_t len = sizeof(ADCS_OpenLoopCommandMtqCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdMtq;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_OpenLoopCmdMtq.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdMtq, sizeof(ADCS_OpenLoopCommandMtqCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
 
-            }
+//             }
 
-            case 37: {
-                //ID 58
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 37: {
+//                 //ID 58
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("controlMode(U8)",ImGuiDataType_U8, &command->adcs_ControlMode.controlMode);
-                ImGui::InputScalar("magConTimeout(U16)[s]",ImGuiDataType_U16, &command->adcs_ControlMode.magConTimeout);
+//                 ImGui::InputScalar("controlMode(U8)",ImGuiDataType_U8, &command->adcs_ControlMode.controlMode);
+//                 ImGui::InputScalar("magConTimeout(U16)[s]",ImGuiDataType_U16, &command->adcs_ControlMode.magConTimeout);
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_ControlModeCmd_t)-7};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    memcpy(command->adcs_ControlMode.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_ControlMode.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_ControlMode.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_ControlMode.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ControlModeCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_ControlModeCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_ControlModeCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ControlMode;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_ControlMode.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_ControlMode, sizeof(ADCS_ControlModeCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 38: {
-                //ID 61
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("MOI ixx(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixx);
-                ImGui::InputScalar("MOI iyy(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.iyy);
-                ImGui::InputScalar("MOI izz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.izz);
-                ImGui::InputScalar("POI ixy(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixy);
-                ImGui::InputScalar("POI ixz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixz);
-                ImGui::InputScalar("POI iyz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.iyz);
-                ImGui::InputScalar("sunPointBodyVecX(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecX);
-                ImGui::InputScalar("sunPointBodyVecY(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecY);
-                ImGui::InputScalar("sunPointBodyVecZ(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecZ);
-                ImGui::InputScalar("tgtTrackBodyVecX(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecX);
-                ImGui::InputScalar("tgtTrackBodyVecY(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecY);
-                ImGui::InputScalar("tgtTrackBodyVecZ(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecZ);
-
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_ControlModeCmd_t)-7};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_ConfigAdcsSatelliteCmd_t)-7};
+//                     memcpy(command->adcs_ControlMode.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_ControlMode.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_ControlMode.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_ControlMode.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ControlModeCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_ControlModeCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_ControlModeCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_ControlMode;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_ControlMode.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_ControlMode, sizeof(ADCS_ControlModeCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 38: {
+//                 //ID 61
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("MOI ixx(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixx);
+//                 ImGui::InputScalar("MOI iyy(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.iyy);
+//                 ImGui::InputScalar("MOI izz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.izz);
+//                 ImGui::InputScalar("POI ixy(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixy);
+//                 ImGui::InputScalar("POI ixz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.ixz);
+//                 ImGui::InputScalar("POI iyz(F32)[kg.m^2]",ImGuiDataType_Float, &command->adcs_ConfigAdcsSat.iyz);
+//                 ImGui::InputScalar("sunPointBodyVecX(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecX);
+//                 ImGui::InputScalar("sunPointBodyVecY(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecY);
+//                 ImGui::InputScalar("sunPointBodyVecZ(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.sunPointBodyVecZ);
+//                 ImGui::InputScalar("tgtTrackBodyVecX(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecX);
+//                 ImGui::InputScalar("tgtTrackBodyVecY(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecY);
+//                 ImGui::InputScalar("tgtTrackBodyVecZ(F64)",ImGuiDataType_Double, &command->adcs_ConfigAdcsSat.tgtTrackBodyVecZ);
+
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigAdcsSatelliteCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_ConfigAdcsSatelliteCmd_t);
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_ConfigAdcsSatelliteCmd_t)-7};
                     
-                    uint16_t len = sizeof(ADCS_ConfigAdcsSatelliteCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigAdcsSat;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_ConfigAdcsSat.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_ConfigAdcsSat, sizeof(ADCS_ConfigAdcsSatelliteCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+                    
+//                     memcpy(command->adcs_ConfigAdcsSat.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigAdcsSat.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigAdcsSatelliteCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_ConfigAdcsSatelliteCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_ConfigAdcsSatelliteCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigAdcsSat;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_ConfigAdcsSat.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_ConfigAdcsSat, sizeof(ADCS_ConfigAdcsSatelliteCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
 
-            case 39: {
-                //ID 62
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 39: {
+//                 //ID 62
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("Default control mode(U8)",ImGuiDataType_U8, &command->adcs_ControllerConfig.conModeDefault);
-                ImGui::InputScalar("Detumbling damping gain (Kd)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd);
-                ImGui::InputScalar("Sun-spin control gain - sunlit part (KDsun)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdsun);
-                ImGui::InputScalar("Sun-spin control gain - eclipse part (KDecl)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdecl);
-                ImGui::InputScalar("Detumbling spin gain (Ks)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.ks);
-                ImGui::InputScalar("Fast B-dot detumbling gain (Kdf)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdf);
-                ImGui::InputScalar("Y-momentum nutation damping gain (Kn)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kn);
-                ImGui::InputScalar("Y-momentum nutation damping quaternion gain (Kq)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kq);
-                ImGui::InputScalar("X-axis GG nutation damping quaternion gain (Kqx)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqx);
-                ImGui::InputScalar("Y-axis GG nutation damping quaternion gain (Kqy)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqy);
-                ImGui::InputScalar("Z-axis GG nutation damping quaternion gain (Kqz)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqz);
-                ImGui::InputScalar("Wheel desaturation control gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kh);
-                ImGui::InputScalar("Y-momentum proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp1);
-                ImGui::InputScalar("Y-momentum derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd1);
-                ImGui::InputScalar("RWheel proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp2);
-                ImGui::InputScalar("RWheel derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd2);
-                ImGui::InputScalar("Tracking proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp3);
-                ImGui::InputScalar("Tracking derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd3);
-                ImGui::InputScalar("Tracking integral gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.ki3);
-                ImGui::InputScalar("Reference spin rate(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.wy_ref);
-                ImGui::InputScalar("Reference wheel momentum(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.h_ref);
-                ImGui::InputScalar("Y-wheel bias momentum during XYZ-control(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.hy_bias);
-                ImGui::InputScalar("Reference spin rate for RW spin control(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.wSunYawRef);
-                ImGui::InputScalar("Sun keep-out angle(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.sunKeepoutAng);
-                ImGui::InputScalar("Roll limit angle(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.rollLimit);
+//                 ImGui::InputScalar("Default control mode(U8)",ImGuiDataType_U8, &command->adcs_ControllerConfig.conModeDefault);
+//                 ImGui::InputScalar("Detumbling damping gain (Kd)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd);
+//                 ImGui::InputScalar("Sun-spin control gain - sunlit part (KDsun)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdsun);
+//                 ImGui::InputScalar("Sun-spin control gain - eclipse part (KDecl)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdecl);
+//                 ImGui::InputScalar("Detumbling spin gain (Ks)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.ks);
+//                 ImGui::InputScalar("Fast B-dot detumbling gain (Kdf)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kdf);
+//                 ImGui::InputScalar("Y-momentum nutation damping gain (Kn)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kn);
+//                 ImGui::InputScalar("Y-momentum nutation damping quaternion gain (Kq)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kq);
+//                 ImGui::InputScalar("X-axis GG nutation damping quaternion gain (Kqx)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqx);
+//                 ImGui::InputScalar("Y-axis GG nutation damping quaternion gain (Kqy)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqy);
+//                 ImGui::InputScalar("Z-axis GG nutation damping quaternion gain (Kqz)(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kqz);
+//                 ImGui::InputScalar("Wheel desaturation control gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kh);
+//                 ImGui::InputScalar("Y-momentum proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp1);
+//                 ImGui::InputScalar("Y-momentum derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd1);
+//                 ImGui::InputScalar("RWheel proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp2);
+//                 ImGui::InputScalar("RWheel derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd2);
+//                 ImGui::InputScalar("Tracking proportional gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kp3);
+//                 ImGui::InputScalar("Tracking derivative gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.kd3);
+//                 ImGui::InputScalar("Tracking integral gain(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.ki3);
+//                 ImGui::InputScalar("Reference spin rate(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.wy_ref);
+//                 ImGui::InputScalar("Reference wheel momentum(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.h_ref);
+//                 ImGui::InputScalar("Y-wheel bias momentum during XYZ-control(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.hy_bias);
+//                 ImGui::InputScalar("Reference spin rate for RW spin control(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.wSunYawRef);
+//                 ImGui::InputScalar("Sun keep-out angle(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.sunKeepoutAng);
+//                 ImGui::InputScalar("Roll limit angle(F32)",ImGuiDataType_Float, &command->adcs_ControllerConfig.rollLimit);
 
-                ImGui::InputScalar("Yaw compensation for earth rotation(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.yawCompensate);
-                ImGui::InputScalar("Enable sun tracking in eclipse(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.sunTrackEclEn);
-                ImGui::InputScalar("Enable sun avoidance(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.sunAvoidEn);
+//                 ImGui::InputScalar("Yaw compensation for earth rotation(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.yawCompensate);
+//                 ImGui::InputScalar("Enable sun tracking in eclipse(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.sunTrackEclEn);
+//                 ImGui::InputScalar("Enable sun avoidance(Bool)",ImGuiDataType_U8, &command->adcs_ControllerConfig.sunAvoidEn);
 
                 
 
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_ControllerConfigurationCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_ControllerConfigurationCmd_t)-7};
                     
                     
-                    memcpy(command->adcs_ControllerConfig.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_ControllerConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_ControllerConfig.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_ControllerConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ControllerConfigurationCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_ControllerConfigurationCmd_t);
+//                     memcpy(command->adcs_ControllerConfig.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_ControllerConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_ControllerConfig.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_ControllerConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ControllerConfigurationCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_ControllerConfigurationCmd_t);
                     
-                    uint16_t len = sizeof(ADCS_ControllerConfigurationCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ControllerConfig;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_ControllerConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_ControllerConfig, sizeof(ADCS_ControllerConfigurationCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+//                     uint16_t len = sizeof(ADCS_ControllerConfigurationCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_ControllerConfig;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_ControllerConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_ControllerConfig, sizeof(ADCS_ControllerConfigurationCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
 
-            case 40: {
-                //ID 63
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 40: {
+//                 //ID 63
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("Magnetometer channel 1 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset1);
-                ImGui::InputScalar("Magnetometer channel 2 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset2);
-                ImGui::InputScalar("Magnetometer channel 3 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset3);
+//                 ImGui::InputScalar("Magnetometer channel 1 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset1);
+//                 ImGui::InputScalar("Magnetometer channel 2 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset2);
+//                 ImGui::InputScalar("Magnetometer channel 3 offset(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.offset3);
 
-                ImGui::InputScalar("Magnetometer sensitivity matrix S11(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix11);
-                ImGui::InputScalar("Magnetometer sensitivity matrix S22(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix22);
-                ImGui::InputScalar("Magnetometer sensitivity matrix S33(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix33);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S11(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix11);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S22(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix22);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S33(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix33);
 
-                ImGui::InputScalar("Magnetometer sensitivity matrix S12(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix12);
-                ImGui::InputScalar("Magnetometer sensitivity matrix S13(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix13);
-                ImGui::InputScalar("Magnetometer sensitivity matrix S21(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix21);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S12(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix12);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S13(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix13);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S21(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix21);
 
-                ImGui::InputScalar("Magnetometer sensitivity matrix S23(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix23);
-                ImGui::InputScalar("Magnetometer sensitivity matrix S31(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix31);
-                ImGui::InputScalar("Magnetometer sensitivity matrix S32(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix32);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S23(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix23);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S31(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix31);
+//                 ImGui::InputScalar("Magnetometer sensitivity matrix S32(F32)",ImGuiDataType_Float, &command->adcs_ConfigMag0OrbitCal.sensMatrix32);
 
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_ConfigMag0OrbitCalCmd_t)-7};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigMag0OrbitCalCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_ConfigMag0OrbitCalCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_ConfigMag0OrbitCalCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigMag0OrbitCal;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_ConfigMag0OrbitCal, sizeof(ADCS_ConfigMag0OrbitCalCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 41: {
-                //ID 65
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("StackX mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackX);
-                ImGui::InputScalar("StackY mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackY);
-                ImGui::InputScalar("StackZ mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackZ);
-                ImGui::InputScalar("MTQ0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq0);
-                ImGui::InputScalar("MTQ1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq1);
-                ImGui::InputScalar("MTQ2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq2);
-                ImGui::InputScalar("Wheel0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl0);
-                ImGui::InputScalar("Wheel1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl1);
-                ImGui::InputScalar("Wheel2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl2);
-
-                ImGui::InputScalar("CSS0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss0);
-                ImGui::InputScalar("CSS1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss1);
-                ImGui::InputScalar("CSS2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss2);
-                ImGui::InputScalar("CSS3 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss3);
-                ImGui::InputScalar("CSS4 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss4);
-                ImGui::InputScalar("CSS5 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss5);
-                ImGui::InputScalar("CSS6 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss6);
-                ImGui::InputScalar("CSS7 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss7);
-                ImGui::InputScalar("CSS8 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss8);
-                ImGui::InputScalar("CSS9 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss9);
-
-                ImGui::InputScalar("FSS0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Alpha);
-                ImGui::InputScalar("FSS0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Beta);
-                ImGui::InputScalar("FSS0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Gamma);
-                ImGui::InputScalar("HSS0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Alpha);
-                ImGui::InputScalar("HSS0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Beta);
-                ImGui::InputScalar("HSS0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Gamma);
-                ImGui::InputScalar("MAG0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Alpha);
-                ImGui::InputScalar("MAG0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Beta);
-                ImGui::InputScalar("MAG0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Gamma);
-
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_ConfigMag0OrbitCalCmd_t)-7};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(ADCS_MountingConfigurationCmd_t)-7};
+//                     memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigMag0OrbitCalCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_ConfigMag0OrbitCalCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_ConfigMag0OrbitCalCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigMag0OrbitCal;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_ConfigMag0OrbitCal.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_ConfigMag0OrbitCal, sizeof(ADCS_ConfigMag0OrbitCalCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 41: {
+//                 //ID 65
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("StackX mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackX);
+//                 ImGui::InputScalar("StackY mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackY);
+//                 ImGui::InputScalar("StackZ mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountStackZ);
+//                 ImGui::InputScalar("MTQ0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq0);
+//                 ImGui::InputScalar("MTQ1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq1);
+//                 ImGui::InputScalar("MTQ2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountMtq2);
+//                 ImGui::InputScalar("Wheel0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl0);
+//                 ImGui::InputScalar("Wheel1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl1);
+//                 ImGui::InputScalar("Wheel2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountRwl2);
+
+//                 ImGui::InputScalar("CSS0 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss0);
+//                 ImGui::InputScalar("CSS1 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss1);
+//                 ImGui::InputScalar("CSS2 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss2);
+//                 ImGui::InputScalar("CSS3 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss3);
+//                 ImGui::InputScalar("CSS4 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss4);
+//                 ImGui::InputScalar("CSS5 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss5);
+//                 ImGui::InputScalar("CSS6 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss6);
+//                 ImGui::InputScalar("CSS7 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss7);
+//                 ImGui::InputScalar("CSS8 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss8);
+//                 ImGui::InputScalar("CSS9 mounting(U8)",ImGuiDataType_U8, &command->adcs_MountingConfig.mountCss9);
+
+//                 ImGui::InputScalar("FSS0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Alpha);
+//                 ImGui::InputScalar("FSS0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Beta);
+//                 ImGui::InputScalar("FSS0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountFss0Gamma);
+//                 ImGui::InputScalar("HSS0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Alpha);
+//                 ImGui::InputScalar("HSS0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Beta);
+//                 ImGui::InputScalar("HSS0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountHss0Gamma);
+//                 ImGui::InputScalar("MAG0 mounting alpha angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Alpha);
+//                 ImGui::InputScalar("MAG0 mounting beta angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Beta);
+//                 ImGui::InputScalar("MAG0 mounting gamma angle(F64)",ImGuiDataType_Double, &command->adcs_MountingConfig.mountMag0Gamma);
+
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    memcpy(command->adcs_MountingConfig.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_MountingConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_MountingConfig.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_MountingConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_MountingConfigurationCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_MountingConfigurationCmd_t);
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_MountingConfigurationCmd_t)-7};
                     
-                    uint16_t len = sizeof(ADCS_MountingConfigurationCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_MountingConfig;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_MountingConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_MountingConfig, sizeof(ADCS_MountingConfigurationCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+                    
+//                     memcpy(command->adcs_MountingConfig.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_MountingConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_MountingConfig.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_MountingConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_MountingConfigurationCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_MountingConfigurationCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_MountingConfigurationCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_MountingConfig;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_MountingConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_MountingConfig, sizeof(ADCS_MountingConfigurationCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
 
-            case 42: {
-                //ID 67
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//             case 42: {
+//                 //ID 67
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("Default main estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.estModeMainDefault);
-                ImGui::InputScalar("Default backup estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.estModeBackupDefault);
+//                 ImGui::InputScalar("Default main estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.estModeMainDefault);
+//                 ImGui::InputScalar("Default backup estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.estModeBackupDefault);
 
-                ImGui::InputScalar("MAG measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.magR);
-                ImGui::InputScalar("CSS measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.cssR);
-                ImGui::InputScalar("FSS measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.fssR);
-                ImGui::InputScalar("HSS measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.hssR);
-                ImGui::InputScalar("STR measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.strR);
-                ImGui::InputScalar("Magnetometer RKF system noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.rkfQ);
-                ImGui::InputScalar("EKF system noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.ekfQ);
-                ImGui::InputScalar("Nutation Epsilon correction(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.nutDeps);
-                ImGui::InputScalar("Nutation Psi correction(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.nutDpsi);
+//                 ImGui::InputScalar("MAG measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.magR);
+//                 ImGui::InputScalar("CSS measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.cssR);
+//                 ImGui::InputScalar("FSS measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.fssR);
+//                 ImGui::InputScalar("HSS measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.hssR);
+//                 ImGui::InputScalar("STR measurement noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.strR);
+//                 ImGui::InputScalar("Magnetometer RKF system noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.rkfQ);
+//                 ImGui::InputScalar("EKF system noise(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.ekfQ);
+//                 ImGui::InputScalar("Nutation Epsilon correction(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.nutDeps);
+//                 ImGui::InputScalar("Nutation Psi correction(Float)",ImGuiDataType_Float, &command->adcs_EstimatorConfig.nutDpsi);
 
-                ImGui::InputScalar("Use FSS in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseFss);
-                ImGui::InputScalar("Use CSS in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseCss);
-                ImGui::InputScalar("Use HSS in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseHss);
-                ImGui::InputScalar("Use STR in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseStr);
+//                 ImGui::InputScalar("Use FSS in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseFss);
+//                 ImGui::InputScalar("Use CSS in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseCss);
+//                 ImGui::InputScalar("Use HSS in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseHss);
+//                 ImGui::InputScalar("Use STR in EKF(Bool)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.ekfUseStr);
                 
-                ImGui::InputScalar("Triad Vector 1(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.tVec1);
-                ImGui::InputScalar("Triad Vector 2(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.tVec2);
+//                 ImGui::InputScalar("Triad Vector 1(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.tVec1);
+//                 ImGui::InputScalar("Triad Vector 2(U8)",ImGuiDataType_U8, &command->adcs_EstimatorConfig.tVec2);
    
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_EstimatorConfigurationCmd_t)-7};
-                    
-                    
-                    memcpy(command->adcs_EstimatorConfig.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_EstimatorConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_EstimatorConfig.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_EstimatorConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_EstimatorConfigurationCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_EstimatorConfigurationCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_EstimatorConfigurationCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_EstimatorConfig;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_EstimatorConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_EstimatorConfig, sizeof(ADCS_EstimatorConfigurationCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 43: {
-                //ID 68
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("Orbit epoch(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitEpoch);
-                ImGui::InputScalar("Orbit inclination(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitIncl);
-                ImGui::InputScalar("Orbit RAAN(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitRaan);
-                ImGui::InputScalar("Orbit eccentricity(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitEccen);
-                ImGui::InputScalar("Orbit argument of perigee(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitAP);
-                ImGui::InputScalar("Orbit mean anomaly(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitMA);
-                ImGui::InputScalar("Orbit mean motion(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitMM);
-                ImGui::InputScalar("Orbit B-star drag term(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitBstar);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_ConfigOrbitSatParamsCmd_t)-7};
-                    
-                    
-                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigOrbitSatParamsCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_ConfigOrbitSatParamsCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_ConfigOrbitSatParamsCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigOrbitSatParams;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_ConfigOrbitSatParams, sizeof(ADCS_ConfigOrbitSatParamsCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 44: {
-                //ID 69
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("RWL selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectRwl);
-                ImGui::InputScalar("MAG selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectMag);
-                ImGui::InputScalar("FSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectFss);
-                ImGui::InputScalar("HSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectHss);
-                ImGui::InputScalar("GYRO selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectGyro);
-                ImGui::InputScalar("STR selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectStr);
-                ImGui::InputScalar("GNSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectGnss);
-                ImGui::InputScalar("External sensor selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectExt);
-
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_NodeSelectionCmd_t)-7};
-                    
-                    
-                    memcpy(command->adcs_NodeSelection.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_NodeSelection.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_NodeSelection.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_NodeSelection.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_NodeSelectionCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_NodeSelectionCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_NodeSelectionCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_NodeSelection;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_NodeSelection.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_NodeSelection, sizeof(ADCS_NodeSelectionCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 45: {
-                //ID 70
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("MTQ0 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq0Mmax);
-                ImGui::InputScalar("MTQ1 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq1Mmax);
-                ImGui::InputScalar("MTQ2 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq2Mmax);
-                ImGui::InputScalar("Maximum magnetorquer on-time(U16)",ImGuiDataType_U16, &command->adcs_MtqConfig.onTimeMax);
-                ImGui::InputScalar("Minimum magnetorquer on-time(U16)",ImGuiDataType_U16, &command->adcs_MtqConfig.onTimeMin);
-                ImGui::InputScalar("LPF factor for magnetorquer commands(0: no filtering)(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtqFfac);
-
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_MtqConfigCmd_t)-7};
-                    
-                    
-                    memcpy(command->adcs_MtqConfig.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_MtqConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_MtqConfig.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_MtqConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_MtqConfigCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_MtqConfigCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_MtqConfigCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_MtqConfig;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_MtqConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_MtqConfig, sizeof(ADCS_MtqConfigCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 46: {
-                //ID 71
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("Main estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstMode.estModeMain);
-                ImGui::InputScalar("Backup estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstMode.estModeBackup);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_EstimationModeCmd_t)-7};
-                    
-                    
-                    memcpy(command->adcs_EstMode.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_EstMode.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_EstMode.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_EstMode.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_EstimationModeCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_EstimationModeCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_EstimationModeCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_EstMode;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_EstMode.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_EstMode, sizeof(ADCS_EstimationModeCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 47: {
-                //ID 74
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("RWL0 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl0SpeedCmd);
-                ImGui::InputScalar("RWL1 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl1SpeedCmd);
-                ImGui::InputScalar("RWL2 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl2SpeedCmd);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandRwlCmd_t)-7};
-                    
-                    
-                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandRwlCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_OpenLoopCommandRwlCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_OpenLoopCommandRwlCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdRwl;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdRwl, sizeof(ADCS_OpenLoopCommandRwlCmd_t));
-                    // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
-                    //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
-                    //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            case 48: {
-                //ID 76
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("X-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hx);
-                ImGui::InputScalar("Y-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hy);
-                ImGui::InputScalar("Z-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hz);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t)-7};
-                    
-                    
-                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t);
-                    
-                    uint16_t len = sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdHxyzRw;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdHxyzRw, sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-
-            }
-            /* < End of ADCS Part > */
-
-            // ifc app
-            case 49: { //ifc handle noarg
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputText("handle name char[16]", command->ifchandlenoarg.HandleName, sizeof(command->ifchandlenoarg.HandleName));
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_HandleNoArgsCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifchandlenoarg.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifchandlenoarg.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifchandlenoarg.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifchandlenoarg.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_HandleNoArgsCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_HandleNoArgsCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_HandleNoArgsCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifchandlenoarg;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifchandlenoarg.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifchandlenoarg, sizeof(IFC_HandleNoArgsCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 50: { // ifchandleu8arg
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputText("handle name char[16]", command->ifchandleu8arg.HandleName, sizeof(command->ifchandleu8arg.HandleName));
-                ImGui::InputScalar("arg u8",ImGuiDataType_U8, &command->ifchandleu8arg.Arg);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_HandleU8ArgsCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifchandleu8arg.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifchandleu8arg.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifchandleu8arg.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifchandleu8arg.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_HandleU8ArgsCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_HandleU8ArgsCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_HandleU8ArgsCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifchandleu8arg;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifchandleu8arg.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifchandleu8arg, sizeof(IFC_HandleU8ArgsCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 51: { // ifchandleu32arg
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputText("handle name char[16]", command->ifchandleu32arg.HandleName, sizeof(command->ifchandleu32arg.HandleName));
-                ImGui::InputScalar("arg u32",ImGuiDataType_U32, &command->ifchandleu32arg.Arg);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_HandleU32ArgsCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifchandleu32arg.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifchandleu32arg.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifchandleu32arg.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifchandleu32arg.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_HandleU32ArgsCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_HandleU32ArgsCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_HandleU32ArgsCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifchandleu32arg;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifchandleu32arg.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifchandleu32arg, sizeof(IFC_HandleU32ArgsCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 52: { // ifcwritecmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputText("handle name char[16]", command->ifcwritecmd.HandleName, sizeof(command->ifcwritecmd.HandleName));
-                ImGui::InputScalar("size u16",ImGuiDataType_U16, &command->ifcwritecmd.Size);
-                for(uint8_t i=0; i<sizeof(command->ifcwritecmd.Data); i++) {
-                    char temp[10] = {0,};
-                    sprintf(temp,"data[%u]",i);
-                    ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifcwritecmd.Data[i]);
-                }
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_WriteCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifcwritecmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifcwritecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifcwritecmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifcwritecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_WriteCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_WriteCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_WriteCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifcwritecmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifcwritecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifcwritecmd, sizeof(IFC_WriteCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 53: { // ifcreadcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputText("handle name char[16]", command->ifcreadcmd.HandleName, sizeof(command->ifcreadcmd.HandleName));
-                ImGui::InputScalar("size u16",ImGuiDataType_U16, &command->ifcreadcmd.Size);
-                ImGui::InputScalar("timeout u16",ImGuiDataType_U16, &command->ifcreadcmd.Timeout);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_ReadCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifcreadcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifcreadcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifcreadcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifcreadcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_ReadCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_ReadCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_ReadCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifcreadcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifcreadcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifcreadcmd, sizeof(IFC_ReadCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 54: { // ifcgpionumcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("gpio num int32",ImGuiDataType_S32, &command->ifcgpionumcmd.GpioNum);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_GpioNumCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifcgpionumcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifcgpionumcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifcgpionumcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifcgpionumcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_GpioNumCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_GpioNumCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_GpioNumCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifcgpionumcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifcgpionumcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifcgpionumcmd, sizeof(IFC_GpioNumCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 55: { // ifcioopencmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputText("handle name char[16]",command->ifcioopencmd.HandleName, sizeof(command->ifcioopencmd.HandleName));
-                ImGui::InputText("handle name char[16]",command->ifcioopencmd.DeviceName, sizeof(command->ifcioopencmd.DeviceName));
-                ImGui::InputScalar("open opt int32",ImGuiDataType_S32, &command->ifcioopencmd.OpenOpt);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_IoOpenCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifcioopencmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifcioopencmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifcioopencmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifcioopencmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_IoOpenCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_IoOpenCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_IoOpenCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifcioopencmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifcioopencmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifcioopencmd, sizeof(IFC_IoOpenCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 56: { // ifcgpiowritecmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_EstimatorConfigurationCmd_t)-7};
+                    
+                    
+//                     memcpy(command->adcs_EstimatorConfig.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_EstimatorConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_EstimatorConfig.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_EstimatorConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_EstimatorConfigurationCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_EstimatorConfigurationCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_EstimatorConfigurationCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_EstimatorConfig;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_EstimatorConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_EstimatorConfig, sizeof(ADCS_EstimatorConfigurationCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 43: {
+//                 //ID 68
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("Orbit epoch(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitEpoch);
+//                 ImGui::InputScalar("Orbit inclination(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitIncl);
+//                 ImGui::InputScalar("Orbit RAAN(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitRaan);
+//                 ImGui::InputScalar("Orbit eccentricity(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitEccen);
+//                 ImGui::InputScalar("Orbit argument of perigee(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitAP);
+//                 ImGui::InputScalar("Orbit mean anomaly(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitMA);
+//                 ImGui::InputScalar("Orbit mean motion(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitMM);
+//                 ImGui::InputScalar("Orbit B-star drag term(F64)",ImGuiDataType_Double, &command->adcs_ConfigOrbitSatParams.orbitBstar);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_ConfigOrbitSatParamsCmd_t)-7};
+                    
+                    
+//                     memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_ConfigOrbitSatParamsCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_ConfigOrbitSatParamsCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_ConfigOrbitSatParamsCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_ConfigOrbitSatParams;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_ConfigOrbitSatParams.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_ConfigOrbitSatParams, sizeof(ADCS_ConfigOrbitSatParamsCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 44: {
+//                 //ID 69
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("RWL selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectRwl);
+//                 ImGui::InputScalar("MAG selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectMag);
+//                 ImGui::InputScalar("FSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectFss);
+//                 ImGui::InputScalar("HSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectHss);
+//                 ImGui::InputScalar("GYRO selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectGyro);
+//                 ImGui::InputScalar("STR selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectStr);
+//                 ImGui::InputScalar("GNSS selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectGnss);
+//                 ImGui::InputScalar("External sensor selection flags(U8)",ImGuiDataType_U8, &command->adcs_NodeSelection.selectExt);
+
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_NodeSelectionCmd_t)-7};
+                    
+                    
+//                     memcpy(command->adcs_NodeSelection.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_NodeSelection.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_NodeSelection.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_NodeSelection.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_NodeSelectionCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_NodeSelectionCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_NodeSelectionCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_NodeSelection;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_NodeSelection.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_NodeSelection, sizeof(ADCS_NodeSelectionCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 45: {
+//                 //ID 70
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("MTQ0 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq0Mmax);
+//                 ImGui::InputScalar("MTQ1 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq1Mmax);
+//                 ImGui::InputScalar("MTQ2 maximum dipole moment(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtq2Mmax);
+//                 ImGui::InputScalar("Maximum magnetorquer on-time(U16)",ImGuiDataType_U16, &command->adcs_MtqConfig.onTimeMax);
+//                 ImGui::InputScalar("Minimum magnetorquer on-time(U16)",ImGuiDataType_U16, &command->adcs_MtqConfig.onTimeMin);
+//                 ImGui::InputScalar("LPF factor for magnetorquer commands(0: no filtering)(F32)",ImGuiDataType_Float, &command->adcs_MtqConfig.mtqFfac);
+
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_MtqConfigCmd_t)-7};
+                    
+                    
+//                     memcpy(command->adcs_MtqConfig.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_MtqConfig.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_MtqConfig.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_MtqConfig.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_MtqConfigCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_MtqConfigCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_MtqConfigCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_MtqConfig;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_MtqConfig.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_MtqConfig, sizeof(ADCS_MtqConfigCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 46: {
+//                 //ID 71
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("Main estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstMode.estModeMain);
+//                 ImGui::InputScalar("Backup estimator mode(U8)",ImGuiDataType_U8, &command->adcs_EstMode.estModeBackup);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_EstimationModeCmd_t)-7};
+                    
+                    
+//                     memcpy(command->adcs_EstMode.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_EstMode.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_EstMode.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_EstMode.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_EstimationModeCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_EstimationModeCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_EstimationModeCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_EstMode;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_EstMode.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_EstMode, sizeof(ADCS_EstimationModeCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 47: {
+//                 //ID 74
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("RWL0 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl0SpeedCmd);
+//                 ImGui::InputScalar("RWL1 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl1SpeedCmd);
+//                 ImGui::InputScalar("RWL2 open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdRwl.rwl2SpeedCmd);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandRwlCmd_t)-7};
+                    
+                    
+//                     memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandRwlCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_OpenLoopCommandRwlCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_OpenLoopCommandRwlCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdRwl;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_OpenLoopCmdRwl.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdRwl, sizeof(ADCS_OpenLoopCommandRwlCmd_t));
+//                     // ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %d",command->u32u8bool.CmdHeader[0],
+//                     //             command->u32u8bool.CmdHeader[1], command->u32u8bool.CmdHeader[2], command->u32u8bool.CmdHeader[3], command->u32u8bool.CmdHeader[4], command->u32u8bool.CmdHeader[5], command->u32u8bool.CmdHeader[6], command->u32u8bool.CmdHeader[7],
+//                     //             command->u32u8bool.Timeout, command->u32u8bool.Channel, command->u32u8bool.Status);
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             case 48: {
+//                 //ID 76
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("X-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hx);
+//                 ImGui::InputScalar("Y-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hy);
+//                 ImGui::InputScalar("Z-momentum open-loop speed(F32)",ImGuiDataType_Float, &command->adcs_OpenLoopCmdHxyzRw.hz);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t)-7};
+                    
+                    
+//                     memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t);
+                    
+//                     uint16_t len = sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->adcs_OpenLoopCmdHxyzRw;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->adcs_OpenLoopCmdHxyzRw.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->adcs_OpenLoopCmdHxyzRw, sizeof(ADCS_OpenLoopCommandHxyzRwCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+
+//             }
+//             /* < End of ADCS Part > */
+
+//             // ifc app
+//             case 49: { //ifc handle noarg
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("handle name char[16]", command->ifchandlenoarg.HandleName, sizeof(command->ifchandlenoarg.HandleName));
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_HandleNoArgsCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifchandlenoarg.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifchandlenoarg.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifchandlenoarg.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifchandlenoarg.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_HandleNoArgsCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_HandleNoArgsCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_HandleNoArgsCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifchandlenoarg;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifchandlenoarg.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifchandlenoarg, sizeof(IFC_HandleNoArgsCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 50: { // ifchandleu8arg
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("handle name char[16]", command->ifchandleu8arg.HandleName, sizeof(command->ifchandleu8arg.HandleName));
+//                 ImGui::InputScalar("arg u8",ImGuiDataType_U8, &command->ifchandleu8arg.Arg);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_HandleU8ArgsCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifchandleu8arg.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifchandleu8arg.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifchandleu8arg.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifchandleu8arg.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_HandleU8ArgsCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_HandleU8ArgsCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_HandleU8ArgsCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifchandleu8arg;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifchandleu8arg.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifchandleu8arg, sizeof(IFC_HandleU8ArgsCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 51: { // ifchandleu32arg
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("handle name char[16]", command->ifchandleu32arg.HandleName, sizeof(command->ifchandleu32arg.HandleName));
+//                 ImGui::InputScalar("arg u32",ImGuiDataType_U32, &command->ifchandleu32arg.Arg);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_HandleU32ArgsCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifchandleu32arg.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifchandleu32arg.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifchandleu32arg.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifchandleu32arg.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_HandleU32ArgsCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_HandleU32ArgsCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_HandleU32ArgsCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifchandleu32arg;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifchandleu32arg.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifchandleu32arg, sizeof(IFC_HandleU32ArgsCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 52: { // ifcwritecmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("handle name char[16]", command->ifcwritecmd.HandleName, sizeof(command->ifcwritecmd.HandleName));
+//                 ImGui::InputScalar("size u16",ImGuiDataType_U16, &command->ifcwritecmd.Size);
+//                 for(uint8_t i=0; i<sizeof(command->ifcwritecmd.Data); i++) {
+//                     char temp[10] = {0,};
+//                     sprintf(temp,"data[%u]",i);
+//                     ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifcwritecmd.Data[i]);
+//                 }
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_WriteCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifcwritecmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifcwritecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifcwritecmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifcwritecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_WriteCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_WriteCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_WriteCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifcwritecmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifcwritecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifcwritecmd, sizeof(IFC_WriteCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 53: { // ifcreadcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("handle name char[16]", command->ifcreadcmd.HandleName, sizeof(command->ifcreadcmd.HandleName));
+//                 ImGui::InputScalar("size u16",ImGuiDataType_U16, &command->ifcreadcmd.Size);
+//                 ImGui::InputScalar("timeout u16",ImGuiDataType_U16, &command->ifcreadcmd.Timeout);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_ReadCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifcreadcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifcreadcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifcreadcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifcreadcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_ReadCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_ReadCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_ReadCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifcreadcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifcreadcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifcreadcmd, sizeof(IFC_ReadCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 54: { // ifcgpionumcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("gpio num int32",ImGuiDataType_S32, &command->ifcgpionumcmd.GpioNum);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_GpioNumCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifcgpionumcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifcgpionumcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifcgpionumcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifcgpionumcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_GpioNumCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_GpioNumCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_GpioNumCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifcgpionumcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifcgpionumcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifcgpionumcmd, sizeof(IFC_GpioNumCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 55: { // ifcioopencmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("handle name char[16]",command->ifcioopencmd.HandleName, sizeof(command->ifcioopencmd.HandleName));
+//                 ImGui::InputText("handle name char[16]",command->ifcioopencmd.DeviceName, sizeof(command->ifcioopencmd.DeviceName));
+//                 ImGui::InputScalar("open opt int32",ImGuiDataType_S32, &command->ifcioopencmd.OpenOpt);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_IoOpenCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifcioopencmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifcioopencmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifcioopencmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifcioopencmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_IoOpenCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_IoOpenCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_IoOpenCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifcioopencmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifcioopencmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifcioopencmd, sizeof(IFC_IoOpenCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 56: { // ifcgpiowritecmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
                 
-                ImGui::InputScalar("gpio num int32",ImGuiDataType_S32, &command->ifcgpiowritecmd.GpioNum);
-                ImGui::Checkbox("Value bool",&command->ifcgpiowritecmd.Value);
+//                 ImGui::InputScalar("gpio num int32",ImGuiDataType_S32, &command->ifcgpiowritecmd.GpioNum);
+//                 ImGui::Checkbox("Value bool",&command->ifcgpiowritecmd.Value);
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(IFC_GpioWriteCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(IFC_GpioWriteCmd_t)-7};
                     
                     
-                    memcpy(command->ifcgpiowritecmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifcgpiowritecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifcgpiowritecmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifcgpiowritecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_GpioWriteCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_GpioWriteCmd_t);
+//                     memcpy(command->ifcgpiowritecmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifcgpiowritecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifcgpiowritecmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifcgpiowritecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_GpioWriteCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_GpioWriteCmd_t);
                     
-                    uint16_t len = sizeof(IFC_GpioWriteCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifcgpiowritecmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifcgpiowritecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifcgpiowritecmd, sizeof(IFC_GpioWriteCmd_t));
+//                     uint16_t len = sizeof(IFC_GpioWriteCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifcgpiowritecmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifcgpiowritecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifcgpiowritecmd, sizeof(IFC_GpioWriteCmd_t));
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 57: { // ifcuartsettermioscmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 57: { // ifcuartsettermioscmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                
-                ImGui::InputText("handle name char[16]", command->ifcuartsettermioscmd.HandleName, sizeof(command->ifcuartsettermioscmd.HandleName));
-                for(uint8_t i=0; i<sizeof(command->ifcuartsettermioscmd.Termios); i++) {
-                    char temp[10] = {0,};
-                    sprintf(temp,"termios[%u]",i);
-                    ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifcuartsettermioscmd.Termios[i]);
-                }
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_UartSetTermiosCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifcuartsettermioscmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifcuartsettermioscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifcuartsettermioscmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifcuartsettermioscmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_UartSetTermiosCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_UartSetTermiosCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_UartSetTermiosCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifcuartsettermioscmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifcuartsettermioscmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifcuartsettermioscmd, sizeof(IFC_UartSetTermiosCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 58: { // ifci2cduplextransfercmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
                 
-                ImGui::InputText("handle name char[16]", command->ifci2cduplextransfercmd.HandleName, sizeof(command->ifci2cduplextransfercmd.HandleName));
-                ImGui::InputScalar("Tx Size u16",ImGuiDataType_U16, &command->ifci2cduplextransfercmd.TxSize);
-                ImGui::InputScalar("Rx Size u16",ImGuiDataType_U16, &command->ifci2cduplextransfercmd.RxSize);
-                ImGui::InputScalar("address u8",ImGuiDataType_U8, &command->ifci2cduplextransfercmd.Address);
-                for(uint8_t i=0; i<sizeof(command->ifci2cduplextransfercmd.TxData); i++) {
-                    char temp[10] = {0,};
-                    sprintf(temp,"tx data[%u]",i);
-                    ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifci2cduplextransfercmd.TxData[i]);
-                }
+//                 ImGui::InputText("handle name char[16]", command->ifcuartsettermioscmd.HandleName, sizeof(command->ifcuartsettermioscmd.HandleName));
+//                 for(uint8_t i=0; i<sizeof(command->ifcuartsettermioscmd.Termios); i++) {
+//                     char temp[10] = {0,};
+//                     sprintf(temp,"termios[%u]",i);
+//                     ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifcuartsettermioscmd.Termios[i]);
+//                 }
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(IFC_I2cDuplexTransferCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(IFC_UartSetTermiosCmd_t)-7};
                     
                     
-                    memcpy(command->ifci2cduplextransfercmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifci2cduplextransfercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifci2cduplextransfercmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifci2cduplextransfercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_I2cDuplexTransferCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_I2cDuplexTransferCmd_t);
+//                     memcpy(command->ifcuartsettermioscmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifcuartsettermioscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifcuartsettermioscmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifcuartsettermioscmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_UartSetTermiosCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_UartSetTermiosCmd_t);
                     
-                    uint16_t len = sizeof(IFC_I2cDuplexTransferCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifci2cduplextransfercmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifci2cduplextransfercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifci2cduplextransfercmd, sizeof(IFC_I2cDuplexTransferCmd_t));
+//                     uint16_t len = sizeof(IFC_UartSetTermiosCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifcuartsettermioscmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifcuartsettermioscmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifcuartsettermioscmd, sizeof(IFC_UartSetTermiosCmd_t));
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 59: { // ifcspiduplextransfercmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 58: { // ifci2cduplextransfercmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
                 
-                ImGui::InputText("handle name char[16]", command->ifcspiduplextransfercmd.HandleName, sizeof(command->ifcspiduplextransfercmd.HandleName));
-                ImGui::InputScalar("Tx Size u16",ImGuiDataType_U16, &command->ifcspiduplextransfercmd.TxSize);
-                ImGui::InputScalar("Rx Size u16",ImGuiDataType_U16, &command->ifcspiduplextransfercmd.RxSize);
-                for(uint8_t i=0; i<sizeof(command->ifcspiduplextransfercmd.TxData); i++) {
-                    char temp[10] = {0,};
-                    sprintf(temp,"tx data[%u]",i);
-                    ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifcspiduplextransfercmd.TxData[i]);
-                }
+//                 ImGui::InputText("handle name char[16]", command->ifci2cduplextransfercmd.HandleName, sizeof(command->ifci2cduplextransfercmd.HandleName));
+//                 ImGui::InputScalar("Tx Size u16",ImGuiDataType_U16, &command->ifci2cduplextransfercmd.TxSize);
+//                 ImGui::InputScalar("Rx Size u16",ImGuiDataType_U16, &command->ifci2cduplextransfercmd.RxSize);
+//                 ImGui::InputScalar("address u8",ImGuiDataType_U8, &command->ifci2cduplextransfercmd.Address);
+//                 for(uint8_t i=0; i<sizeof(command->ifci2cduplextransfercmd.TxData); i++) {
+//                     char temp[10] = {0,};
+//                     sprintf(temp,"tx data[%u]",i);
+//                     ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifci2cduplextransfercmd.TxData[i]);
+//                 }
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(IFC_SpiDuplexTransferCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(IFC_I2cDuplexTransferCmd_t)-7};
                     
                     
-                    memcpy(command->ifcspiduplextransfercmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifcspiduplextransfercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifcspiduplextransfercmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifcspiduplextransfercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_SpiDuplexTransferCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_SpiDuplexTransferCmd_t);
+//                     memcpy(command->ifci2cduplextransfercmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifci2cduplextransfercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifci2cduplextransfercmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifci2cduplextransfercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_I2cDuplexTransferCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_I2cDuplexTransferCmd_t);
                     
-                    uint16_t len = sizeof(IFC_SpiDuplexTransferCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifcspiduplextransfercmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifcspiduplextransfercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifcspiduplextransfercmd, sizeof(IFC_SpiDuplexTransferCmd_t));
+//                     uint16_t len = sizeof(IFC_I2cDuplexTransferCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifci2cduplextransfercmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifci2cduplextransfercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifci2cduplextransfercmd, sizeof(IFC_I2cDuplexTransferCmd_t));
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 60: { // ifciohandleallocatecmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 59: { // ifcspiduplextransfercmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                
-                ImGui::InputText("handle name char[16]", command->ifciohandleallocatecmd.HandleName, sizeof(command->ifciohandleallocatecmd.HandleName));
-                ImGui::InputText("dev name char[32]", command->ifciohandleallocatecmd.DevName, sizeof(command->ifciohandleallocatecmd.DevName));
-                ImGui::InputScalar("dev type u8",ImGuiDataType_U8, &command->ifciohandleallocatecmd.devType);
-                ImGui::InputScalar("mutex id u8",ImGuiDataType_U8, &command->ifciohandleallocatecmd.MutexId);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(IFC_IoHandleAllocateCmd_t)-7};
-                    
-                    
-                    memcpy(command->ifciohandleallocatecmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->ifciohandleallocatecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->ifciohandleallocatecmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->ifciohandleallocatecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_IoHandleAllocateCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(IFC_IoHandleAllocateCmd_t);
-                    
-                    uint16_t len = sizeof(IFC_IoHandleAllocateCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->ifciohandleallocatecmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->ifciohandleallocatecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->ifciohandleallocatecmd, sizeof(IFC_IoHandleAllocateCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %s %s %u %u",command->ifciohandleallocatecmd.CmdHeader[0],
-                            command->ifciohandleallocatecmd.CmdHeader[1], command->ifciohandleallocatecmd.CmdHeader[2], command->ifciohandleallocatecmd.CmdHeader[3], command->ifciohandleallocatecmd.CmdHeader[4], command->ifciohandleallocatecmd.CmdHeader[5], command->ifciohandleallocatecmd.CmdHeader[6], command->ifciohandleallocatecmd.CmdHeader[7],
-                            command->ifciohandleallocatecmd.HandleName, command->ifciohandleallocatecmd.DevName, command->ifciohandleallocatecmd.devType, command->ifciohandleallocatecmd.MutexId);
-                break;
-            }
-
-            // EPS P60 Param Set CMD
-            case 61: { // epsp60paramsetcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
                 
-                ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->epsp60paramsetcmd.Timeout);
-                ImGui::InputScalar("size u32",ImGuiDataType_U32, &command->epsp60paramsetcmd.Size);
-                ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->epsp60paramsetcmd.Node);
-                ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->epsp60paramsetcmd.TableId);
-                ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->epsp60paramsetcmd.Address);
-                ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->epsp60paramsetcmd.Type);
-                for(uint8_t i=0; i<sizeof(command->epsp60paramsetcmd.Value); i++) {
-                    char temp[10] = {0,};
-                    sprintf(temp,"value[%u]",i);
-                    ImGui::InputScalar(temp,ImGuiDataType_U8, &command->epsp60paramsetcmd.Value[i]);
-                }
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(EPS_P60_ParamSetCmd_t)-7};
-                    
-                    
-                    memcpy(command->epsp60paramsetcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->epsp60paramsetcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->epsp60paramsetcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->epsp60paramsetcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(EPS_P60_ParamSetCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(EPS_P60_ParamSetCmd_t);
-                    
-                    uint16_t len = sizeof(EPS_P60_ParamSetCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->epsp60paramsetcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->epsp60paramsetcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->epsp60paramsetcmd, sizeof(EPS_P60_ParamSetCmd_t));
+//                 ImGui::InputText("handle name char[16]", command->ifcspiduplextransfercmd.HandleName, sizeof(command->ifcspiduplextransfercmd.HandleName));
+//                 ImGui::InputScalar("Tx Size u16",ImGuiDataType_U16, &command->ifcspiduplextransfercmd.TxSize);
+//                 ImGui::InputScalar("Rx Size u16",ImGuiDataType_U16, &command->ifcspiduplextransfercmd.RxSize);
+//                 for(uint8_t i=0; i<sizeof(command->ifcspiduplextransfercmd.TxData); i++) {
+//                     char temp[10] = {0,};
+//                     sprintf(temp,"tx data[%u]",i);
+//                     ImGui::InputScalar(temp,ImGuiDataType_U8, &command->ifcspiduplextransfercmd.TxData[i]);
+//                 }
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u",command->epsp60paramsetcmd.CmdHeader[0],
-                            command->epsp60paramsetcmd.CmdHeader[1], command->epsp60paramsetcmd.CmdHeader[2], command->epsp60paramsetcmd.CmdHeader[3], command->epsp60paramsetcmd.CmdHeader[4], command->epsp60paramsetcmd.CmdHeader[5], command->epsp60paramsetcmd.CmdHeader[6], command->epsp60paramsetcmd.CmdHeader[7],
-                            command->epsp60paramsetcmd.Timeout, command->epsp60paramsetcmd.Size, command->epsp60paramsetcmd.Node, command->epsp60paramsetcmd.TableId, command->epsp60paramsetcmd.Address, command->epsp60paramsetcmd.Type);
-                for(uint8_t i=0; i<sizeof(command->epsp60paramsetcmd.Value); i++) {
-                    ImGui::Text("Value[%d]: %u\t", i, command->epsp60paramsetcmd.Value[i]);
-                    if(!(i%6) && i!=0) continue;
-                    ImGui::SameLine();
-                }
-                break;
-            }
-
-            //PAYS
-            case 62: { // paysd1064readsavestatuscmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("num reads u16",ImGuiDataType_U16, &command->paysd1064readsavestatuscmd.NumReads);
-                ImGui::InputScalar("interval ms u16",ImGuiDataType_U16, &command->paysd1064readsavestatuscmd.IntervalMs);
-                ImGui::Checkbox("ignore error bool",&command->paysd1064readsavestatuscmd.IgnoreErrors);
-                ImGui::Checkbox("pack bool",&command->paysd1064readsavestatuscmd.Pack);
-                ImGui::InputText("file name char[128]", command->paysd1064readsavestatuscmd.FileName, sizeof(command->paysd1064readsavestatuscmd.FileName));
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(PAYS_D1064_ReadSaveStatusCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(IFC_SpiDuplexTransferCmd_t)-7};
                     
                     
-                    memcpy(command->paysd1064readsavestatuscmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->paysd1064readsavestatuscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->paysd1064readsavestatuscmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->paysd1064readsavestatuscmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYS_D1064_ReadSaveStatusCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYS_D1064_ReadSaveStatusCmd_t);
+//                     memcpy(command->ifcspiduplextransfercmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifcspiduplextransfercmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifcspiduplextransfercmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifcspiduplextransfercmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_SpiDuplexTransferCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_SpiDuplexTransferCmd_t);
                     
-                    uint16_t len = sizeof(PAYS_D1064_ReadSaveStatusCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->paysd1064readsavestatuscmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->paysd1064readsavestatuscmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->paysd1064readsavestatuscmd, sizeof(PAYS_D1064_ReadSaveStatusCmd_t));
+//                     uint16_t len = sizeof(IFC_SpiDuplexTransferCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifcspiduplextransfercmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifcspiduplextransfercmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifcspiduplextransfercmd, sizeof(IFC_SpiDuplexTransferCmd_t));
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 60: { // ifciohandleallocatecmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-            //PAYC
-            case 63: { // paycsetconfcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+                
+//                 ImGui::InputText("handle name char[16]", command->ifciohandleallocatecmd.HandleName, sizeof(command->ifciohandleallocatecmd.HandleName));
+//                 ImGui::InputText("dev name char[32]", command->ifciohandleallocatecmd.DevName, sizeof(command->ifciohandleallocatecmd.DevName));
+//                 ImGui::InputScalar("dev type u8",ImGuiDataType_U8, &command->ifciohandleallocatecmd.devType);
+//                 ImGui::InputScalar("mutex id u8",ImGuiDataType_U8, &command->ifciohandleallocatecmd.MutexId);
 
-                ImGui::InputScalar("delay u16",ImGuiDataType_U16, &command->paycsetconfcmd.Payload.delay);
-                ImGui::InputScalar("snap flag u32",ImGuiDataType_U32, &command->paycsetconfcmd.Payload.snap_flags);
-                ImGui::InputScalar("snap format u16",ImGuiDataType_U8, &command->paycsetconfcmd.Payload.snap_format);
-                ImGui::InputScalar("store flag u16",ImGuiDataType_U32, &command->paycsetconfcmd.Payload.store_flags);
-                ImGui::InputScalar("store format u16",ImGuiDataType_U8, &command->paycsetconfcmd.Payload.store_format);
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(IFC_IoHandleAllocateCmd_t)-7};
+                    
+                    
+//                     memcpy(command->ifciohandleallocatecmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->ifciohandleallocatecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->ifciohandleallocatecmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->ifciohandleallocatecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(IFC_IoHandleAllocateCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(IFC_IoHandleAllocateCmd_t);
+                    
+//                     uint16_t len = sizeof(IFC_IoHandleAllocateCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->ifciohandleallocatecmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->ifciohandleallocatecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->ifciohandleallocatecmd, sizeof(IFC_IoHandleAllocateCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %s %s %u %u",command->ifciohandleallocatecmd.CmdHeader[0],
+//                             command->ifciohandleallocatecmd.CmdHeader[1], command->ifciohandleallocatecmd.CmdHeader[2], command->ifciohandleallocatecmd.CmdHeader[3], command->ifciohandleallocatecmd.CmdHeader[4], command->ifciohandleallocatecmd.CmdHeader[5], command->ifciohandleallocatecmd.CmdHeader[6], command->ifciohandleallocatecmd.CmdHeader[7],
+//                             command->ifciohandleallocatecmd.HandleName, command->ifciohandleallocatecmd.DevName, command->ifciohandleallocatecmd.devType, command->ifciohandleallocatecmd.MutexId);
+//                 break;
+//             }
+
+//             // EPS P60 Param Set CMD
+//             case 61: { // epsp60paramsetcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                
+//                 ImGui::InputScalar("timeout u32",ImGuiDataType_U32, &command->epsp60paramsetcmd.Timeout);
+//                 ImGui::InputScalar("size u32",ImGuiDataType_U32, &command->epsp60paramsetcmd.Size);
+//                 ImGui::InputScalar("node u8",ImGuiDataType_U8, &command->epsp60paramsetcmd.Node);
+//                 ImGui::InputScalar("tableid u8",ImGuiDataType_U8, &command->epsp60paramsetcmd.TableId);
+//                 ImGui::InputScalar("address u16",ImGuiDataType_U16, &command->epsp60paramsetcmd.Address);
+//                 ImGui::InputScalar("type u8",ImGuiDataType_U8, &command->epsp60paramsetcmd.Type);
+//                 for(uint8_t i=0; i<sizeof(command->epsp60paramsetcmd.Value); i++) {
+//                     char temp[10] = {0,};
+//                     sprintf(temp,"value[%u]",i);
+//                     ImGui::InputScalar(temp,ImGuiDataType_U8, &command->epsp60paramsetcmd.Value[i]);
+//                 }
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(EPS_P60_ParamSetCmd_t)-7};
+                    
+                    
+//                     memcpy(command->epsp60paramsetcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->epsp60paramsetcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->epsp60paramsetcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->epsp60paramsetcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(EPS_P60_ParamSetCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(EPS_P60_ParamSetCmd_t);
+                    
+//                     uint16_t len = sizeof(EPS_P60_ParamSetCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->epsp60paramsetcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->epsp60paramsetcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->epsp60paramsetcmd, sizeof(EPS_P60_ParamSetCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u %u %u %u",command->epsp60paramsetcmd.CmdHeader[0],
+//                             command->epsp60paramsetcmd.CmdHeader[1], command->epsp60paramsetcmd.CmdHeader[2], command->epsp60paramsetcmd.CmdHeader[3], command->epsp60paramsetcmd.CmdHeader[4], command->epsp60paramsetcmd.CmdHeader[5], command->epsp60paramsetcmd.CmdHeader[6], command->epsp60paramsetcmd.CmdHeader[7],
+//                             command->epsp60paramsetcmd.Timeout, command->epsp60paramsetcmd.Size, command->epsp60paramsetcmd.Node, command->epsp60paramsetcmd.TableId, command->epsp60paramsetcmd.Address, command->epsp60paramsetcmd.Type);
+//                 for(uint8_t i=0; i<sizeof(command->epsp60paramsetcmd.Value); i++) {
+//                     ImGui::Text("Value[%d]: %u\t", i, command->epsp60paramsetcmd.Value[i]);
+//                     if(!(i%6) && i!=0) continue;
+//                     ImGui::SameLine();
+//                 }
+//                 break;
+//             }
+
+//             //PAYS
+//             case 62: { // paysd1064readsavestatuscmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("num reads u16",ImGuiDataType_U16, &command->paysd1064readsavestatuscmd.NumReads);
+//                 ImGui::InputScalar("interval ms u16",ImGuiDataType_U16, &command->paysd1064readsavestatuscmd.IntervalMs);
+//                 ImGui::Checkbox("ignore error bool",&command->paysd1064readsavestatuscmd.IgnoreErrors);
+//                 ImGui::Checkbox("pack bool",&command->paysd1064readsavestatuscmd.Pack);
+//                 ImGui::InputText("file name char[128]", command->paysd1064readsavestatuscmd.FileName, sizeof(command->paysd1064readsavestatuscmd.FileName));
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYS_D1064_ReadSaveStatusCmd_t)-7};
+                    
+                    
+//                     memcpy(command->paysd1064readsavestatuscmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->paysd1064readsavestatuscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->paysd1064readsavestatuscmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->paysd1064readsavestatuscmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYS_D1064_ReadSaveStatusCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYS_D1064_ReadSaveStatusCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYS_D1064_ReadSaveStatusCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->paysd1064readsavestatuscmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->paysd1064readsavestatuscmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->paysd1064readsavestatuscmd, sizeof(PAYS_D1064_ReadSaveStatusCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             //PAYC
+//             case 63: { // paycsetconfcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("delay u16",ImGuiDataType_U16, &command->paycsetconfcmd.Payload.delay);
+//                 ImGui::InputScalar("snap flag u32",ImGuiDataType_U32, &command->paycsetconfcmd.Payload.snap_flags);
+//                 ImGui::InputScalar("snap format u16",ImGuiDataType_U8, &command->paycsetconfcmd.Payload.snap_format);
+//                 ImGui::InputScalar("store flag u16",ImGuiDataType_U32, &command->paycsetconfcmd.Payload.store_flags);
+//                 ImGui::InputScalar("store format u16",ImGuiDataType_U8, &command->paycsetconfcmd.Payload.store_format);
                 
 
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(PAYC_SetConfCmd_t)-7};
+//                     uint8_t length[2] = {0x00, sizeof(PAYC_SetConfCmd_t)-7};
                     
                     
-                    memcpy(command->paycsetconfcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->paycsetconfcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->paycsetconfcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->paycsetconfcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_SetConfCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYC_SetConfCmd_t);
+//                     memcpy(command->paycsetconfcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->paycsetconfcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->paycsetconfcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->paycsetconfcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_SetConfCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYC_SetConfCmd_t);
                     
-                    uint16_t len = sizeof(PAYC_SetConfCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->paycsetconfcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->paycsetconfcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->paycsetconfcmd, sizeof(PAYC_SetConfCmd_t));
+//                     uint16_t len = sizeof(PAYC_SetConfCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->paycsetconfcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->paycsetconfcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->paycsetconfcmd, sizeof(PAYC_SetConfCmd_t));
 
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 64: { // paycsnapcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 64: { // paycsnapcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
 
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("count u8",ImGuiDataType_U8, &command->paycsnapcmd.Payload.count);
-                ImGui::InputScalar("width u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.width);
-                ImGui::InputScalar("height u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.height);
-                ImGui::InputScalar("left edge u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.leftedge);
-                ImGui::InputScalar("top edge u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.topedge);
+//                 ImGui::InputScalar("count u8",ImGuiDataType_U8, &command->paycsnapcmd.Payload.count);
+//                 ImGui::InputScalar("width u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.width);
+//                 ImGui::InputScalar("height u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.height);
+//                 ImGui::InputScalar("left edge u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.leftedge);
+//                 ImGui::InputScalar("top edge u16",ImGuiDataType_U16, &command->paycsnapcmd.Payload.topedge);
                 
 
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYC_SnapCmd_t)-7};
+                    
+                    
+//                     memcpy(command->paycsnapcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->paycsnapcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->paycsnapcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->paycsnapcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_SnapCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYC_SnapCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYC_SnapCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->paycsnapcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->paycsnapcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->paycsnapcmd, sizeof(PAYC_SnapCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 65: { // paycstorecmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("format u8",ImGuiDataType_U8, &command->paycstorecmd.Payload.format);
+//                 ImGui::InputScalar("scale u8",ImGuiDataType_U16, &command->paycstorecmd.Payload.scale);
+//                 ImGui::InputText("filename char[32]", command->paycstorecmd.Payload.filename, sizeof(command->paycstorecmd.Payload.filename));
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYC_StoreCmd_t)-7};
+                    
+                    
+//                     memcpy(command->paycstorecmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->paycstorecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->paycstorecmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->paycstorecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_StoreCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYC_StoreCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYC_StoreCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->paycstorecmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->paycstorecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->paycstorecmd, sizeof(PAYC_StoreCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 66: { // paycstorefilelistlocationcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("stored file list location char[64]", command->paycstorefilelistlocationcmd.Payload.StoredFileListLocation, sizeof(command->paycstorefilelistlocationcmd.Payload.StoredFileListLocation));
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYC_StoreFileListLocationCmd_t)-7};
+                    
+                    
+//                     memcpy(command->paycstorefilelistlocationcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->paycstorefilelistlocationcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->paycstorefilelistlocationcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->paycstorefilelistlocationcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_StoreFileListLocationCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYC_StoreFileListLocationCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYC_StoreFileListLocationCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->paycstorefilelistlocationcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->paycstorefilelistlocationcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->paycstorefilelistlocationcmd, sizeof(PAYC_StoreFileListLocationCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 67: { // paycsetdirpathcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("remote dirname char[64]", command->paycsetdirpathcmd.Payload.remote_dirname, sizeof(command->paycsetdirpathcmd.Payload.remote_dirname));
+//                 ImGui::InputText("local dirname char[64]", command->paycsetdirpathcmd.Payload.local_dirname, sizeof(command->paycsetdirpathcmd.Payload.local_dirname));
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYC_SetDirPathCmd_t)-7};
+                    
+                    
+//                     memcpy(command->paycsetdirpathcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->paycsetdirpathcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->paycsetdirpathcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->paycsetdirpathcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_SetDirPathCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYC_SetDirPathCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYC_SetDirPathCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->paycsetdirpathcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->paycsetdirpathcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->paycsetdirpathcmd, sizeof(PAYC_SetDirPathCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 68: { // paycdownloadcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputText("file name char[32]", command->paycdownloadcmd.Payload.filename, sizeof(command->paycdownloadcmd.Payload.filename));
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYC_DownloadCmd_t)-7};
+                    
+                    
+//                     memcpy(command->paycdownloadcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->paycdownloadcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->paycdownloadcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->paycdownloadcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_DownloadCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYC_DownloadCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYC_DownloadCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->paycdownloadcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->paycdownloadcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->paycdownloadcmd, sizeof(PAYC_DownloadCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 69: { // stxgenericsetvalue
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("reg u8",ImGuiDataType_U8,&command->stxgenericsetvalue.Reg);
+//                 ImGui::InputScalar("val u8",ImGuiDataType_U8,&command->stxgenericsetvalue.Val);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(STX_PULSAR_GenericSetValueCmd_t)-7};
+                    
+                    
+//                     memcpy(command->stxgenericsetvalue.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->stxgenericsetvalue.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->stxgenericsetvalue.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->stxgenericsetvalue.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(STX_PULSAR_GenericSetValueCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(STX_PULSAR_GenericSetValueCmd_t);
+                    
+//                     uint16_t len = sizeof(STX_PULSAR_GenericSetValueCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->stxgenericsetvalue;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->stxgenericsetvalue.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->stxgenericsetvalue, sizeof(STX_PULSAR_GenericSetValueCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 70: { // stxsetvaluebool
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::Checkbox("val", &command->stxsetvaluebool.Val);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(STX_PULSAR_SetValueBoolCmd_t)-7};
+                    
+                    
+//                     memcpy(command->stxsetvaluebool.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->stxsetvaluebool.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->stxsetvaluebool.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->stxsetvaluebool.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(STX_PULSAR_SetValueBoolCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(STX_PULSAR_SetValueBoolCmd_t);
+                    
+//                     uint16_t len = sizeof(STX_PULSAR_SetValueBoolCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->stxsetvaluebool;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->stxsetvaluebool.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->stxsetvaluebool, sizeof(STX_PULSAR_SetValueBoolCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+//             case 71: { // stxgenericgetvalue
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("reg u8",ImGuiDataType_U8,&command->stxgenericgetvalue.Reg);
+//                 ImGui::InputScalar("size u8",ImGuiDataType_U8,&command->stxgenericgetvalue.Size);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(STX_PULSAR_GenericGetValueCmd_t)-7};
+                    
+                    
+//                     memcpy(command->stxgenericgetvalue.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->stxgenericgetvalue.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->stxgenericgetvalue.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->stxgenericgetvalue.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(STX_PULSAR_GenericGetValueCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(STX_PULSAR_GenericGetValueCmd_t);
+                    
+//                     uint16_t len = sizeof(STX_PULSAR_GenericGetValueCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->stxgenericgetvalue;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->stxgenericgetvalue.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->stxgenericgetvalue, sizeof(STX_PULSAR_GenericGetValueCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 break;
+//             }
+
+//             // PAYR
+//             case 72: { // payrburncmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("chip u8",ImGuiDataType_U8,&command->payrburncmd.Chip);
+//                 ImGui::InputScalar("pins u8",ImGuiDataType_U8,&command->payrburncmd.Pins);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYR_BurnCmd_t)-7};
+                    
+                    
+//                     memcpy(command->payrburncmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->payrburncmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->payrburncmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->payrburncmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYR_BurnCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYR_BurnCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYR_BurnCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->payrburncmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->payrburncmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->payrburncmd, sizeof(PAYR_BurnCmd_t));
+
+//                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->payrburncmd.CmdHeader[0],
+//                             command->payrburncmd.CmdHeader[1], command->payrburncmd.CmdHeader[2], command->payrburncmd.CmdHeader[3], command->payrburncmd.CmdHeader[4], command->payrburncmd.CmdHeader[5], command->payrburncmd.CmdHeader[6], command->payrburncmd.CmdHeader[7],
+//                             command->payrburncmd.Chip, command->payrburncmd.Pins);
+//                 break;
+//             }
+//             case 73: { // payrburnloofcmd
+//                 static uint16_t msgid = 0;
+//                 static uint8_t fnccode = 0;
+
+//                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+//                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+//                 ImGui::InputScalar("chip u8",ImGuiDataType_U8,&command->payrburnloofcmd.Chip);
+//                 ImGui::Checkbox("Mainburn bool", &command->payrburnloofcmd.MainBurn);
+//                 ImGui::InputScalar("Burn time sec u8",ImGuiDataType_U8,&command->payrburnloofcmd.BurnTimeSeconds);
+
+//                 if(ImGui::Button("Generate CMD")) {
+//                     msgid = htons(msgid);
+//                     uint8_t stream[2] ={0,};
+//                     uint8_t sequence[2] = {0xC0,0x00};
+                    
+                    
+//                     uint8_t length[2] = {0x00, sizeof(PAYR_BurnLoopCmd_t)-7};
+                    
+                    
+//                     memcpy(command->payrburnloofcmd.CmdHeader, &msgid, sizeof(uint16_t));
+//                     memcpy(command->payrburnloofcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+//                     memcpy(command->payrburnloofcmd.CmdHeader + 4, length, sizeof(uint16_t));
+//                     memcpy(command->payrburnloofcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+//                     pthread_join(p_thread[4], NULL);
+//                     packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYR_BurnLoopCmd_t)); // 8 is for data
+//                     TestPacket->Identifier = HVD_TEST;
+//                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
+//                     TestPacket->Length = sizeof(PAYR_BurnLoopCmd_t);
+                    
+//                     uint16_t len = sizeof(PAYR_BurnLoopCmd_t);
+//                     const uint8_t *byteptr = (uint8_t *)&command->payrburnloofcmd;
+//                     uint8_t checksum = 0xFF;
+//                     while (len--) {
+//                         checksum ^= *(byteptr++);
+//                     }
+//                     memcpy(command->payrburnloofcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
+//                     memcpy(TestPacket->Data, &command->payrburnloofcmd, sizeof(PAYR_BurnLoopCmd_t));
+
+//                     //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
+//                     msgid = htons(msgid);
+//                 }
+//                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->payrburnloofcmd.CmdHeader[0],
+//                             command->payrburnloofcmd.CmdHeader[1], command->payrburnloofcmd.CmdHeader[2], command->payrburnloofcmd.CmdHeader[3], command->payrburnloofcmd.CmdHeader[4], command->payrburnloofcmd.CmdHeader[5], command->payrburnloofcmd.CmdHeader[6], command->payrburnloofcmd.CmdHeader[7],
+//                             command->payrburnloofcmd.Chip, command->payrburnloofcmd.MainBurn, command->payrburnloofcmd.BurnTimeSeconds);
+//                 break;
+//             }
+
+            case 74: { // COSMIC santsetsettingscmd command
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+
+                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputScalar("min_deploy u16",ImGuiDataType_U16,&command->santsetsettingscmd.min_deploy);
+                ImGui::InputScalar("backup u8", ImGuiDataType_U8, &command->santsetsettingscmd.backup);
+                ImGui::InputScalar("max_burn_duration u8",ImGuiDataType_U8,&command->santsetsettingscmd.max_burn_duration);
+
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
                     uint8_t stream[2] ={0,};
                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(PAYC_SnapCmd_t)-7};
+                    uint8_t length[2] = {0x00, sizeof(SANT_SetSettingsCmd_t)-7};
                     
                     
-                    memcpy(command->paycsnapcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->paycsnapcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->paycsnapcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->paycsnapcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    memcpy(command->santsetsettingscmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->santsetsettingscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->santsetsettingscmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->santsetsettingscmd.CmdHeader + 6, &fnccode, sizeof(uint8_t)); 
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_SnapCmd_t)); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(SANT_SetSettingsCmd_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYC_SnapCmd_t);
+                    TestPacket->Length = sizeof(SANT_SetSettingsCmd_t);
                     
-                    uint16_t len = sizeof(PAYC_SnapCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->paycsnapcmd;
+                    uint16_t len = sizeof(SANT_SetSettingsCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->santsetsettingscmd;
                     uint8_t checksum = 0xFF;
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    memcpy(command->paycsnapcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->paycsnapcmd, sizeof(PAYC_SnapCmd_t));
+                    memcpy(command->santsetsettingscmd.CmdHeader+7, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->santsetsettingscmd, sizeof(SANT_SetSettingsCmd_t));
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
                     msgid = htons(msgid);
                 }
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->santsetsettingscmd.CmdHeader[0],
+                            command->santsetsettingscmd.CmdHeader[1], command->santsetsettingscmd.CmdHeader[2], command->santsetsettingscmd.CmdHeader[3], command->santsetsettingscmd.CmdHeader[4], command->santsetsettingscmd.CmdHeader[5], command->santsetsettingscmd.CmdHeader[6], command->santsetsettingscmd.CmdHeader[7],
+                            command->santsetsettingscmd.min_deploy, command->santsetsettingscmd.backup, command->santsetsettingscmd.max_burn_duration);
                 break;
             }
-            case 65: { // paycstorecmd
+
+            case 75: { // BEE-1000 UANT uantburnchannelcmd
                 static uint16_t msgid = 0;
                 static uint8_t fnccode = 0;
 
                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputScalar("format u8",ImGuiDataType_U8, &command->paycstorecmd.Payload.format);
-                ImGui::InputScalar("scale u8",ImGuiDataType_U16, &command->paycstorecmd.Payload.scale);
-                ImGui::InputText("filename char[32]", command->paycstorecmd.Payload.filename, sizeof(command->paycstorecmd.Payload.filename));
+                ImGui::InputScalar("addr u8",ImGuiDataType_U8,&command->uantburnchannelcmd.addr);
+                ImGui::InputScalar("channel u8", ImGuiDataType_U8, &command->uantburnchannelcmd.channel);
+                ImGui::InputScalar("duration u8",ImGuiDataType_U8,&command->uantburnchannelcmd.duration);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
@@ -4300,41 +4743,49 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(PAYC_StoreCmd_t)-7};
+                    uint8_t length[2] = {0x00, sizeof(UANT_BurnChannelCmd_t)-7};
                     
                     
-                    memcpy(command->paycstorecmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->paycstorecmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->paycstorecmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->paycstorecmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    memcpy(command->uantburnchannelcmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->uantburnchannelcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->uantburnchannelcmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->uantburnchannelcmd.CmdHeader + 6, &fnccode, sizeof(uint8_t)); 
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_StoreCmd_t)); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(UANT_BurnChannelCmd_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYC_StoreCmd_t);
+                    TestPacket->Length = sizeof(UANT_BurnChannelCmd_t);
                     
-                    uint16_t len = sizeof(PAYC_StoreCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->paycstorecmd;
+                    uint16_t len = sizeof(UANT_BurnChannelCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->uantburnchannelcmd;
                     uint8_t checksum = 0xFF;
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    memcpy(command->paycstorecmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->paycstorecmd, sizeof(PAYC_StoreCmd_t));
+                    memcpy(command->uantburnchannelcmd.CmdHeader+7, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->uantburnchannelcmd, sizeof(UANT_BurnChannelCmd_t));
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
                     msgid = htons(msgid);
                 }
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantburnchannelcmd.CmdHeader[0],
+                            command->uantburnchannelcmd.CmdHeader[1], command->uantburnchannelcmd.CmdHeader[2], command->uantburnchannelcmd.CmdHeader[3], command->uantburnchannelcmd.CmdHeader[4], command->uantburnchannelcmd.CmdHeader[5], command->uantburnchannelcmd.CmdHeader[6], command->uantburnchannelcmd.CmdHeader[7],
+                            command->uantburnchannelcmd.min_deploy, command->uantburnchannelcmd.backup, command->uantburnchannelcmd.max_burn_duration);
                 break;
             }
-            case 66: { // paycstorefilelistlocationcmd
+
+
+            case 76: { // BEE-1000 UANT uantsetsettingscmd
                 static uint16_t msgid = 0;
                 static uint8_t fnccode = 0;
 
                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputText("stored file list location char[64]", command->paycstorefilelistlocationcmd.Payload.StoredFileListLocation, sizeof(command->paycstorefilelistlocationcmd.Payload.StoredFileListLocation));
+                ImGui::InputScalar("addr u8",ImGuiDataType_U8,&command->uantsetsettingscmd.addr);
+                ImGui::InputScalar("MinutesUntilDeploy u16", ImGuiDataType_U16, &command->uantsetsettingscmd.MinutesUntilDeploy);
+                ImGui::InputScalar("BackupActive u8",ImGuiDataType_U8,&command->uantsetsettingscmd.BackupActive);
+                ImGui::InputScalar("MaxBurnDuration u8",ImGuiDataType_U8,&command->uantsetsettingscmd.MaxBurnDuration);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
@@ -4342,42 +4793,48 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(PAYC_StoreFileListLocationCmd_t)-7};
+                    uint8_t length[2] = {0x00, sizeof(UANT_SetSettingsCmd_t)-7};
                     
                     
-                    memcpy(command->paycstorefilelistlocationcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->paycstorefilelistlocationcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->paycstorefilelistlocationcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->paycstorefilelistlocationcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    memcpy(command->uantsetsettingscmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->uantsetsettingscmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->uantsetsettingscmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->uantsetsettingscmd.CmdHeader + 6, &fnccode, sizeof(uint8_t)); 
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_StoreFileListLocationCmd_t)); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(UANT_SetSettingsCmd_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYC_StoreFileListLocationCmd_t);
+                    TestPacket->Length = sizeof(UANT_SetSettingsCmd_t);
                     
-                    uint16_t len = sizeof(PAYC_StoreFileListLocationCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->paycstorefilelistlocationcmd;
+                    uint16_t len = sizeof(UANT_SetSettingsCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->uantsetsettingscmd;
                     uint8_t checksum = 0xFF;
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    memcpy(command->paycstorefilelistlocationcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->paycstorefilelistlocationcmd, sizeof(PAYC_StoreFileListLocationCmd_t));
+                    memcpy(command->uantsetsettingscmd.CmdHeader+7, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->uantsetsettingscmd, sizeof(UANT_SetSettingsCmd_t));
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
                     msgid = htons(msgid);
                 }
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantsetsettingscmd.CmdHeader[0],
+                            command->uantsetsettingscmd.CmdHeader[1], command->uantsetsettingscmd.CmdHeader[2], command->uantsetsettingscmd.CmdHeader[3], command->uantsetsettingscmd.CmdHeader[4], command->uantsetsettingscmd.CmdHeader[5], command->uantsetsettingscmd.CmdHeader[6], command->uantsetsettingscmd.CmdHeader[7],
+                            command->uantsetsettingscmd.addr, command->uantsetsettingscmd.MiutesUntilDeploy, command->uantsetsettingscmd.BackupActive, command->uantsetsettingscmd.MaxBurnDuration);
                 break;
             }
-            case 67: { // paycsetdirpathcmd
+
+
+            case 77: { // BEE-1000 UANT uantautodeploycmd
                 static uint16_t msgid = 0;
                 static uint8_t fnccode = 0;
 
                 ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
                 ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
 
-                ImGui::InputText("remote dirname char[64]", command->paycsetdirpathcmd.Payload.remote_dirname, sizeof(command->paycsetdirpathcmd.Payload.remote_dirname));
-                ImGui::InputText("local dirname char[64]", command->paycsetdirpathcmd.Payload.local_dirname, sizeof(command->paycsetdirpathcmd.Payload.local_dirname));
+                ImGui::InputScalar("SecondsDelay u16",ImGuiDataType_U16,&command->uantautodeploycmd.SecondsDelay);
+                ImGui::InputScalar("addrslave1 u8", ImGuiDataType_U8, &command->uantautodeploycmd.addrslave1);
+                ImGui::InputScalar("addrslave2 u8",ImGuiDataType_U8,&command->uantautodeploycmd.addrslave2);
 
                 if(ImGui::Button("Generate CMD")) {
                     msgid = htons(msgid);
@@ -4385,344 +4842,34 @@ void ImGui_ControlWindow(float fontscale)
                     uint8_t sequence[2] = {0xC0,0x00};
                     
                     
-                    uint8_t length[2] = {0x00, sizeof(PAYC_SetDirPathCmd_t)-7};
+                    uint8_t length[2] = {0x00, sizeof(UANT_AutoDeployCmd_t)-7};
                     
                     
-                    memcpy(command->paycsetdirpathcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->paycsetdirpathcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->paycsetdirpathcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->paycsetdirpathcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
+                    memcpy(command->uantautodeploycmd.CmdHeader, &msgid, sizeof(uint16_t));
+                    memcpy(command->uantautodeploycmd.CmdHeader + 2, sequence, sizeof(uint16_t));
+                    memcpy(command->uantautodeploycmd.CmdHeader + 4, length, sizeof(uint16_t));
+                    memcpy(command->uantautodeploycmd.CmdHeader + 6, &fnccode, sizeof(uint8_t)); 
                     pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_SetDirPathCmd_t)); // 8 is for data
+                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(UANT_AutoDeployCmd_t)); // 8 is for data
                     TestPacket->Identifier = HVD_TEST;
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYC_SetDirPathCmd_t);
+                    TestPacket->Length = sizeof(UANT_AutoDeployCmd_t);
                     
-                    uint16_t len = sizeof(PAYC_SetDirPathCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->paycsetdirpathcmd;
+                    uint16_t len = sizeof(UANT_AutoDeployCmd_t);
+                    const uint8_t *byteptr = (uint8_t *)&command->uantautodeploycmd;
                     uint8_t checksum = 0xFF;
                     while (len--) {
                         checksum ^= *(byteptr++);
                     }
-                    memcpy(command->paycsetdirpathcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->paycsetdirpathcmd, sizeof(PAYC_SetDirPathCmd_t));
+                    memcpy(command->uantautodeploycmd.CmdHeader+7, &checksum, sizeof(uint8_t));
+                    memcpy(TestPacket->Data, &command->uantautodeploycmd, sizeof(UANT_AutoDeployCmd_t));
 
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
                     msgid = htons(msgid);
                 }
-                break;
-            }
-            case 68: { // paycdownloadcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputText("file name char[32]", command->paycdownloadcmd.Payload.filename, sizeof(command->paycdownloadcmd.Payload.filename));
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(PAYC_DownloadCmd_t)-7};
-                    
-                    
-                    memcpy(command->paycdownloadcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->paycdownloadcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->paycdownloadcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->paycdownloadcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYC_DownloadCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYC_DownloadCmd_t);
-                    
-                    uint16_t len = sizeof(PAYC_DownloadCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->paycdownloadcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->paycdownloadcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->paycdownloadcmd, sizeof(PAYC_DownloadCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 69: { // stxgenericsetvalue
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("reg u8",ImGuiDataType_U8,&command->stxgenericsetvalue.Reg);
-                ImGui::InputScalar("val u8",ImGuiDataType_U8,&command->stxgenericsetvalue.Val);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(STX_PULSAR_GenericSetValueCmd_t)-7};
-                    
-                    
-                    memcpy(command->stxgenericsetvalue.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->stxgenericsetvalue.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->stxgenericsetvalue.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->stxgenericsetvalue.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(STX_PULSAR_GenericSetValueCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(STX_PULSAR_GenericSetValueCmd_t);
-                    
-                    uint16_t len = sizeof(STX_PULSAR_GenericSetValueCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->stxgenericsetvalue;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->stxgenericsetvalue.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->stxgenericsetvalue, sizeof(STX_PULSAR_GenericSetValueCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 70: { // stxsetvaluebool
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::Checkbox("val", &command->stxsetvaluebool.Val);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(STX_PULSAR_SetValueBoolCmd_t)-7};
-                    
-                    
-                    memcpy(command->stxsetvaluebool.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->stxsetvaluebool.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->stxsetvaluebool.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->stxsetvaluebool.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(STX_PULSAR_SetValueBoolCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(STX_PULSAR_SetValueBoolCmd_t);
-                    
-                    uint16_t len = sizeof(STX_PULSAR_SetValueBoolCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->stxsetvaluebool;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->stxsetvaluebool.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->stxsetvaluebool, sizeof(STX_PULSAR_SetValueBoolCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-            case 71: { // stxgenericgetvalue
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("reg u8",ImGuiDataType_U8,&command->stxgenericgetvalue.Reg);
-                ImGui::InputScalar("size u8",ImGuiDataType_U8,&command->stxgenericgetvalue.Size);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(STX_PULSAR_GenericGetValueCmd_t)-7};
-                    
-                    
-                    memcpy(command->stxgenericgetvalue.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->stxgenericgetvalue.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->stxgenericgetvalue.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->stxgenericgetvalue.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(STX_PULSAR_GenericGetValueCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(STX_PULSAR_GenericGetValueCmd_t);
-                    
-                    uint16_t len = sizeof(STX_PULSAR_GenericGetValueCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->stxgenericgetvalue;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->stxgenericgetvalue.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->stxgenericgetvalue, sizeof(STX_PULSAR_GenericGetValueCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                break;
-            }
-
-            // PAYR
-            case 72: { // payrburncmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("chip u8",ImGuiDataType_U8,&command->payrburncmd.Chip);
-                ImGui::InputScalar("pins u8",ImGuiDataType_U8,&command->payrburncmd.Pins);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(PAYR_BurnCmd_t)-7};
-                    
-                    
-                    memcpy(command->payrburncmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->payrburncmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->payrburncmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->payrburncmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYR_BurnCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYR_BurnCmd_t);
-                    
-                    uint16_t len = sizeof(PAYR_BurnCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->payrburncmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->payrburncmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->payrburncmd, sizeof(PAYR_BurnCmd_t));
-
-                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u",command->payrburncmd.CmdHeader[0],
-                            command->payrburncmd.CmdHeader[1], command->payrburncmd.CmdHeader[2], command->payrburncmd.CmdHeader[3], command->payrburncmd.CmdHeader[4], command->payrburncmd.CmdHeader[5], command->payrburncmd.CmdHeader[6], command->payrburncmd.CmdHeader[7],
-                            command->payrburncmd.Chip, command->payrburncmd.Pins);
-                break;
-            }
-            case 73: { // payrburnloofcmd
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("chip u8",ImGuiDataType_U8,&command->payrburnloofcmd.Chip);
-                ImGui::Checkbox("Mainburn bool", &command->payrburnloofcmd.MainBurn);
-                ImGui::InputScalar("Burn time sec u8",ImGuiDataType_U8,&command->payrburnloofcmd.BurnTimeSeconds);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(PAYR_BurnLoopCmd_t)-7};
-                    
-                    
-                    memcpy(command->payrburnloofcmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->payrburnloofcmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->payrburnloofcmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->payrburnloofcmd.CmdHeader + 7, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(PAYR_BurnLoopCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(PAYR_BurnLoopCmd_t);
-                    
-                    uint16_t len = sizeof(PAYR_BurnLoopCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->payrburnloofcmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->payrburnloofcmd.CmdHeader+6, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->payrburnloofcmd, sizeof(PAYR_BurnLoopCmd_t));
-
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->payrburnloofcmd.CmdHeader[0],
-                            command->payrburnloofcmd.CmdHeader[1], command->payrburnloofcmd.CmdHeader[2], command->payrburnloofcmd.CmdHeader[3], command->payrburnloofcmd.CmdHeader[4], command->payrburnloofcmd.CmdHeader[5], command->payrburnloofcmd.CmdHeader[6], command->payrburnloofcmd.CmdHeader[7],
-                            command->payrburnloofcmd.Chip, command->payrburnloofcmd.MainBurn, command->payrburnloofcmd.BurnTimeSeconds);
-                break;
-            }
-
-            case 74: { // u16u8u8 SANT command
-                static uint16_t msgid = 0;
-                static uint8_t fnccode = 0;
-
-                ImGui::InputScalar("msgid",ImGuiDataType_U16, &msgid);
-                ImGui::InputScalar("fnccode",ImGuiDataType_U8, &fnccode);
-
-                ImGui::InputScalar("min_deploy u16",ImGuiDataType_U16,&command->santdeployburncmd.min_deploy);
-                ImGui::InputScalar("backup u8", ImGuiDataType_U8, &command->santdeployburncmd.backup);
-                ImGui::InputScalar("max_burn_duration u8",ImGuiDataType_U8,&command->santdeployburncmd.max_burn_duration);
-
-                if(ImGui::Button("Generate CMD")) {
-                    msgid = htons(msgid);
-                    uint8_t stream[2] ={0,};
-                    uint8_t sequence[2] = {0xC0,0x00};
-                    
-                    
-                    uint8_t length[2] = {0x00, sizeof(SANT_DeployBurnCmd_t)-7};
-                    
-                    
-                    memcpy(command->santdeployburncmd.CmdHeader, &msgid, sizeof(uint16_t));
-                    memcpy(command->santdeployburncmd.CmdHeader + 2, sequence, sizeof(uint16_t));
-                    memcpy(command->santdeployburncmd.CmdHeader + 4, length, sizeof(uint16_t));
-                    memcpy(command->santdeployburncmd.CmdHeader + 6, &fnccode, sizeof(uint8_t)); 
-                    pthread_join(p_thread[4], NULL);
-                    packetsign * TestPacket = (packetsign *)malloc(2+2+4+sizeof(SANT_DeployBurnCmd_t)); // 8 is for data
-                    TestPacket->Identifier = HVD_TEST;
-                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
-                    TestPacket->Length = sizeof(SANT_DeployBurnCmd_t);
-                    
-                    uint16_t len = sizeof(SANT_DeployBurnCmd_t);
-                    const uint8_t *byteptr = (uint8_t *)&command->santdeployburncmd;
-                    uint8_t checksum = 0xFF;
-                    while (len--) {
-                        checksum ^= *(byteptr++);
-                    }
-                    memcpy(command->santdeployburncmd.CmdHeader+7, &checksum, sizeof(uint8_t));
-                    memcpy(TestPacket->Data, &command->santdeployburncmd, sizeof(SANT_DeployBurnCmd_t));
-
-                    //pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
-                    msgid = htons(msgid);
-                }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->santdeployburncmd.CmdHeader[0],
-                            command->santdeployburncmd.CmdHeader[1], command->santdeployburncmd.CmdHeader[2], command->santdeployburncmd.CmdHeader[3], command->santdeployburncmd.CmdHeader[4], command->santdeployburncmd.CmdHeader[5], command->santdeployburncmd.CmdHeader[6], command->santdeployburncmd.CmdHeader[7],
-                            command->santdeployburncmd.min_deploy, command->santdeployburncmd.backup, command->santdeployburncmd.max_burn_duration);
+                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantautodeploycmd.CmdHeader[0],
+                            command->uantautodeploycmd.CmdHeader[1], command->uantautodeploycmd.CmdHeader[2], command->uantautodeploycmd.CmdHeader[3], command->uantautodeploycmd.CmdHeader[4], command->uantautodeploycmd.CmdHeader[5], command->uantautodeploycmd.CmdHeader[6], command->uantautodeploycmd.CmdHeader[7],
+                            command->uantautodeploycmd.SecondsDelay, command->uantautodeploycmd.addrslave1, command->uantautodeploycmd.addrslave2);
                 break;
             }
             
@@ -6122,83 +6269,85 @@ void Initialize_CMDLabels()
     snprintf(Templabels[7], 64, "s32");
     snprintf(Templabels[8], 64, "s64");
     snprintf(Templabels[9], 64, "float");
-    snprintf(Templabels[74], 64, "SANT Deploy/Burn Command");
+    snprintf(Templabels[74], 64, "COSMIC SANT Set Settings Command");
+    snprintf(Templabels[75], 64, "BEE-1000 UANT Burn Channel Command");
+    snprintf(Templabels[76], 64, "BEE-1000 UANT Set Settings Command");
+    snprintf(Templabels[77], 64, "BEE-1000 UANT Auto Deploy Command");
+    // // EPS unusual
+    // snprintf(Templabels[10], 64, "EPS_P60_Dock(PDU)SetChannelSingle");
+    // snprintf(Templabels[11], 64, "EPS_P60_Dock(PDU)GetChannelSingle & AcuSetMpptMode");
+    // snprintf(Templabels[12], 64, "EPS_P60_TableGet(Statistic)Cmd_t");
+    // snprintf(Templabels[13], 64, "EPS_P60_TableSave(Load)Cmd_t");
+    // snprintf(Templabels[14], 64, "EPS_P60_ParamGetCmd_t");
+    // snprintf(Templabels[15], 64, "EPS_P60_ParamGetArrayCmd_t");
+    // snprintf(Templabels[16], 64, "EPS_P60_DockSetChannelsCmd_t");
+    // snprintf(Templabels[17], 64, "EPS_P60_PduSetChannelsCmd_t");
 
-    // EPS unusual
-    snprintf(Templabels[10], 64, "EPS_P60_Dock(PDU)SetChannelSingle");
-    snprintf(Templabels[11], 64, "EPS_P60_Dock(PDU)GetChannelSingle & AcuSetMpptMode");
-    snprintf(Templabels[12], 64, "EPS_P60_TableGet(Statistic)Cmd_t");
-    snprintf(Templabels[13], 64, "EPS_P60_TableSave(Load)Cmd_t");
-    snprintf(Templabels[14], 64, "EPS_P60_ParamGetCmd_t");
-    snprintf(Templabels[15], 64, "EPS_P60_ParamGetArrayCmd_t");
-    snprintf(Templabels[16], 64, "EPS_P60_DockSetChannelsCmd_t");
-    snprintf(Templabels[17], 64, "EPS_P60_PduSetChannelsCmd_t");
+    // //GRX unusual
+    // snprintf(Templabels[18], 64, "GRX assemblepublishcmd");
+    // snprintf(Templabels[19], 64, "GRX cmdlog");
+    // snprintf(Templabels[20], 64, "GRX cmdlogontime");
+    // snprintf(Templabels[21], 64, "GRX cmdlogonchanged");
+    // snprintf(Templabels[22], 64, "GRX cmdlogon new");
+    // snprintf(Templabels[23], 64, "GRX cmd unlog");
+    // snprintf(Templabels[24], 64, "GRX cmd unlog all");
+    // snprintf(Templabels[25], 64, "GRX elevation cutoff");
+    // snprintf(Templabels[26], 64, "GRX interface mode");
+    // snprintf(Templabels[27], 64, "GRX serial config");
+    // snprintf(Templabels[28], 64, "GRX logresister handler");
+    // snprintf(Templabels[29], 64, "GRX logunresister handler");
+    // snprintf(Templabels[30], 64, "GRX log add callback");
+    // snprintf(Templabels[31], 64, "GRX logsethandlerstatus");
 
-    //GRX unusual
-    snprintf(Templabels[18], 64, "GRX assemblepublishcmd");
-    snprintf(Templabels[19], 64, "GRX cmdlog");
-    snprintf(Templabels[20], 64, "GRX cmdlogontime");
-    snprintf(Templabels[21], 64, "GRX cmdlogonchanged");
-    snprintf(Templabels[22], 64, "GRX cmdlogon new");
-    snprintf(Templabels[23], 64, "GRX cmd unlog");
-    snprintf(Templabels[24], 64, "GRX cmd unlog all");
-    snprintf(Templabels[25], 64, "GRX elevation cutoff");
-    snprintf(Templabels[26], 64, "GRX interface mode");
-    snprintf(Templabels[27], 64, "GRX serial config");
-    snprintf(Templabels[28], 64, "GRX logresister handler");
-    snprintf(Templabels[29], 64, "GRX logunresister handler");
-    snprintf(Templabels[30], 64, "GRX log add callback");
-    snprintf(Templabels[31], 64, "GRX logsethandlerstatus");
+    // // ADCS unusual
+    // snprintf(Templabels[32], 64, "ADCS unix time cmd");
+    // snprintf(Templabels[33], 64, "ADCS reference LLH target command");
+    // snprintf(Templabels[34], 64, "ADCS gnss measurement cmd");
+    // snprintf(Templabels[35], 64, "ADCS referenceRPY value cmd");
+    // snprintf(Templabels[36], 64, "ADCS openloop command MTQ cmd");
+    // snprintf(Templabels[37], 64, "ADCS control mode cmd");
+    // snprintf(Templabels[38], 64, "ADCS config adcs satellite cmd");
+    // snprintf(Templabels[39], 64, "ADCS controller configuration cmd");
+    // snprintf(Templabels[40], 64, "ADCS config mag0 orbital cmd");
+    // snprintf(Templabels[41], 64, "ADCS mounting configuration cmd");
+    // snprintf(Templabels[42], 64, "ADCS estimator configuration cmd");
+    // snprintf(Templabels[43], 64, "ADCS config orbit sat param cmd");
+    // snprintf(Templabels[44], 64, "ADCS node selection cmd");
+    // snprintf(Templabels[45], 64, "ADCS MTQ config cmd");
+    // snprintf(Templabels[46], 64, "ADCS Estimation Mode cmd");
+    // snprintf(Templabels[47], 64, "ADCS openloop command RWL cmd");
+    // snprintf(Templabels[48], 64, "ADCS openloop command HxyzRW cmd");
 
-    // ADCS unusual
-    snprintf(Templabels[32], 64, "ADCS unix time cmd");
-    snprintf(Templabels[33], 64, "ADCS reference LLH target command");
-    snprintf(Templabels[34], 64, "ADCS gnss measurement cmd");
-    snprintf(Templabels[35], 64, "ADCS referenceRPY value cmd");
-    snprintf(Templabels[36], 64, "ADCS openloop command MTQ cmd");
-    snprintf(Templabels[37], 64, "ADCS control mode cmd");
-    snprintf(Templabels[38], 64, "ADCS config adcs satellite cmd");
-    snprintf(Templabels[39], 64, "ADCS controller configuration cmd");
-    snprintf(Templabels[40], 64, "ADCS config mag0 orbital cmd");
-    snprintf(Templabels[41], 64, "ADCS mounting configuration cmd");
-    snprintf(Templabels[42], 64, "ADCS estimator configuration cmd");
-    snprintf(Templabels[43], 64, "ADCS config orbit sat param cmd");
-    snprintf(Templabels[44], 64, "ADCS node selection cmd");
-    snprintf(Templabels[45], 64, "ADCS MTQ config cmd");
-    snprintf(Templabels[46], 64, "ADCS Estimation Mode cmd");
-    snprintf(Templabels[47], 64, "ADCS openloop command RWL cmd");
-    snprintf(Templabels[48], 64, "ADCS openloop command HxyzRW cmd");
+    // snprintf(Templabels[49], 64, "IFC handle no arg");
+    // snprintf(Templabels[50], 64, "IFC handle u8 arg");
+    // snprintf(Templabels[51], 64, "IFC handle u32 arg");
+    // snprintf(Templabels[52], 64, "IFC write cmd");
+    // snprintf(Templabels[53], 64, "IFC read cmd");
+    // snprintf(Templabels[54], 64, "IFC gpio num cmd");
+    // snprintf(Templabels[55], 64, "IFC io open cmd");
+    // snprintf(Templabels[56], 64, "IFC gpio write cmd");
+    // snprintf(Templabels[57], 64, "IFC uart set termios cmd");
+    // snprintf(Templabels[58], 64, "IFC i2c duplex transfer cmd");
+    // snprintf(Templabels[59], 64, "IFC spi duplex transfer cmd");
+    // snprintf(Templabels[60], 64, "IFC io handle allocate cmd");
 
-    snprintf(Templabels[49], 64, "IFC handle no arg");
-    snprintf(Templabels[50], 64, "IFC handle u8 arg");
-    snprintf(Templabels[51], 64, "IFC handle u32 arg");
-    snprintf(Templabels[52], 64, "IFC write cmd");
-    snprintf(Templabels[53], 64, "IFC read cmd");
-    snprintf(Templabels[54], 64, "IFC gpio num cmd");
-    snprintf(Templabels[55], 64, "IFC io open cmd");
-    snprintf(Templabels[56], 64, "IFC gpio write cmd");
-    snprintf(Templabels[57], 64, "IFC uart set termios cmd");
-    snprintf(Templabels[58], 64, "IFC i2c duplex transfer cmd");
-    snprintf(Templabels[59], 64, "IFC spi duplex transfer cmd");
-    snprintf(Templabels[60], 64, "IFC io handle allocate cmd");
+    // snprintf(Templabels[61], 64, "EPS P60 Param Set cmd");
 
-    snprintf(Templabels[61], 64, "EPS P60 Param Set cmd");
+    // snprintf(Templabels[62], 64, "PAYS d1064 read save status cmd");
 
-    snprintf(Templabels[62], 64, "PAYS d1064 read save status cmd");
+    // snprintf(Templabels[63], 64, "PAYC set conf cmd");
+    // snprintf(Templabels[64], 64, "PAYC snap cmd");
+    // snprintf(Templabels[65], 64, "PAYC store cmd");
+    // snprintf(Templabels[66], 64, "PAYC store file list location cmd");
+    // snprintf(Templabels[67], 64, "PAYC set dir path cmd");
+    // snprintf(Templabels[68], 64, "PAYC download cmd");
 
-    snprintf(Templabels[63], 64, "PAYC set conf cmd");
-    snprintf(Templabels[64], 64, "PAYC snap cmd");
-    snprintf(Templabels[65], 64, "PAYC store cmd");
-    snprintf(Templabels[66], 64, "PAYC store file list location cmd");
-    snprintf(Templabels[67], 64, "PAYC set dir path cmd");
-    snprintf(Templabels[68], 64, "PAYC download cmd");
+    // snprintf(Templabels[69], 64, "STX Generic Set value");
+    // snprintf(Templabels[70], 64, "STX Set value bool");
+    // snprintf(Templabels[71], 64, "STX Generic Get value");
 
-    snprintf(Templabels[69], 64, "STX Generic Set value");
-    snprintf(Templabels[70], 64, "STX Set value bool");
-    snprintf(Templabels[71], 64, "STX Generic Get value");
-
-    snprintf(Templabels[72], 64, "PAYR burn cmd");
-    snprintf(Templabels[73], 64, "PAYR burn loof");
+    // snprintf(Templabels[72], 64, "PAYR burn cmd");
+    // snprintf(Templabels[73], 64, "PAYR burn loof");
 
 }
 

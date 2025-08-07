@@ -3203,53 +3203,31 @@ typedef struct __attribute__ ((packed)) {
 
 typedef struct {
     CFE_MSG_CommandHeader CmdHeader;
-    uint8_t Arg;
-} __attribute__((packed)) EPS_U8ArgCmd_t;
+} UTRX_NoArgsCmd_t;
+
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t Arg;
-} __attribute__((packed)) EPS_U16ArgCmd_t;
+    CFE_MSG_CommandHeader CmdHeader; 
+    uint32_t                  Arg;
+} UTRX_u32Cmd_t;
 
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int32_t Arg;
-} __attribute__((packed)) EPS_I32ArgCmd_t;
 
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t ParameterID;
-    uint8_t ParameterLength;
-    uint8_t Parameter[8];
-} __attribute__((packed)) EPS_SetConfigurationParameterCmd_t;
 
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t ParameterLength;
-    uint16_t ParameterID;
-} __attribute__((packed)) EPS_ResetConfigurationParamterCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_NoopCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_ResetCountersCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_ResetAppCmdCountersCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_ResetDeviceCmdCountersCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_ProcessCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_DisplayParamCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_GndWdtClearCmd_t;
+typedef UTRX_NoArgsCmd_t    UTRX_RebootCmd_t;
 
-typedef EPS_NoArgsCmd_t EPS_NoopCmd_t;
-typedef EPS_NoArgsCmd_t EPS_ResetCountersCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SystemResetCmd_t;
-typedef EPS_NoArgsCmd_t EPS_NoOperationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_CancelOperationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_WatchdogCmd_t;
+typedef UTRX_u32Cmd_t       UTRX_SetTxFreqCmd_t;
+typedef UTRX_u32Cmd_t       UTRX_SetTxBaudCmd_t;
+typedef UTRX_u32Cmd_t       UTRX_SetRxFreqCmd_t;
+typedef UTRX_u32Cmd_t       UTRX_SetRxBaudCmd_t;
 
-typedef EPS_I32ArgCmd_t EPS_CorrectTimeCmd_t;
 
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOnCmd_t;
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOffCmd_t;
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupStateCmd_t;
-
-typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOnCmd_t;
-typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOffCmd_t;
-
-typedef EPS_NoArgsCmd_t EPS_SwitchToNominalModeCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SwitchToSafetyModeCmd_t;
-typedef EPS_NoArgsCmd_t EPS_ResetConfigurationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_LoadConfigurationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
 
 
 
@@ -3342,6 +3320,41 @@ typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
 #define UANT_APP_MEASURE_SYSTEM_TEMPERATURE_CC    19
 
 // Define CMD Structure
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+} UANT_NoArgsCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader; 
+    uint8_t                   Arg;
+} UANT_u8Cmd_t;
+
+
+
+typedef UANT_NoArgsCmd_t    UANT_NoopCmd_t;
+typedef UANT_NoArgsCmd_t    UANT_ResetCountersCmd_t;
+typedef UANT_NoArgsCmd_t    UANT_ResetCmd_t;
+typedef UANT_NoArgsCmd_t    UANT_GetDeploymentStatusCmd_t;
+typedef UANT_NoArgsCmd_t    UANT_ArmAntennaSystemsCmd_t;
+typedef UANT_NoArgsCmd_t    UANT_DisarmCmd_t;
+typedef UANT_NoArgsCmd_t    UANT_CancelDeploymentActivationCmd_t;
+typedef UANT_NoArgsCmd_t    UANT_MeasureSystemTemperatureCmd_t;
+
+
+
+typedef UANT_u8Cmd_t        UANT_AutomatedDeploymentCmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt1Cmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt2Cmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt3Cmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt4Cmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt1OverrideCmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt2OverrideCmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt3OverrideCmd_t;
+typedef UANT_u8Cmd_t        UANT_DeployAnt4OverrideCmd_t;
+typedef UANT_u8Cmd_t        UANT_ReportAntActivationCntCmd_t;
+typedef UANT_u8Cmd_t        UANT_ReportAntActivationTimeCmd_t;
+
+
 
 
 /*******************************************/
@@ -3367,6 +3380,285 @@ typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
 
 
 // Define CMD Structure
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader;
+} SANT_NoArgsCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader; 
+    uint8_t                   Arg;
+} SANT_u8Cmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader CmdHeader; 
+    uint16_t                 min_deploy;
+    uint8_t                  backup;
+    uint8_t                  max_burn_duration;
+} SANT_SetSettingsCmd_t;
+
+
+typedef SANT_NoArgsCmd_t        SANT_NoopCmd_t;
+typedef SANT_NoArgsCmd_t        SANT_ResetCountersCmd_t;
+typedef SANT_NoArgsCmd_t        SANT_SoftRebootCmd_t;
+typedef SANT_NoArgsCmd_t        SANT_StopBurnCmd_t;
+typedef SANT_NoArgsCmd_t        SANT_GetStatusCmd_t;
+typedef SANT_NoArgsCmd_t        SANT_GetBackupStatusCmd_t;
+typedef SANT_NoArgsCmd_t        SANT_GetTemperatureCmd_t;
+typedef SANT_NoArgsCmd_t        SANT_GetSettingsCmd_t;
+
+typedef SANT_u8Cmd_t            SANT_BurnCmd_t;
+
+
+
+
+
+
+
+
+
+/*******************************************/
+/*                                         */
+/*               EPS (COSMIC)              */
+/*        ?????????????????????????        */
+/*                                         */
+/*******************************************/
+// Define MSGID
+
+// Define Function Codes
+
+/*
+** EPS App command codes
+*/
+#define EPS_NOOP_CC                 0
+#define EPS_RESET_COUNTERS_CC       1
+#define EPS_GET_COUNTERS_CC         2
+#define EPS_GET_APPDATA_CC          3
+
+/*
+** P31u device & channel control
+*/
+#define EPS_P31U_SET_OUT_SINGLE_CC  10
+#define EPS_P31U_SET_OUTPUTS_CC     11
+#define EPS_P31U_RESET_WDT_CC       20
+#define EPS_P31U_RESET_COUNTERS_CC  21
+#define EPS_P31U_HARD_RESET_CC      22
+
+/*
+** P31u housekeeping requests
+*/
+#define EPS_P31U_GETHK_ALL_CC       30
+#define EPS_P31U_GETHK_OUT_CC       31
+#define EPS_P31U_GETHK_VI_CC        32
+#define EPS_P31U_GETHK_WDT_CC       33
+#define EPS_P31U_GETHK_BASIC_CC     34
+#define EPS_P31U_GETHK_OLD_CC       35
+#define EPS_P31U_GETHK_CC           36
+
+/*
+** P31u config commands
+*/
+#define EPS_P31U_SET_PV_VOLT_CC     40
+#define EPS_P31U_SET_PV_AUTO_CC     41
+#define EPS_P31U_SET_HEATER_CC      42
+
+#define EPS_P31U_GET_CONFIG_CC      50
+#define EPS_P31U_SET_CONFIG_CC      51
+#define EPS_P31U_CONFIG_CC          52
+#define EPS_P31U_GET_CONFIG2_CC     53
+#define EPS_P31U_SET_CONFIG2_CC     54
+#define EPS_P31U_CONFIG2_CC         55
+#define EPS_P31U_SET_CONFIG3_CC     56
+
+/*
+** Generic transaction (plumbing)
+*/
+#define EPS_P31U_TRANSACTION_CC     99
+
+
+// Define CMD Structure
+typedef struct {
+    uint8_t  channel;
+    uint8_t  value;
+    uint16_t delay;
+} EPS_P31U_SetOutputSingle_Payload_t;
+
+typedef struct {
+    uint8_t  mask;
+} EPS_P31U_SetOutputs_Payload_t;
+
+typedef struct {
+    uint8_t  id;
+} EPS_P31U_GetHk_Payload_t;
+ 
+typedef struct {
+    int16_t  voltage[3];
+} EPS_P31U_SetPvVolt_Payload_t;
+
+typedef struct {
+    uint8_t  mode;
+} EPS_P31U_SetPvAuto_Payload_t;
+
+typedef struct {
+    uint8_t  cmd;
+    uint8_t  heater;
+    uint8_t  mode;
+} EPS_P31U_SetHeater_Payload_t;
+
+typedef struct {
+    uint8_t  ppt_mode;
+    uint8_t  battheater_mode;
+    int8_t   battheater_low;
+    int8_t   battheater_high;
+    uint8_t  output_normal_value[8];
+    uint8_t  output_safe_value[8];
+    uint16_t output_initial_on_delay[8];
+    uint16_t output_initial_off_delay[8];
+    uint16_t vboost[3];
+} EPS_P31U_SetConfig_Payload_t;
+
+typedef struct {
+    uint16_t batt_maxvoltage;
+    uint16_t batt_safevoltage;
+    uint16_t batt_criticalvoltage;
+    uint16_t batt_normalvoltage;
+    uint32_t reserved1[2];
+    uint8_t  reserved2[4];
+} EPS_P31U_SetConfig2_Payload_t;
+
+typedef struct {
+    uint8_t  version;
+    uint8_t  cmd;
+    uint8_t  length;
+    uint8_t  flags;
+    uint16_t cur_lim[8];
+    uint8_t  cur_ema_gain;
+    uint8_t  cspwdt_channel[2];
+    uint8_t  cspwdt_address[2];
+} EPS_P31U_SetConfig3_Payload_t;
+
+typedef struct {
+    uint8_t  port;
+    uint8_t  reserved;
+    uint8_t  txSize;
+    uint8_t  rxSize;
+    uint8_t  tx[128];
+} EPS_P31U_Transaction_Payload_t;
+
+/*************************************************************************/
+/*
+** Type definition (EPS housekeeping)
+*/
+
+typedef struct {
+
+} EPS_P31U_HkTlm_Payload_t;
+
+typedef struct SAMPLE_APP_HkTlm_Payload {
+    uint8_t CommandErrorCounter;
+    uint8_t CommandCounter;
+    uint8_t spare[2];
+} EPS_HkTlm_Payload_t;
+
+
+
+/**
+ * Noarg cmd template.
+ */
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+} EPS_NoArgCmd_t;
+
+typedef EPS_NoArgCmd_t  EPS_NoopCmd_t;
+typedef EPS_NoArgCmd_t  EPS_ResetCountersCmd_t;
+typedef EPS_NoArgCmd_t  EPS_GetCountersCmd_t;
+typedef EPS_NoArgCmd_t  EPS_GetAppDataCmd_t;
+
+typedef EPS_NoArgCmd_t  EPS_P31U_ResetCountersCmd_t;
+typedef EPS_NoArgCmd_t  EPS_P31U_ResetWdtCmd_t;
+typedef EPS_NoArgCmd_t  EPS_P31U_HardResetCmd_t;
+
+typedef EPS_NoArgCmd_t  EPS_P31U_GetHkAllCmd_t;
+typedef EPS_NoArgCmd_t  EPS_P31U_GetHkOutCmd_t;
+typedef EPS_NoArgCmd_t  EPS_P31U_GetHkViCmd_t;
+typedef EPS_NoArgCmd_t  EPS_P31U_GetHkWdtCmd_t;
+typedef EPS_NoArgCmd_t  EPS_P31U_GetHkBasicCmd_t;
+typedef EPS_NoArgCmd_t  EPS_P31U_GetHkOldCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_GetHk_Payload_t Payload;
+} EPS_P31U_GetHkCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetOutputSingle_Payload_t Payload;
+} EPS_P31U_SetOutputSingleCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetOutputs_Payload_t Payload;
+} EPS_P31U_SetOutputsCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetPvVolt_Payload_t Payload;
+} EPS_P31U_SetPvVoltCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetPvAuto_Payload_t Payload;
+} EPS_P31U_SetPvAutoCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetHeater_Payload_t Payload;
+} EPS_P31U_SetHeaterCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetConfig_Payload_t Payload;
+} EPS_P31U_SetConfigCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetConfig2_Payload_t Payload;
+} EPS_P31U_SetConfig2Cmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_SetConfig3_Payload_t Payload;
+} EPS_P31U_SetConfig3Cmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader_t CommandHeader;
+    EPS_P31U_Transaction_Payload_t Payload;
+} EPS_P31U_TransactionCmd_t;
+
+
+/*************************************************************************/
+/*
+** Type definition (EPS housekeeping)
+*/
+typedef EPS_NoArgCmd_t  EPS_SendHkCmd_t;
+
+
+typedef struct {
+    CFE_MSG_TelemetryHeader_t  TelemetryHeader;
+    EPS_HkTlm_Payload_t Payload;
+} EPS_HkTlm_t;
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 
@@ -3473,236 +3765,68 @@ typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
 
 // Define CMD Structure
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-/*
-** CI App command codes
-*/
-#define CI_NOOP_CC              0
-#define CI_RESET_COUNTERS_CC    1
-#define CI_RESERVED_CC          2
-
-
-#define CI_GATE_NOOP_CC         20
-
-/*
-** EPS App command codes
-*/
-#define EPS_NOOP_CC                     0
-
-#define EPS_RESET_COUNTERS_CC           1
-#define EPS_RESERVED_CC                 2
-#define EPS_SYSTEM_RESET_CC             3
-#define EPS_HW_NOOP_CC                  4
-
-
-
-/*************************************************************************/
-/*
-** ADCS system
-*/
-/*************************************************************************/ 
-
-typedef struct
-{
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} ADCS_NoArgsCmd_t;
-
-typedef ADCS_NoArgsCmd_t ADCS_NoopCmd_t;
-typedef ADCS_NoArgsCmd_t ADCS_ResetCountersCmd_t;
-typedef ADCS_NoArgsCmd_t ADCS_ProcessCmd_t;
-
-
-typedef struct {
-	double mass, MOI[3][3], inv_MOI[3][3];
-	double css_sf[5], mmt_A[3][3], mmt_bias[3], gyro_bias_a[3], gyro_bias_b[3];
-} ADCS_ParamsSC;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsSC           Params;
-} ADCS_SetParamScCmd_t;
-
-
-typedef struct {
-	uint32_t epochYear;
-	float epochDay;
-	double Bstar, INC, RAAN, ECC, AOP, MA, MM;
-} ADCS_ParamsTLE;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsTLE          Params;
-} ADCS_SetParamTleCmd_t;
-
-
-typedef struct {
-    double mu_E, R_E, coef_J2, w_E, wn;
-	double tstp;
-	uint32_t quit_TRIAD;
-	uint8_t num_AD_loop, num_AC_loop, option_prg_orb_est, option_gyroless, option_ignoreSTT, option_ignoreCSS;
-	double est_P_atd_STT_initial, est_P_atd_FSS_initial, est_P_atd_CSS_initial, est_P_atd_WSS_initial;
-	double GS_sband[3], GS_uhf[3];
-	double wrpm_WHLdot_dump, wrpm_WHL_dump_crit, wrpm_WHL_dump_goal;
-	double w_standby_detumbling_start, w_standby_detumbling_goal, w_standby_forcedSpin_start, angle_standby_forcedSpin_start, M_standby_forcedSpin[3];
-} ADCS_ParamsAux;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsAux          Params;
-} ADCS_SetParamAuxCmd_t;
-
-
-typedef struct {
-	double r_Target[3];
-    double q_Target[4];
-} ADCS_ParamsTarget;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsTarget       Params;
-} ADCS_SetParamTargetCmd_t;
-
-
-typedef struct {
-    uint8_t       WhichGain;
-    uint8_t       Mode;
-    uint16_t      Num;
-    double      Gain[31];
-} ADCS_SetParamGainPayload_t;
-
 typedef struct {
     CFE_MSG_CommandHeader     CmdHeader;
-    ADCS_SetParamGainPayload_t  Payload;
-} ADCS_SetParamGainCmd_t;
-
-
-
+} UANT_NoArgsCmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t Arg;
-} __attribute__((packed)) EPS_U8ArgCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t Arg;
-} __attribute__((packed)) EPS_U16ArgCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int32_t Arg;
-} __attribute__((packed)) EPS_I32ArgCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t ParameterID;
-    uint8_t ParameterLength;
-    uint8_t Parameter[8];
-} __attribute__((packed)) EPS_SetConfigurationParameterCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t ParameterLength;
-    uint16_t ParameterID;
-} __attribute__((packed)) EPS_ResetConfigurationParamterCmd_t;
-
-typedef EPS_NoArgsCmd_t EPS_NoopCmd_t;
-typedef EPS_NoArgsCmd_t EPS_ResetCountersCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SystemResetCmd_t;
-typedef EPS_NoArgsCmd_t EPS_NoOperationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_CancelOperationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_WatchdogCmd_t;
-
-typedef EPS_I32ArgCmd_t EPS_CorrectTimeCmd_t;
-
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOnCmd_t;
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOffCmd_t;
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupStateCmd_t;
-
-typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOnCmd_t;
-typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOffCmd_t;
-
-typedef EPS_NoArgsCmd_t EPS_SwitchToNominalModeCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SwitchToSafetyModeCmd_t;
-typedef EPS_NoArgsCmd_t EPS_ResetConfigurationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_LoadConfigurationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
-
-
-
-/*************************************************************************/
-/*
-** UTRX system
-*/
-/*************************************************************************/
-
-/*
-** Type definition (generic "no arguments" command)
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-} UTRX_NoArgsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
+    CFE_MSG_CommandHeader     CmdHeader; 
     uint8_t                   Arg;
-} UTRX_u8Cmd_t;
+} UANT_u8Cmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
-    uint32_t                  Arg;
-} UTRX_u32Cmd_t;
+    CFE_MSG_CommandHeader     CmdHeader; 
+    uint8_t                   addr;
+    uint8_t                   channel;
+    uint8_t                   duration;
+} UANT_BurnChannelCmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
-    float                   Arg;
-} UTRX_fCmd_t;
+    CFE_MSG_CommandHeader     CmdHeader; 
+    uint8_t                   addr;
+    uint16_t                  MinutesUntilDeploy;
+    uint8_t                   BackupActive;
+    uint8_t                   MaxBurnDuration;
+} UANT_SetSettingsCmd_t;
+
+typedef struct {
+    CFE_MSG_CommandHeader     CmdHeader; 
+    uint16_t                  SecondsDelay;
+    uint8_t                   addrslave1;
+    uint8_t                   addrslave2;
+} UANT_AutoDeployCmd_t;
 
 
-typedef UTRX_NoArgsCmd_t    UTRX_NoopCmd_t;
-typedef UTRX_NoArgsCmd_t    UTRX_ResetCountersCmd_t;
-typedef UTRX_NoArgsCmd_t    UTRX_RebootCmd_t;
+typedef UANT_NoArgCmd_t    UANT_NoopCmd_t;
+typedef UANT_NoArgCmd_t    UANT_ResetCountersCmd_t;
 
-typedef UTRX_u32Cmd_t       UTRX_SetTxFreqCmd_t;
-typedef UTRX_u32Cmd_t       UTRX_SetTxBaudCmd_t;
+typedef UANT_u8Cmd_t       UANT_SoftRebootCmd_t;
+typedef UANT_u8Cmd_t       UANT_StopBurnCmd_t;
+typedef UANT_u8Cmd_t       UANT_GetStatusCmd_t;
+typedef UANT_u8Cmd_t       UANT_GetBackupStatusCmd_t;
+typedef UANT_u8Cmd_t       UANT_GetBoardStatusCmd_t;
+typedef UANT_u8Cmd_t       UANT_GetTemperatureCmd_t;
+typedef UANT_u8Cmd_t       UANT_GetSettingsCmd_t;
 
-typedef UTRX_fCmd_t         UTRX_SetTxModIndexCmd_t;
 
-typedef UTRX_u8Cmd_t        UTRX_SetTxModeCmd_t;
 
-typedef UTRX_u32Cmd_t       UTRX_SetRxFreqCmd_t;
-typedef UTRX_u32Cmd_t       UTRX_SetRxBaudCmd_t;
 
-typedef UTRX_fCmd_t         UTRX_SetRxModIndexCmd_t;
 
-typedef UTRX_u8Cmd_t        UTRX_SetRxModeCmd_t;
 
-typedef UTRX_u32Cmd_t       UTRX_SetRxBandwidthCmd_t;
+
+typedef struct {
+
+
+    /* COSMIC SANT */
+    SANT_SetSettingsCmd_t santsetsettingscmd;
+
+    /* BEE-1000 UANT */
+    UANT_BurnChannelCmd_t  uantburnchannelcmd;
+    UANT_SetSettingsCmd_t  uantsetsettingscmd;
+    UANT_AutoDeployCmd_t   uantautodeploycmd;
+
+    
+
+}__attribute__((packed)) Command;
 
 #endif
