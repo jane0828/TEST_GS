@@ -1607,7 +1607,7 @@ void ImGui_ControlWindow(float fontscale)
                     msgid = htons(msgid);
                 }
                 break;
-
+            }
 // // 여기까지 cc와 crc 순서 바꾸기 완료
 //             }
 //             case 10: { //u32u8bool
@@ -4770,7 +4770,7 @@ void ImGui_ControlWindow(float fontscale)
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantburnchannelcmd.CmdHeader[0],
                             command->uantburnchannelcmd.CmdHeader[1], command->uantburnchannelcmd.CmdHeader[2], command->uantburnchannelcmd.CmdHeader[3], command->uantburnchannelcmd.CmdHeader[4], command->uantburnchannelcmd.CmdHeader[5], command->uantburnchannelcmd.CmdHeader[6], command->uantburnchannelcmd.CmdHeader[7],
-                            command->uantburnchannelcmd.min_deploy, command->uantburnchannelcmd.backup, command->uantburnchannelcmd.max_burn_duration);
+                            command->uantburnchannelcmd.addr, command->uantburnchannelcmd.channel, command->uantburnchannelcmd.duration);
                 break;
             }
 
@@ -4820,7 +4820,7 @@ void ImGui_ControlWindow(float fontscale)
                 }
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantsetsettingscmd.CmdHeader[0],
                             command->uantsetsettingscmd.CmdHeader[1], command->uantsetsettingscmd.CmdHeader[2], command->uantsetsettingscmd.CmdHeader[3], command->uantsetsettingscmd.CmdHeader[4], command->uantsetsettingscmd.CmdHeader[5], command->uantsetsettingscmd.CmdHeader[6], command->uantsetsettingscmd.CmdHeader[7],
-                            command->uantsetsettingscmd.addr, command->uantsetsettingscmd.MiutesUntilDeploy, command->uantsetsettingscmd.BackupActive, command->uantsetsettingscmd.MaxBurnDuration);
+                            command->uantsetsettingscmd.addr, command->uantsetsettingscmd.MinutesUntilDeploy, command->uantsetsettingscmd.BackupActive, command->uantsetsettingscmd.MaxBurnDuration);
                 break;
             }
 

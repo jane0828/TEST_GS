@@ -232,14 +232,16 @@ csp_socket_t * DL_sock_initialize()
     if(!csp_bind(sock, 31)) {
         console.AddLog("[OK]##BCN Port 31 bind success.");
     }
-    // while(true) {
-    //     if (csp_bind(sock, 23) == 0) { // Add for HVD_TMTC_TEST
-    //     console.AddLog("[OK]Bind Success.");
-    //     break;
-    //     };
-    // }
+
+    while(true) {
+        if (csp_bind(sock, 23) == 0) { // Add for HVD_TMTC_TEST
+        console.AddLog("[OK]Bind Success.");
+        break;
+        };
+    }
 	csp_listen(sock, 10);
     //Fail preventation would be needed!
+
     return sock;
 }
 
@@ -317,16 +319,19 @@ void * task_downlink_onorbit(void * socketinfo)
 
     // csp_bind(sock, CSP_PING);
 	// csp_bind(sock, 12);
-    // csp_bind(sock, 31);
+    // // csp_bind(sock, 31);
+    // csp_bind(sock, 23);
 	// csp_listen(sock, 10);
+
     csp_packet_t * packet = (csp_packet_t *)csp_buffer_get(MIM_LEN_PACKET);
     packetsign * confirm = (packetsign *)malloc(MIM_LEN_PACKET);
     csp_conn_t * conn;
+
     //Need to copy pointer
     //This function must be on p_thread[3]
     float seconds = 0.0f;
 	while (State.downlink_mode) {
-        //printf("Downlink ongoing...\n");
+        printf("Downlink ongoing...\n");
 		if ((conn = csp_accept(sock, setup->default_timeout)) == NULL)
         {
             // printf("Running...but no comming...%f\n", seconds);
@@ -334,7 +339,7 @@ void * task_downlink_onorbit(void * socketinfo)
             continue;
         }
             
-        //console.AddLog("Someone Comming...");
+        console.AddLog("Someone Comming...");
 		while ((packet = csp_read(conn, setup->default_timeout)) != NULL) {
 			switch(csp_conn_dport(conn)) {
                 // For TMTC Test: Port 23
@@ -345,26 +350,33 @@ void * task_downlink_onorbit(void * socketinfo)
                     sprintf(tmtcfilename, "./data/tmtc/tmtc_test--%04d-%02d-%02d-%02d-%02d-%02d--", local->tm_year+1900, local->tm_mon+1, local->tm_mday,local->tm_hour, local->tm_min, local->tm_sec);
                     
                     uint16_t PacketLength = packet->length;
-                    memcpy(confirm, packet->data, PacketLength);
+                    uint8_t data[96] = {0,};
+                    memcpy(data, packet->data, PacketLength);
                     console.AddLog("TMTC Test Downlink requested.");
-                    FILE * TMTC_fp;
-                    TMTC_fp = fopen(tmtcfilename,"wb");
-                    for (int i=0; i<PacketLength; i++) {
-                        fprintf(TMTC_fp, "Data %d: %u\n",i,packet->data[i]);
-                    }
-                    if (packet != NULL)
-                    {
-                        csp_buffer_free(packet);
-                        packet = NULL;
-                    }
-                    if (conn != NULL)
-                    {
-                        csp_close(conn);
-                        conn = NULL;
-                    }
-                    if(TMTC_fp != NULL)
-                    {
-                        fclose(TMTC_fp);
+                    // FILE * TMTC_fp;
+                    // TMTC_fp = fopen(tmtcfilename,"wb");
+                    // for (int i=0; i<PacketLength; i++) {
+                    //     fprintf(TMTC_fp, "Data %d: %u\n",i,packet->data[i]);
+                    // }
+                    // if (packet != NULL)
+                    // {
+                    //     csp_buffer_free(packet);
+                    //     packet = NULL;
+                    // }
+                    // if (conn != NULL)
+                    // {
+                    //     csp_close(conn);
+                    //     conn = NULL;
+                    // }
+                    // if(TMTC_fp != NULL)
+                    // {
+                    //     fclose(TMTC_fp);
+                    // }
+                    printf("Packet length: %u\n", PacketLength);
+
+                    for(uint8_t i=0; i < packet->length; i++) {
+                        printf("0x%02X\t", data[i]);
+                        if (i%10 == 9) printf("\n");
                     }
                     break;
                     
@@ -925,25 +937,25 @@ void * task_uplink_onorbit(void * sign_)
             }
             
 
-            // Reply(added for TCTM TEST)
-            if ((confirm_ = csp_read(txconn, rx_delay_ms(Plen, setup->ax100_node))) != NULL)
-            {
-                console.AddLog("[OK]Received Command Reply. Length = %d", confirm_->length);
+            // // Reply(added for TCTM TEST), GS
+            // if ((confirm_ = csp_read(txconn, rx_delay_ms(Plen, setup->gs100_node))) != NULL)
+            // {
+            //     console.AddLog("[OK]Received Command Reply. Length = %d", confirm_->length);
 
-                char hexstr[confirm_->length * 3 + 1]; // 각 바이트당 2자리 + 공백 + 널종료
-                for (int i = 0; i < confirm_->length; i++) {
-                    sprintf(&hexstr[i * 3], "%02X ", confirm_->data[i]);
-                }
-                hexstr[confirm_->length * 3] = '\0';
+            //     char hexstr[confirm_->length * 3 + 1]; // 각 바이트당 2자리 + 공백 + 널종료
+            //     for (int i = 0; i < confirm_->length; i++) {
+            //         sprintf(&hexstr[i * 3], "%02X ", confirm_->data[i]);
+            //     }
+            //     hexstr[confirm_->length * 3] = '\0';
 
-                console.AddLog("[HEX] %s", hexstr);
+            //     console.AddLog("[HEX] %s", hexstr);
 
-                csp_buffer_free(confirm_);
-                confirm_ = NULL;
-            }
-            else {
-                console.AddLog("[ERROR]##No Command Reply.");
-            }
+            //     csp_buffer_free(confirm_);
+            //     confirm_ = NULL;
+            // }
+            // else {
+            //     console.AddLog("[ERROR]##No Command Reply.");
+            // }
 
 
 

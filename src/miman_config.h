@@ -988,1188 +988,1188 @@ typedef struct {
     uint8_t                            Spare[4];
 } CFE_MSG_TelemetryHeader;
 
-/*************************************************************************/
-/*
-** Edited by JDM
-** Converter of Struct Type between GS - FSW
-** Warning! Struct Descriptor differs from FSW codes.
-*/
-/*************************************************************************/
-
-/*************************************************************************/
-/*
-** ADCS system
-*/
-/*************************************************************************/ 
-
-typedef struct
-{
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} ADCS_NoArgsCmd_t;
-
-typedef ADCS_NoArgsCmd_t ADCS_NoopCmd_t;
-typedef ADCS_NoArgsCmd_t ADCS_ResetCountersCmd_t;
-typedef ADCS_NoArgsCmd_t ADCS_ProcessCmd_t;
-
-
-typedef struct {
-	double mass, MOI[3][3], inv_MOI[3][3];
-	double css_sf[5], mmt_A[3][3], mmt_bias[3], gyro_bias_a[3], gyro_bias_b[3];
-} ADCS_ParamsSC;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsSC           Params;
-} ADCS_SetParamScCmd_t;
-
-
-typedef struct {
-	uint32_t epochYear;
-	float epochDay;
-	double Bstar, INC, RAAN, ECC, AOP, MA, MM;
-} ADCS_ParamsTLE;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsTLE          Params;
-} ADCS_SetParamTleCmd_t;
-
-
-typedef struct {
-    double mu_E, R_E, coef_J2, w_E, wn;
-	double tstp;
-	uint32_t quit_TRIAD;
-	uint8_t num_AD_loop, num_AC_loop, option_prg_orb_est, option_gyroless, option_ignoreSTT, option_ignoreCSS;
-	double est_P_atd_STT_initial, est_P_atd_FSS_initial, est_P_atd_CSS_initial, est_P_atd_WSS_initial;
-	double GS_sband[3], GS_uhf[3];
-	double wrpm_WHLdot_dump, wrpm_WHL_dump_crit, wrpm_WHL_dump_goal;
-	double w_standby_detumbling_start, w_standby_detumbling_goal, w_standby_forcedSpin_start, angle_standby_forcedSpin_start, M_standby_forcedSpin[3];
-} ADCS_ParamsAux;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsAux          Params;
-} ADCS_SetParamAuxCmd_t;
-
-
-typedef struct {
-	double r_Target[3];
-    double q_Target[4];
-} ADCS_ParamsTarget;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    ADCS_ParamsTarget       Params;
-} ADCS_SetParamTargetCmd_t;
-
-
-typedef struct {
-    uint8_t       WhichGain;
-    uint8_t       Mode;
-    uint16_t      Num;
-    double      Gain[31];
-} ADCS_SetParamGainPayload_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader     CmdHeader;
-    ADCS_SetParamGainPayload_t  Payload;
-} ADCS_SetParamGainCmd_t;
-
-/*************************************************************************/
-/*
-** CI system
-*/
-/*************************************************************************/
-
-
-/*************************************************************************/
-/*
-** EPS system
-*/
-/*************************************************************************/
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-}__attribute__((packed)) EPS_NoArgsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t Arg;
-} __attribute__((packed)) EPS_U8ArgCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t Arg;
-} __attribute__((packed)) EPS_U16ArgCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int32_t Arg;
-} __attribute__((packed)) EPS_I32ArgCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t ParameterID;
-    uint8_t ParameterLength;
-    uint8_t Parameter[8];
-} __attribute__((packed)) EPS_SetConfigurationParameterCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t ParameterLength;
-    uint16_t ParameterID;
-} __attribute__((packed)) EPS_ResetConfigurationParamterCmd_t;
-
-typedef EPS_NoArgsCmd_t EPS_NoopCmd_t;
-typedef EPS_NoArgsCmd_t EPS_ResetCountersCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SystemResetCmd_t;
-typedef EPS_NoArgsCmd_t EPS_NoOperationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_CancelOperationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_WatchdogCmd_t;
-
-typedef EPS_I32ArgCmd_t EPS_CorrectTimeCmd_t;
-
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOnCmd_t;
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOffCmd_t;
-typedef EPS_U16ArgCmd_t EPS_OutputBusGroupStateCmd_t;
-
-typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOnCmd_t;
-typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOffCmd_t;
-
-typedef EPS_NoArgsCmd_t EPS_SwitchToNominalModeCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SwitchToSafetyModeCmd_t;
-typedef EPS_NoArgsCmd_t EPS_ResetConfigurationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_LoadConfigurationCmd_t;
-typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
-
-/*************************************************************************/
-/*
-** FM system
-*/
-/*************************************************************************/
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} FM_NoArgsCmd_t;
-
-typedef FM_NoArgsCmd_t FM_NoopCmd_t;
-typedef FM_NoArgsCmd_t FM_ResetCountersCmd_t;
-typedef FM_NoArgsCmd_t FM_ResetFmCmd_t;
-typedef FM_NoArgsCmd_t FM_ResetProcessorCmd_t;
-typedef FM_NoArgsCmd_t FM_ResetPowerCmd_t;
-typedef FM_NoArgsCmd_t FM_TerminateEoCmd_t;
-typedef FM_NoArgsCmd_t FM_TerminateEoOverrideCmd_t;
-typedef FM_NoArgsCmd_t FM_InitiateBaselineCmd_t;
-typedef FM_NoArgsCmd_t FM_DeploayAntennaCmd_t;
-typedef FM_NoArgsCmd_t FM_UseNominalBaudRatesCmd_t;
-typedef FM_NoArgsCmd_t FM_StoreObsDataToCdsCmd_t;
-typedef FM_NoArgsCmd_t FM_RestoreObsDataFromCdsCmd_t;
-
-/*
-** FM_RESET_APP_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t AppId;
-} __attribute__((packed)) FM_ResetAppCmd_t;
-
-
-/*
-** FM_MODE_TRANSFER_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t Mode;
-    uint8_t Submode;
-} __attribute__((packed)) FM_ModeTransferCmd_t;
-
-
-/*
-** FM_SET_OPERATION_MODE_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t Mode;
-    uint8_t Submode;
-} __attribute__((packed)) FM_SetOperationModeCmd_t;
-
-
-/*
-** FM_SET_COMMISSIONING_PHASE_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t CommissioningPhase;
-} __attribute__((packed)) FM_SetCommissioningPhaseCmd_t;
-
-
-/*
-** FM_SET_SPACECRAFT_TIME_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t Seconds;
-    uint32_t Subseconds;
-} __attribute__((packed)) FM_SetSpacecraftTimeCmd_t;
-
-
-/*
-** FM_SET_ANTENNA_DEPLOY_FLAG_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t AntennaDeployFlag;
-} __attribute__((packed)) FM_SetAntennaDeployFlagCmd_t;
-
-
-/*
-** FM_SET_DAYLIGHT_DETECTION_FLAG_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t DaylightDetectionFlag;
-} __attribute__((packed)) FM_SetDaylightDetectionFlagCmd_t;
-
-
-/*
-** FM_SET_COMM_MISSING_FLAG_CC
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t CommunicationMissing;
-} __attribute__((packed)) FM_SetCommMissingFlagCmd_t;
-
-/* Reset */
-#define CFE_MISSION_MAX_API_LEN 20
-#define CFE_MISSION_MAX_PATH_LEN 64
-#define CFE_ES_START_APP_CC 4
-#define CFE_ES_RESTART_APP_CC 6
-#define CFE_ES_RESTART_CC 2
-#define CFE_ES_STOP_APP_CC 5
-
-#define CFE_PSP_RST_TYPE_PROCESSOR 1 /**< Volatile disk, CDS and User Reserved memory may be valid */
-#define CFE_PSP_RST_TYPE_POWERON   2 /**< All memory has been cleared */
-
-#define ES_CMD_MID                  0x1806
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} SCH_NoArgsCmd_t;
-
-typedef struct
-{
-CFE_MSG_CommandHeader CmdHeader;
-
-uint16_t SlotNumber; /**< \brief Slot Number of Activity whose state is to change */
-/**< \details Valid Range is zero to (#SCH_TOTAL_SLOTS - 1) */
-uint16_t EntryNumber; /**< \brief Entry Number of Activity whose state is to change
-\details Valid Range is zero to (#SCH_ENTRIES_PER_SLOT - 1) */
-
-} SCH_EntryCmd_t;
-
-
-/* MESSAGE ID (CMD) */
-#define SCH_CMD_MID                    0x1895 /**< \brief SCH Ground Commands Message ID */
-
-
-/* COMMAND CODES */
-#define SCH_ENABLE_CC           2   /* Enable Schedule Table Entry */
-#define SCH_DISABLE_CC          3   /* disable schedule table entry */
-
-// 전체 리스타트 명령.
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} CFE_ES_NoArgsCmd_t;
-
-typedef struct CFE_ES_RestartCmd_Payload
-{
-    uint16_t RestartType;  // 여기 1을 넣으세요
-} CFE_ES_RestartCmd_Payload_t;
-
-
-typedef struct CFE_ES_RestartCmd
-{
-    CFE_MSG_CommandHeader     CmdHeader;  // MID = 0x1806, CC = 2
-    CFE_ES_RestartCmd_Payload_t Payload;
-} CFE_ES_RestartCmd_t; 
- // 전체 리스타트 명령 끝.
-
-
- // 앱 리스타트 명령.
-
-typedef struct CFE_ES_AppNameCmd_Payload
-{
-    char Application[CFE_MISSION_MAX_API_LEN];   // 여기 "FM" (F, M, \0)을 넣으세요.
-} CFE_ES_AppNameCmd_Payload_t;
-
-
-typedef struct CFE_ES_AppNameCmd
-{
-    CFE_MSG_CommandHeader     CmdHeader;   // MID = 0x1806, CC = 6
-    CFE_ES_AppNameCmd_Payload_t Payload;
-} CFE_ES_AppNameCmd_t;
-
-typedef CFE_ES_AppNameCmd_t CFE_ES_StopAppCmd_t;
-typedef CFE_ES_AppNameCmd_t CFE_ES_RestartAppCmd_t;
-
- // 앱 리스타트 명령 끝.
-
- /**
-** \brief Start Application Command Payload
-**
-** For command details, see #CFE_ES_START_APP_CC
-**
-**/
-typedef struct CFE_ES_StartAppCmd_Payload
-{
-    char Application[CFE_MISSION_MAX_API_LEN];   /**< \brief Name of Application to be started */
-    char AppEntryPoint[CFE_MISSION_MAX_API_LEN]; /**< \brief Symbolic name of Application's entry point */
-    char AppFileName[CFE_MISSION_MAX_PATH_LEN];  /**< \brief Full path and filename of Application's
-                                                    executable image */
-
-    uint32_t StackSize; /**< \brief Desired stack size for the new application */
-
-    uint8_t ExceptionAction; /**< \brief #CFE_ES_ExceptionAction_RESTART_APP=On exception,
-                                                       restart Application,
-                                                       #CFE_ES_ExceptionAction_PROC_RESTART=On exception,
-                                                       perform a Processor Reset */
-    uint16_t Priority;           /**< \brief The new Applications runtime priority. */
-
-} CFE_ES_StartAppCmd_Payload_t;
-
-/**
- * \brief Start Application Command
- */
-typedef struct CFE_ES_StartApp
-{
-    CFE_MSG_CommandHeader      CmdHeader; /**< \brief Command header */
-    CFE_ES_StartAppCmd_Payload_t Payload;   /**< \brief Command payload */
-} CFE_ES_StartAppCmd_t;
-
-
-/*************************************************************************/
-/*
-** GPS system
-*/
-/*************************************************************************/
-
-/*
-** Type definition (generic "no arguments" command)
-*/
-typedef struct
-{
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} GPS_NoArgsCmd_t;
-
-/*
-** The following commands all share the "NoArgs" format
-**
-** They are each given their own type name matching the command name, which
-** allows them to change independently in the future without changing the prototype
-** of the handler function
-*/
-typedef GPS_NoArgsCmd_t GPS_NoopCmd_t;
-typedef GPS_NoArgsCmd_t GPS_ResetCountersCmd_t;
-typedef GPS_NoArgsCmd_t GPS_ResetAppCmd_t;
-typedef GPS_NoArgsCmd_t GPS_ResetHwCmd_t;
-typedef GPS_NoArgsCmd_t GPS_ClearLogsCmd_t;
-typedef GPS_NoArgsCmd_t GPS_EnableTimeToneCmd_t;
-typedef GPS_NoArgsCmd_t GPS_DisableTimeToneCmd_t;
-typedef GPS_NoArgsCmd_t GPS_LogRequestDftCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int16_t MsgId;
-} __attribute__((packed)) GPS_MsgIdCmd_t;
-
-typedef GPS_MsgIdCmd_t GPS_LogOnceCmd_t;
-typedef GPS_MsgIdCmd_t GPS_LogOntimeCmd_t;
-typedef GPS_MsgIdCmd_t GPS_LogOnChangeCmd_t;
-
-/*************************************************************************/
-/*
-** MTQ System
-*/
-/*************************************************************************/
-
-typedef struct{
-    CFE_MSG_CommandHeader CmdHeader;
-} __attribute__((packed)) MTQ_NoArgsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t                   Args[3];
-} __attribute__((packed)) MTQ_U8Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int8_t                    Args[3];
-} __attribute__((packed)) MTQ_C8ArrCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t                   Args[3];
-} __attribute__((packed)) MTQ_U8ArrCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t                  Args[3];
-} __attribute__((packed)) MTQ_U32ArrCmd_t;
-
-typedef MTQ_NoArgsCmd_t MTQ_NoopCmd_t;
-typedef MTQ_NoArgsCmd_t MTQ_ResetCountersCmd_t;
-typedef MTQ_NoArgsCmd_t MTQ_ResetCmd_t;
-
-typedef MTQ_U8Cmd_t     MTQ_ResetCompCmd_t;
-typedef MTQ_U8ArrCmd_t  MTQ_EnableCmd_t;
-typedef MTQ_U8ArrCmd_t  MTQ_DisableCmd_t;
-typedef MTQ_U8ArrCmd_t  MTQ_SetPolarityCmd_t;
-
-typedef MTQ_C8ArrCmd_t  MTQ_SetDutyCmd_t;
-
-typedef MTQ_U32ArrCmd_t MTQ_SetPeriodCmd_t;
-
-/*************************************************************************/
-/*
-** RWA System
-*/
-/*************************************************************************/
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-} __attribute__((packed)) RWA_NoArgsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
-    uint8_t WhlNum;
-} __attribute__((packed)) RWA_DmaskCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t WhlNum;
-    uint8_t Arg;
-} __attribute__((packed)) RWA_U8Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t WhlNum;
-    int16_t Arg;
-} __attribute__((packed)) RWA_S16Cmd_t;
-
-typedef RWA_NoArgsCmd_t RWA_NoopCmd_t;
-typedef RWA_NoArgsCmd_t RWA_ResetCountersCmd_t;
-typedef RWA_NoArgsCmd_t RWA_ProcessCmd_t;
-typedef RWA_NoArgsCmd_t RWA_ResetAllCmd_t;
-
-typedef RWA_DmaskCmd_t  RWA_ResetWheelCmd_t;
-typedef RWA_DmaskCmd_t  RWA_ClearErrorsCmd_t;
-
-typedef RWA_U8Cmd_t     RWA_SetMotorPowerStateCmd_t;
-typedef RWA_U8Cmd_t     RWA_SetEncoderPowerStateCmd_t;
-typedef RWA_U8Cmd_t     RWA_SetHallPowerStateCmd_t;
-typedef RWA_U8Cmd_t     RWA_SetControlModeCmd_t;
-typedef RWA_U8Cmd_t     RWA_SetBackupWheelModeCmd_t;
-
-typedef RWA_S16Cmd_t    RWA_SetWheelReferenceSpeedCmd_t;
-typedef RWA_S16Cmd_t    RWA_SetWheelCommandedTorqueCmd_t;
-
-typedef struct {
-    int16_t K;
-    uint8_t Kmultiplier;
-} __attribute__((packed)) PwmGain;
-
-
-typedef struct {
-    uint16_t Ki;
-    uint8_t KiMultiplier;
-    uint16_t Kd;
-    uint8_t KdMultiplier;
-} __attribute__((packed)) MainGain;
-
-
-typedef struct {
-    uint16_t Ki;
-    uint8_t KiMultiplier;
-    uint16_t Kd;
-    uint8_t KdMultiplier;
-} __attribute__((packed)) BackupGain;
-
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t WhlNum;
-    PwmGain    Input;
-} __attribute__((packed)) RWA_SetPwmGainCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t WhlNum;
-    MainGain    Input;
-} __attribute__((packed)) RWA_SetMainGainCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t WhlNum;
-    BackupGain    Input;
-} __attribute__((packed)) RWA_SetBackupGainCmd_t;
-
-
-/* Note that the telemetry header is already aligned to 64-bit. */
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int16_t WheelRefSpeed[3];
-} RWA_SetWheelReferenceSpeedAllAxisCmd_t;
-
-/*************************************************************************/
-/*
-** Payload system
-*/
-/*************************************************************************/
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-} PAY_NoArgsCmd_t;
-
-typedef PAY_NoArgsCmd_t PAY_InitDeviceCmd_t;
-typedef PAY_NoArgsCmd_t PAY_NoopCmd_t;
-typedef PAY_NoArgsCmd_t PAY_ResetCountersCmd_t;
-typedef PAY_NoArgsCmd_t PAY_CamFindCmd_t;
-typedef PAY_NoArgsCmd_t PAY_CamConnectCmd_t;
-typedef PAY_NoArgsCmd_t PAY_CamStartOperationCmd_t;
-typedef PAY_NoArgsCmd_t PAY_CamStopOperationCmd_t;
-typedef PAY_NoArgsCmd_t PAY_CamDownloadNewImgCmd_t;
-typedef PAY_NoArgsCmd_t PAY_BBEShutdownCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t Index;
-} PAY_CamDownloadOldImgCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t CmdCode;
-} PAY_CamSendNoargCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t Exposure;
-} PAY_CamSetExposureCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t SCPD;
-} PAY_CamSetScpdCmd_t;
-
-/*************************************************************************/
-/*
-** SNSR System
-*/
-/*************************************************************************/
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-} __attribute__((packed)) SNSR_NoArgsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t Arg;
-} __attribute__((packed)) SNSR_U8Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int8_t Arg;
-} __attribute__((packed)) SNSR_C8Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t Arg;
-} __attribute__((packed)) SNSR_U16Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int16_t Arg;
-} __attribute__((packed)) SNSR_S16Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t Arg;
-} __attribute__((packed)) SNSR_U32Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int32_t Arg;
-} __attribute__((packed)) SNSR_I32Cmd_t;
-
-
-typedef SNSR_NoArgsCmd_t SNSR_NoopCmd_t;
-typedef SNSR_NoArgsCmd_t SNSR_ResetCountersCmd_t;
-typedef SNSR_NoArgsCmd_t SNSR_SunAlarmOffCmd_t;
-
-/*
-** STT system
-*/
-typedef SNSR_NoArgsCmd_t    SNSR_STT_InitDeviceCmd_t;
-
-typedef SNSR_U8Cmd_t        SNSR_STT_BootCmd_t;
-
-typedef SNSR_U32Cmd_t       SNSR_STT_PingCmd_t;
-
-typedef SNSR_NoArgsCmd_t    SNSR_STT_RebootCmd_t;
-typedef SNSR_NoArgsCmd_t    SNSR_STT_SetParamsDftCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t Image;
-    uint32_t Code;
-} __attribute__((packed)) SNSR_STT_UnlockCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t ParamId;
-    uint16_t ParamSize;
-    uint8_t Param[1];
-} __attribute__((packed)) SNSR_STT_SetParamCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t Length;
-    uint8_t Data[1];
-} __attribute__((packed)) SNSR_STT_SendRS485Cmd_t;
-
-/*
-** MMT Command Messages. 
-*/
-typedef SNSR_NoArgsCmd_t    SNSR_MMT_ResetCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    bool TM_M;
-    bool TM_T;
-    bool Start_MDT;
-    bool Set;
-    bool Reset;
-} __attribute__((packed)) SNSR_MMT_SetInternalControl0Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t CM_Freq;
-    bool INT_MDT_EN;
-    bool INT_Meas_Done_EN;
-} __attribute__((packed)) SNSR_MMT_SetInternalControl2Cmd_t;
-
-typedef SNSR_U8Cmd_t    SNSR_MMT_WriteToRegisterCmd_t;
-typedef SNSR_NoArgsCmd_t    SNSR_MMT_GetProductIdCmd_t;
-
-/*
-** IMU Command Messages. 
-*/
-typedef SNSR_NoArgsCmd_t SNSR_IMU_ResetCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int16_t Offset[3];
-} __attribute__((packed)) SNSR_IMU_SetGyroOffsetCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t FifoMode;
-    uint8_t ExtSyncSet;
-    uint8_t ConfigDLPF;
-} __attribute__((packed)) SNSR_IMU_SetConfigurationCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t AccelFullScale;
-    uint8_t FilterChoice;
-} __attribute__((packed)) SNSR_IMU_SetGyroConfigurationCmd_t;
-
-typedef SNSR_U8Cmd_t    SNSR_IMU_SetAccelConfigurationCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t FifoSize;
-    uint8_t DEC2_CFG;
-    bool AccelFilterChoice;
-    uint8_t A_DLPF_CFG;
-} __attribute__((packed)) SNSR_IMU_SetAccelConfiguration2Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    bool DEVICE_RESET;
-    bool SLEEP;
-} __attribute__((packed)) SNSR_IMU_SetPowerManagement1Cmd_t;
-
-typedef SNSR_U8Cmd_t        SNSR_IMU_WriteToRegisterCmd_t;
-typedef SNSR_NoArgsCmd_t    SNSR_IMU_WhoAmICmd_t;
-
-/*
-** Isolate/restore Command Messages. 
-*/
-typedef SNSR_NoArgsCmd_t    SNSR_IMU_IsolateCmd_t;
-typedef SNSR_NoArgsCmd_t    SNSR_IMU_RestoreCmd_t;
-typedef SNSR_NoArgsCmd_t    SNSR_MMT_IsolateCmd_t;
-typedef SNSR_NoArgsCmd_t    SNSR_MMT_RestoreCmd_t;
-
-typedef SNSR_U8Cmd_t        SNSR_FSS_IsolateCmd_t;
-typedef SNSR_U8Cmd_t        SNSR_FSS_RestoreCmd_t;
-typedef SNSR_U8Cmd_t        SNSR_CSS_IsolateCmd_t;
-typedef SNSR_U8Cmd_t        SNSR_CSS_RestoreCmd_t;
-
-typedef SNSR_NoArgsCmd_t    SNSR_STT_IsolateCmd_t;
-typedef SNSR_NoArgsCmd_t    SNSR_STT_RestoreCmd_t;
-
-typedef struct {
-    CFE_MSG_TelemetryHeader TlmHeader;
-} __attribute__((packed)) SNSR_SunDetectionMsg_t;
-
-
-/*************************************************************************/
-/*
-** STX system
-*/
-/*************************************************************************/
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} STX_NoArgsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-    uint8_t                   Arg;
-} STX_U8Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-    int16_t                   Length;
-    uint16_t                  BufPushDelay;
-    uint8_t                   Data[16];
-} STX_TransmitDataCmd_t;
-
-typedef STX_NoArgsCmd_t STX_NoopCmd_t;
-typedef STX_NoArgsCmd_t STX_ResetCountersCmd_t;
-typedef STX_NoArgsCmd_t STX_ProcessCmd_t;
-typedef STX_NoArgsCmd_t STX_ResetCmd_t;
-
-typedef STX_U8Cmd_t     STX_SetControlModeCmd_t;
-typedef STX_U8Cmd_t     STX_SetEncoderRateCmd_t;
-typedef STX_U8Cmd_t     STX_SetPaPowerCmd_t;
-typedef STX_U8Cmd_t     STX_SetSynthOffsetCmd_t;
-
-typedef STX_NoArgsCmd_t STX_TransmitReadyCmd_t;
-typedef STX_NoArgsCmd_t STX_TransmitEndCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t Offset;
-    uint32_t Length;
-    uint16_t BufPushDelay;
-    char Path[32];
-} STX_TransmitFileCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t Offset;
-    uint32_t Length;
-    uint16_t BufPushDelay;
-    char Path[64];
-} STX_TransmitFileLongPathCmd_t;
-
-/*************************************************************************/
-/*
-** TO system
-*/
-/*************************************************************************/
-
-/*
-** Type definition (generic "no arguments" command)
-*/
-typedef struct
-{
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} TO_NoArgsCmd_t;
-
-/*
-** The following commands all share the "NoArgs" format
-**
-** They are each given their own type name matching the command name, which
-** allows them to change independently in the future without changing the prototype
-** of the handler function
-*/
-typedef TO_NoArgsCmd_t TO_NoopCmd_t;
-typedef TO_NoArgsCmd_t TO_ResetCountersCmd_t;
-typedef TO_NoArgsCmd_t TO_ProcessCmd_t;
-typedef TO_NoArgsCmd_t TO_EnableBeaconCmd_t;
-
-/*************************************************************************/
-/*
-** Type definition (TO App housekeeping)
-*/
-
-typedef struct {
-    uint16_t Target;
-    uint16_t FileStatus;
-    uint32_t NumFiles;
-    uint32_t Offset;
-    uint32_t Frequency;
-    void* Conn;
-} TO_DownlinkQueryReplyCmd_Payload_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    TO_DownlinkQueryReplyCmd_Payload_t Payload;
-} TO_DownlinkQueryReplyCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    int32_t timeoutsmin;
-} TO_DisableBeaconCmd_t;
-
-/*************************************************************************/
-/*
-** UTRX system
-*/
-/*************************************************************************/
-
-/*
-** Type definition (generic "no arguments" command)
-*/
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-} UTRX_NoArgsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
-    uint8_t                   Arg;
-} UTRX_u8Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
-    uint32_t                  Arg;
-} UTRX_u32Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
-    float                   Arg;
-} UTRX_fCmd_t;
-
-
-typedef UTRX_NoArgsCmd_t    UTRX_NoopCmd_t;
-typedef UTRX_NoArgsCmd_t    UTRX_ResetCountersCmd_t;
-typedef UTRX_NoArgsCmd_t    UTRX_RebootCmd_t;
-
-typedef UTRX_u32Cmd_t       UTRX_SetTxFreqCmd_t;
-typedef UTRX_u32Cmd_t       UTRX_SetTxBaudCmd_t;
-
-typedef UTRX_fCmd_t         UTRX_SetTxModIndexCmd_t;
-
-typedef UTRX_u8Cmd_t        UTRX_SetTxModeCmd_t;
-
-typedef UTRX_u32Cmd_t       UTRX_SetRxFreqCmd_t;
-typedef UTRX_u32Cmd_t       UTRX_SetRxBaudCmd_t;
-
-typedef UTRX_fCmd_t         UTRX_SetRxModIndexCmd_t;
-
-typedef UTRX_u8Cmd_t        UTRX_SetRxModeCmd_t;
-
-typedef UTRX_u32Cmd_t       UTRX_SetRxBandwidthCmd_t;
-
-/*************************************************************************/
-/*
-** TS system
-*/
-/*************************************************************************/
-
-/*
-** Type definition (generic "no arguments" command)
-*/
-typedef struct
-{
-    CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
-} TS_NoArgsCmd_t;
-typedef TS_NoArgsCmd_t TS_NoopCmd_t;
-typedef TS_NoArgsCmd_t TS_ResetCountersCmd_t;
-typedef TS_NoArgsCmd_t TS_ProcessCmd_t;
-
-typedef TS_NoArgsCmd_t TS_ClearAllScheduleCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint32_t ExecutionTime;
-    uint32_t ExecutionWindow;
-    uint16_t EntryId;
-    uint16_t EntryGroup;
-    CFE_MSG_Message_t ExecutionMsg;
-} TS_InsertScheduleEntryCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t EntryId;
-} TS_ClearScheduleEntryCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint16_t EntryGroup;
-} TS_ClearScheduleGroupCmd_t;
-
-/*************************************************************************/
-/*
-** ECM system
-*/
-/*************************************************************************/
-
-/*
-** Type definition (generic "no arguments" command)
-*/
-typedef struct
-{
-    CFE_MSG_CommandHeader CmdHeader;
-} ECM_NoArgsCmd_t;
-
-typedef ECM_NoArgsCmd_t ECM_GetHKAvgCmd_t;
-typedef ECM_NoArgsCmd_t ECM_GetSystemStatusCmd_t;
-typedef ECM_NoArgsCmd_t ECM_GetOcfStateCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-    uint8_t txlen;
-    uint8_t rxlen;
-    uint8_t cc;
-    uint8_t data[5];
-} ECM_Read_t;
-
-/*************************************************************************/
-/*
-** FTP File Parser
-*/
-/*************************************************************************/
-
-/*
-** FTP File Header
-*/
-#define CFE_FS_HDR_DESC_MAX_LEN         32
-#define DS_TOTAL_FNAME_BUFSIZE          64
-
-
-typedef struct CFE_FS_Header
-{
-    uint32_t ContentType;   /**< \brief Identifies the content type (='cFE1'=0x63464531)*/
-    uint32_t SubType;       /**< \brief Type of \c ContentType, if necessary */
-                          /**< Standard SubType definitions can be found
-                               \link #CFE_FS_SubType_ES_ERLOG here \endlink */
-    uint32_t Length;        /**< \brief Length of this header to support external processing */
-    uint32_t SpacecraftID;  /**< \brief Spacecraft that generated the file */
-    uint32_t ProcessorID;   /**< \brief Processor that generated the file */
-    uint32_t ApplicationID; /**< \brief Application that generated the file */
-
-    uint32_t TimeSeconds;    /**< \brief File creation timestamp (seconds) */
-    uint32_t TimeSubSeconds; /**< \brief File creation timestamp (sub-seconds) */
-
-    char Description[CFE_FS_HDR_DESC_MAX_LEN]; /**< \brief File description */
-
-} CFE_FS_Header_t;
-
-
-typedef struct
-{
-    uint32_t  CloseSeconds;                               /**< \brief Time when file was closed */
-    uint32_t  CloseSubsecs;        
-
-    uint16_t  FileTableIndex;                             /**< \brief Destination file table index */
-    uint16_t  FileNameType;                               /**< \brief Filename type - count vs time */
-
-    char    FileName[DS_TOTAL_FNAME_BUFSIZE];           /**< \brief On-board filename */
-
-} DS_FileHeader_t;
-
-/*
-** Ctrlo Type Definitions
-*/
-typedef struct {
-    float AttitudeSolution[7];
-    float AngularVelocityError[3];
-    float AngleError;
-} ADCS_OutputTlm_Attitude_t;
-
-typedef struct {
-    float BestPosition[3];
-    float BestVelocity[3];
-    uint8_t PositionStdStatus;
-    uint8_t VelocityStdStatus;
-    uint8_t Spare[2];   /* 32-bit Alignment. */
-} ADCS_OutputTlm_Orbit_t;
-
-typedef struct {
-    uint16_t IntegratorErrFlag;
-    uint8_t ControlMode;
-    uint8_t ControlModeUpdated;
-    uint8_t AcuatorFlagUpdated;
-    uint8_t FlagDetumbling;
-    uint8_t FlagForcedSpinning;
-    uint8_t FlagSensors;
-    uint8_t FlagCss;
-    uint8_t FlagDumping[3];
-} ADCS_OutputTlm_ControlFlags_t;
-
-typedef struct {
-    ADCS_OutputTlm_Attitude_t       Attitude;
-    ADCS_OutputTlm_Orbit_t          Orbit;
-    ADCS_OutputTlm_ControlFlags_t   Flags;
-} ADCS_OutputTlm_Payload_t;
-
-typedef struct {
-    ccsds_tlm_header_t tlmHeader;
-    ADCS_OutputTlm_Payload_t ctrlo;
-} ctrlo_packet_t;
-
-/*
-** GPS_raw Type Definitions
-*/
-#define MAX_SAT_NUM             8
-
-
-typedef struct {
-    /* Reference week number in u32 to be aligned properly. */
-    uint32_t          Week;
-    int32_t           ms;
-} GPS_HeaderReferenceTime;
-
-
-/* RANGEGPSL1 log measurements. */
-typedef struct {
-    double                  Pseudorange;
-    double                  CarrierPhase;
-    float                   PseudorangeStd;
-    float                   CarrierPhaseStd;
-    float                   Doppler;
-    float                   CNR;
-    float                   Locktime;
-    uint16_t                PRN;
-    uint16_t                TrackingStatus;
-} GPS_MeasurementsAux_RangeGPSL1_Comp_t;
-
-typedef struct {
-    GPS_HeaderReferenceTime Time;
-    GPS_MeasurementsAux_RangeGPSL1_Comp_t Comp[MAX_SAT_NUM];
-    uint8_t                 NumSat;
-} GPS_MeasurementsAux_RangeGPSL1_t;
-
-
-/* SATXYZ2 log measurements. */
-typedef struct {
-    double                  SatX;
-    double                  SatY;
-    double                  SatZ;
-    double                  ClockCorrection;
-    double                  IonosphereDelay;
-    double                  TroposphereDelay;
-    uint32_t                SatId;
-} GPS_MeasurementsAux_SatXYZ2_Comp_t;
-
-typedef struct {
-    GPS_HeaderReferenceTime Time;
-    GPS_MeasurementsAux_SatXYZ2_Comp_t Comp[MAX_SAT_NUM];
-    uint8_t                 NumSat;
-} GPS_MeasurementsAux_SatXYZ2_t;
-
-
-/* Auxilary measurement package. */
-typedef struct {
-    GPS_MeasurementsAux_RangeGPSL1_t    RangeGPSL1;
-    GPS_MeasurementsAux_SatXYZ2_t       SatXYZ2;
-} GPS_MeasurementsAux_t_Payload_t;
-
-
-typedef struct {
-    ccsds_tlm_header_t              tlmHeader;
-    GPS_MeasurementsAux_t_Payload_t gps;
-} gps_packet_t;
-
-/*
-** HK Type Definitions
-*/
-typedef struct __attribute__((packed)) {
-    ccsds_tlm_header_t      tlmHeader;
-    FM_HkTlm_Payload_t      fm;
-    EPS_HkTlm_Payload_t     eps;
-    uint8_t padding[6];
-    RWA_HkTlm_Payload_t     rwa;
-    MTQ_HkTlm_Payload_t     mtq;
-    SNSR_HkTlm_Payload_t    snsr;
-    UTRX_HkTlm_Payload_t    utrx;
-    STX_HkTlm_Payload_t     stx;
-    //PAY_HkTlm_Payload_t     pay;
-    //TS_HkTlm_Payload_t      ts;
-    //uint8_t padding2[16];
-} hk_packet_t;
-
-/*
-** SNSR_low Type Definitions
-*/
-typedef struct {
-    uint32_t Ticks;
-    uint32_t TS;
-    float CalibratedQuaternion_Qw;
-    float CalibratedQuaternion_Qx;
-    float CalibratedQuaternion_Qy;
-    float CalibratedQuaternion_Qz;
-    float TRACK_Confidence;
-    float TRACK_Qw;
-    float TRACK_Qx;
-    float TRACK_Qy;
-    float TRACK_Qz;
-    float LISA_Qw;
-    float LISA_Qx;
-    float LISA_Qy;
-    float LISA_Qz;
-    float LISA_Percentageclose;
-    uint32_t StableCount;
-    uint8_t IsTrustworthy;
-    uint8_t SolutionStrategy;
-    uint8_t Padding[2];
-} SNSR_STT_Measurements_t;
-
-typedef struct {
-    float AngleX[2];
-    float AngleY[2];
-    float SunDetection[2];
-    uint8_t ErrorCode[2];
-    uint8_t Padding[2];
-} SNSR_FSS_Measurements_t;
-
-typedef struct {
-    float RawVoltageOut[5];
-} SNSR_CSS_Measurements_t;
-
-typedef struct {
-    float Temperature[5];
-} SNSR_TMP_Measurements_t;
-
-typedef struct {
-    float IMU_AngularVelocity[3];
-    float IMU_Temperature;
-} SNSR_IMU_Measurements_t;
-
-typedef struct {
-    float MMT_FieldOutputs[3];
-} SNSR_MMT_Measurements_t;
-
-typedef struct {
-    SNSR_STT_Measurements_t STT;
-    SNSR_FSS_Measurements_t FSS;
-    SNSR_IMU_Measurements_t IMU;
-    SNSR_MMT_Measurements_t MMT;
-    SNSR_CSS_Measurements_t CSS;
-    SNSR_TMP_Measurements_t TMP;
-    bool FaultySTT;
-    bool FaultyIMU;
-    bool FaultyMMT;
-    bool FaultyFSS[2];
-} SNSR_Meas_Payload_t;
-
-typedef struct {
-    ccsds_tlm_header_t  tlmHeader;
-    SNSR_Meas_Payload_t snsr;
-} snsr_packet_t;
+// /*************************************************************************/
+// /*
+// ** Edited by JDM
+// ** Converter of Struct Type between GS - FSW
+// ** Warning! Struct Descriptor differs from FSW codes.
+// */
+// /*************************************************************************/
+
+// /*************************************************************************/
+// /*
+// ** ADCS system
+// */
+// /*************************************************************************/ 
+
+// typedef struct
+// {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } ADCS_NoArgsCmd_t;
+
+// typedef ADCS_NoArgsCmd_t ADCS_NoopCmd_t;
+// typedef ADCS_NoArgsCmd_t ADCS_ResetCountersCmd_t;
+// typedef ADCS_NoArgsCmd_t ADCS_ProcessCmd_t;
+
+
+// typedef struct {
+// 	double mass, MOI[3][3], inv_MOI[3][3];
+// 	double css_sf[5], mmt_A[3][3], mmt_bias[3], gyro_bias_a[3], gyro_bias_b[3];
+// } ADCS_ParamsSC;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     ADCS_ParamsSC           Params;
+// } ADCS_SetParamScCmd_t;
+
+
+// typedef struct {
+// 	uint32_t epochYear;
+// 	float epochDay;
+// 	double Bstar, INC, RAAN, ECC, AOP, MA, MM;
+// } ADCS_ParamsTLE;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     ADCS_ParamsTLE          Params;
+// } ADCS_SetParamTleCmd_t;
+
+
+// typedef struct {
+//     double mu_E, R_E, coef_J2, w_E, wn;
+// 	double tstp;
+// 	uint32_t quit_TRIAD;
+// 	uint8_t num_AD_loop, num_AC_loop, option_prg_orb_est, option_gyroless, option_ignoreSTT, option_ignoreCSS;
+// 	double est_P_atd_STT_initial, est_P_atd_FSS_initial, est_P_atd_CSS_initial, est_P_atd_WSS_initial;
+// 	double GS_sband[3], GS_uhf[3];
+// 	double wrpm_WHLdot_dump, wrpm_WHL_dump_crit, wrpm_WHL_dump_goal;
+// 	double w_standby_detumbling_start, w_standby_detumbling_goal, w_standby_forcedSpin_start, angle_standby_forcedSpin_start, M_standby_forcedSpin[3];
+// } ADCS_ParamsAux;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     ADCS_ParamsAux          Params;
+// } ADCS_SetParamAuxCmd_t;
+
+
+// typedef struct {
+// 	double r_Target[3];
+//     double q_Target[4];
+// } ADCS_ParamsTarget;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     ADCS_ParamsTarget       Params;
+// } ADCS_SetParamTargetCmd_t;
+
+
+// typedef struct {
+//     uint8_t       WhichGain;
+//     uint8_t       Mode;
+//     uint16_t      Num;
+//     double      Gain[31];
+// } ADCS_SetParamGainPayload_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader     CmdHeader;
+//     ADCS_SetParamGainPayload_t  Payload;
+// } ADCS_SetParamGainCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** CI system
+// */
+// /*************************************************************************/
+
+
+// /*************************************************************************/
+// /*
+// ** EPS system
+// */
+// /*************************************************************************/
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+// }__attribute__((packed)) EPS_NoArgsCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t Arg;
+// } __attribute__((packed)) EPS_U8ArgCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint16_t Arg;
+// } __attribute__((packed)) EPS_U16ArgCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int32_t Arg;
+// } __attribute__((packed)) EPS_I32ArgCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint16_t ParameterID;
+//     uint8_t ParameterLength;
+//     uint8_t Parameter[8];
+// } __attribute__((packed)) EPS_SetConfigurationParameterCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t ParameterLength;
+//     uint16_t ParameterID;
+// } __attribute__((packed)) EPS_ResetConfigurationParamterCmd_t;
+
+// typedef EPS_NoArgsCmd_t EPS_NoopCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_ResetCountersCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_SystemResetCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_NoOperationCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_CancelOperationCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_WatchdogCmd_t;
+
+// typedef EPS_I32ArgCmd_t EPS_CorrectTimeCmd_t;
+
+// typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOnCmd_t;
+// typedef EPS_U16ArgCmd_t EPS_OutputBusGroupOffCmd_t;
+// typedef EPS_U16ArgCmd_t EPS_OutputBusGroupStateCmd_t;
+
+// typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOnCmd_t;
+// typedef EPS_U8ArgCmd_t  EPS_OutputBusChannelOffCmd_t;
+
+// typedef EPS_NoArgsCmd_t EPS_SwitchToNominalModeCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_SwitchToSafetyModeCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_ResetConfigurationCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_LoadConfigurationCmd_t;
+// typedef EPS_NoArgsCmd_t EPS_SaveConfigurationCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** FM system
+// */
+// /*************************************************************************/
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } FM_NoArgsCmd_t;
+
+// typedef FM_NoArgsCmd_t FM_NoopCmd_t;
+// typedef FM_NoArgsCmd_t FM_ResetCountersCmd_t;
+// typedef FM_NoArgsCmd_t FM_ResetFmCmd_t;
+// typedef FM_NoArgsCmd_t FM_ResetProcessorCmd_t;
+// typedef FM_NoArgsCmd_t FM_ResetPowerCmd_t;
+// typedef FM_NoArgsCmd_t FM_TerminateEoCmd_t;
+// typedef FM_NoArgsCmd_t FM_TerminateEoOverrideCmd_t;
+// typedef FM_NoArgsCmd_t FM_InitiateBaselineCmd_t;
+// typedef FM_NoArgsCmd_t FM_DeploayAntennaCmd_t;
+// typedef FM_NoArgsCmd_t FM_UseNominalBaudRatesCmd_t;
+// typedef FM_NoArgsCmd_t FM_StoreObsDataToCdsCmd_t;
+// typedef FM_NoArgsCmd_t FM_RestoreObsDataFromCdsCmd_t;
+
+// /*
+// ** FM_RESET_APP_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t AppId;
+// } __attribute__((packed)) FM_ResetAppCmd_t;
+
+
+// /*
+// ** FM_MODE_TRANSFER_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t Mode;
+//     uint8_t Submode;
+// } __attribute__((packed)) FM_ModeTransferCmd_t;
+
+
+// /*
+// ** FM_SET_OPERATION_MODE_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t Mode;
+//     uint8_t Submode;
+// } __attribute__((packed)) FM_SetOperationModeCmd_t;
+
+
+// /*
+// ** FM_SET_COMMISSIONING_PHASE_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t CommissioningPhase;
+// } __attribute__((packed)) FM_SetCommissioningPhaseCmd_t;
+
+
+// /*
+// ** FM_SET_SPACECRAFT_TIME_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t Seconds;
+//     uint32_t Subseconds;
+// } __attribute__((packed)) FM_SetSpacecraftTimeCmd_t;
+
+
+// /*
+// ** FM_SET_ANTENNA_DEPLOY_FLAG_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t AntennaDeployFlag;
+// } __attribute__((packed)) FM_SetAntennaDeployFlagCmd_t;
+
+
+// /*
+// ** FM_SET_DAYLIGHT_DETECTION_FLAG_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t DaylightDetectionFlag;
+// } __attribute__((packed)) FM_SetDaylightDetectionFlagCmd_t;
+
+
+// /*
+// ** FM_SET_COMM_MISSING_FLAG_CC
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t CommunicationMissing;
+// } __attribute__((packed)) FM_SetCommMissingFlagCmd_t;
+
+// /* Reset */
+// #define CFE_MISSION_MAX_API_LEN 20
+// #define CFE_MISSION_MAX_PATH_LEN 64
+// #define CFE_ES_START_APP_CC 4
+// #define CFE_ES_RESTART_APP_CC 6
+// #define CFE_ES_RESTART_CC 2
+// #define CFE_ES_STOP_APP_CC 5
+
+// #define CFE_PSP_RST_TYPE_PROCESSOR 1 /**< Volatile disk, CDS and User Reserved memory may be valid */
+// #define CFE_PSP_RST_TYPE_POWERON   2 /**< All memory has been cleared */
+
+// #define ES_CMD_MID                  0x1806
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } SCH_NoArgsCmd_t;
+
+// typedef struct
+// {
+// CFE_MSG_CommandHeader CmdHeader;
+
+// uint16_t SlotNumber; /**< \brief Slot Number of Activity whose state is to change */
+// /**< \details Valid Range is zero to (#SCH_TOTAL_SLOTS - 1) */
+// uint16_t EntryNumber; /**< \brief Entry Number of Activity whose state is to change
+// \details Valid Range is zero to (#SCH_ENTRIES_PER_SLOT - 1) */
+
+// } SCH_EntryCmd_t;
+
+
+// /* MESSAGE ID (CMD) */
+// #define SCH_CMD_MID                    0x1895 /**< \brief SCH Ground Commands Message ID */
+
+
+// /* COMMAND CODES */
+// #define SCH_ENABLE_CC           2   /* Enable Schedule Table Entry */
+// #define SCH_DISABLE_CC          3   /* disable schedule table entry */
+
+// // 전체 리스타트 명령.
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } CFE_ES_NoArgsCmd_t;
+
+// typedef struct CFE_ES_RestartCmd_Payload
+// {
+//     uint16_t RestartType;  // 여기 1을 넣으세요
+// } CFE_ES_RestartCmd_Payload_t;
+
+
+// typedef struct CFE_ES_RestartCmd
+// {
+//     CFE_MSG_CommandHeader     CmdHeader;  // MID = 0x1806, CC = 2
+//     CFE_ES_RestartCmd_Payload_t Payload;
+// } CFE_ES_RestartCmd_t; 
+//  // 전체 리스타트 명령 끝.
+
+
+//  // 앱 리스타트 명령.
+
+// typedef struct CFE_ES_AppNameCmd_Payload
+// {
+//     char Application[CFE_MISSION_MAX_API_LEN];   // 여기 "FM" (F, M, \0)을 넣으세요.
+// } CFE_ES_AppNameCmd_Payload_t;
+
+
+// typedef struct CFE_ES_AppNameCmd
+// {
+//     CFE_MSG_CommandHeader     CmdHeader;   // MID = 0x1806, CC = 6
+//     CFE_ES_AppNameCmd_Payload_t Payload;
+// } CFE_ES_AppNameCmd_t;
+
+// typedef CFE_ES_AppNameCmd_t CFE_ES_StopAppCmd_t;
+// typedef CFE_ES_AppNameCmd_t CFE_ES_RestartAppCmd_t;
+
+//  // 앱 리스타트 명령 끝.
+
+//  /**
+// ** \brief Start Application Command Payload
+// **
+// ** For command details, see #CFE_ES_START_APP_CC
+// **
+// **/
+// typedef struct CFE_ES_StartAppCmd_Payload
+// {
+//     char Application[CFE_MISSION_MAX_API_LEN];   /**< \brief Name of Application to be started */
+//     char AppEntryPoint[CFE_MISSION_MAX_API_LEN]; /**< \brief Symbolic name of Application's entry point */
+//     char AppFileName[CFE_MISSION_MAX_PATH_LEN];  /**< \brief Full path and filename of Application's
+//                                                     executable image */
+
+//     uint32_t StackSize; /**< \brief Desired stack size for the new application */
+
+//     uint8_t ExceptionAction; /**< \brief #CFE_ES_ExceptionAction_RESTART_APP=On exception,
+//                                                        restart Application,
+//                                                        #CFE_ES_ExceptionAction_PROC_RESTART=On exception,
+//                                                        perform a Processor Reset */
+//     uint16_t Priority;           /**< \brief The new Applications runtime priority. */
+
+// } CFE_ES_StartAppCmd_Payload_t;
+
+// /**
+//  * \brief Start Application Command
+//  */
+// typedef struct CFE_ES_StartApp
+// {
+//     CFE_MSG_CommandHeader      CmdHeader; /**< \brief Command header */
+//     CFE_ES_StartAppCmd_Payload_t Payload;   /**< \brief Command payload */
+// } CFE_ES_StartAppCmd_t;
+
+
+// /*************************************************************************/
+// /*
+// ** GPS system
+// */
+// /*************************************************************************/
+
+// /*
+// ** Type definition (generic "no arguments" command)
+// */
+// typedef struct
+// {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } GPS_NoArgsCmd_t;
+
+// /*
+// ** The following commands all share the "NoArgs" format
+// **
+// ** They are each given their own type name matching the command name, which
+// ** allows them to change independently in the future without changing the prototype
+// ** of the handler function
+// */
+// typedef GPS_NoArgsCmd_t GPS_NoopCmd_t;
+// typedef GPS_NoArgsCmd_t GPS_ResetCountersCmd_t;
+// typedef GPS_NoArgsCmd_t GPS_ResetAppCmd_t;
+// typedef GPS_NoArgsCmd_t GPS_ResetHwCmd_t;
+// typedef GPS_NoArgsCmd_t GPS_ClearLogsCmd_t;
+// typedef GPS_NoArgsCmd_t GPS_EnableTimeToneCmd_t;
+// typedef GPS_NoArgsCmd_t GPS_DisableTimeToneCmd_t;
+// typedef GPS_NoArgsCmd_t GPS_LogRequestDftCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int16_t MsgId;
+// } __attribute__((packed)) GPS_MsgIdCmd_t;
+
+// typedef GPS_MsgIdCmd_t GPS_LogOnceCmd_t;
+// typedef GPS_MsgIdCmd_t GPS_LogOntimeCmd_t;
+// typedef GPS_MsgIdCmd_t GPS_LogOnChangeCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** MTQ System
+// */
+// /*************************************************************************/
+
+// typedef struct{
+//     CFE_MSG_CommandHeader CmdHeader;
+// } __attribute__((packed)) MTQ_NoArgsCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t                   Args[3];
+// } __attribute__((packed)) MTQ_U8Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int8_t                    Args[3];
+// } __attribute__((packed)) MTQ_C8ArrCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t                   Args[3];
+// } __attribute__((packed)) MTQ_U8ArrCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t                  Args[3];
+// } __attribute__((packed)) MTQ_U32ArrCmd_t;
+
+// typedef MTQ_NoArgsCmd_t MTQ_NoopCmd_t;
+// typedef MTQ_NoArgsCmd_t MTQ_ResetCountersCmd_t;
+// typedef MTQ_NoArgsCmd_t MTQ_ResetCmd_t;
+
+// typedef MTQ_U8Cmd_t     MTQ_ResetCompCmd_t;
+// typedef MTQ_U8ArrCmd_t  MTQ_EnableCmd_t;
+// typedef MTQ_U8ArrCmd_t  MTQ_DisableCmd_t;
+// typedef MTQ_U8ArrCmd_t  MTQ_SetPolarityCmd_t;
+
+// typedef MTQ_C8ArrCmd_t  MTQ_SetDutyCmd_t;
+
+// typedef MTQ_U32ArrCmd_t MTQ_SetPeriodCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** RWA System
+// */
+// /*************************************************************************/
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+// } __attribute__((packed)) RWA_NoArgsCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; 
+//     uint8_t WhlNum;
+// } __attribute__((packed)) RWA_DmaskCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t WhlNum;
+//     uint8_t Arg;
+// } __attribute__((packed)) RWA_U8Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t WhlNum;
+//     int16_t Arg;
+// } __attribute__((packed)) RWA_S16Cmd_t;
+
+// typedef RWA_NoArgsCmd_t RWA_NoopCmd_t;
+// typedef RWA_NoArgsCmd_t RWA_ResetCountersCmd_t;
+// typedef RWA_NoArgsCmd_t RWA_ProcessCmd_t;
+// typedef RWA_NoArgsCmd_t RWA_ResetAllCmd_t;
+
+// typedef RWA_DmaskCmd_t  RWA_ResetWheelCmd_t;
+// typedef RWA_DmaskCmd_t  RWA_ClearErrorsCmd_t;
+
+// typedef RWA_U8Cmd_t     RWA_SetMotorPowerStateCmd_t;
+// typedef RWA_U8Cmd_t     RWA_SetEncoderPowerStateCmd_t;
+// typedef RWA_U8Cmd_t     RWA_SetHallPowerStateCmd_t;
+// typedef RWA_U8Cmd_t     RWA_SetControlModeCmd_t;
+// typedef RWA_U8Cmd_t     RWA_SetBackupWheelModeCmd_t;
+
+// typedef RWA_S16Cmd_t    RWA_SetWheelReferenceSpeedCmd_t;
+// typedef RWA_S16Cmd_t    RWA_SetWheelCommandedTorqueCmd_t;
+
+// typedef struct {
+//     int16_t K;
+//     uint8_t Kmultiplier;
+// } __attribute__((packed)) PwmGain;
+
+
+// typedef struct {
+//     uint16_t Ki;
+//     uint8_t KiMultiplier;
+//     uint16_t Kd;
+//     uint8_t KdMultiplier;
+// } __attribute__((packed)) MainGain;
+
+
+// typedef struct {
+//     uint16_t Ki;
+//     uint8_t KiMultiplier;
+//     uint16_t Kd;
+//     uint8_t KdMultiplier;
+// } __attribute__((packed)) BackupGain;
+
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t WhlNum;
+//     PwmGain    Input;
+// } __attribute__((packed)) RWA_SetPwmGainCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t WhlNum;
+//     MainGain    Input;
+// } __attribute__((packed)) RWA_SetMainGainCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t WhlNum;
+//     BackupGain    Input;
+// } __attribute__((packed)) RWA_SetBackupGainCmd_t;
+
+
+// /* Note that the telemetry header is already aligned to 64-bit. */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int16_t WheelRefSpeed[3];
+// } RWA_SetWheelReferenceSpeedAllAxisCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** Payload system
+// */
+// /*************************************************************************/
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+// } PAY_NoArgsCmd_t;
+
+// typedef PAY_NoArgsCmd_t PAY_InitDeviceCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_NoopCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_ResetCountersCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_CamFindCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_CamConnectCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_CamStartOperationCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_CamStopOperationCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_CamDownloadNewImgCmd_t;
+// typedef PAY_NoArgsCmd_t PAY_BBEShutdownCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint16_t Index;
+// } PAY_CamDownloadOldImgCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t CmdCode;
+// } PAY_CamSendNoargCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t Exposure;
+// } PAY_CamSetExposureCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t SCPD;
+// } PAY_CamSetScpdCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** SNSR System
+// */
+// /*************************************************************************/
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+// } __attribute__((packed)) SNSR_NoArgsCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t Arg;
+// } __attribute__((packed)) SNSR_U8Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int8_t Arg;
+// } __attribute__((packed)) SNSR_C8Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint16_t Arg;
+// } __attribute__((packed)) SNSR_U16Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int16_t Arg;
+// } __attribute__((packed)) SNSR_S16Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t Arg;
+// } __attribute__((packed)) SNSR_U32Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int32_t Arg;
+// } __attribute__((packed)) SNSR_I32Cmd_t;
+
+
+// typedef SNSR_NoArgsCmd_t SNSR_NoopCmd_t;
+// typedef SNSR_NoArgsCmd_t SNSR_ResetCountersCmd_t;
+// typedef SNSR_NoArgsCmd_t SNSR_SunAlarmOffCmd_t;
+
+// /*
+// ** STT system
+// */
+// typedef SNSR_NoArgsCmd_t    SNSR_STT_InitDeviceCmd_t;
+
+// typedef SNSR_U8Cmd_t        SNSR_STT_BootCmd_t;
+
+// typedef SNSR_U32Cmd_t       SNSR_STT_PingCmd_t;
+
+// typedef SNSR_NoArgsCmd_t    SNSR_STT_RebootCmd_t;
+// typedef SNSR_NoArgsCmd_t    SNSR_STT_SetParamsDftCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t Image;
+//     uint32_t Code;
+// } __attribute__((packed)) SNSR_STT_UnlockCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t ParamId;
+//     uint16_t ParamSize;
+//     uint8_t Param[1];
+// } __attribute__((packed)) SNSR_STT_SetParamCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint16_t Length;
+//     uint8_t Data[1];
+// } __attribute__((packed)) SNSR_STT_SendRS485Cmd_t;
+
+// /*
+// ** MMT Command Messages. 
+// */
+// typedef SNSR_NoArgsCmd_t    SNSR_MMT_ResetCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     bool TM_M;
+//     bool TM_T;
+//     bool Start_MDT;
+//     bool Set;
+//     bool Reset;
+// } __attribute__((packed)) SNSR_MMT_SetInternalControl0Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t CM_Freq;
+//     bool INT_MDT_EN;
+//     bool INT_Meas_Done_EN;
+// } __attribute__((packed)) SNSR_MMT_SetInternalControl2Cmd_t;
+
+// typedef SNSR_U8Cmd_t    SNSR_MMT_WriteToRegisterCmd_t;
+// typedef SNSR_NoArgsCmd_t    SNSR_MMT_GetProductIdCmd_t;
+
+// /*
+// ** IMU Command Messages. 
+// */
+// typedef SNSR_NoArgsCmd_t SNSR_IMU_ResetCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int16_t Offset[3];
+// } __attribute__((packed)) SNSR_IMU_SetGyroOffsetCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t FifoMode;
+//     uint8_t ExtSyncSet;
+//     uint8_t ConfigDLPF;
+// } __attribute__((packed)) SNSR_IMU_SetConfigurationCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t AccelFullScale;
+//     uint8_t FilterChoice;
+// } __attribute__((packed)) SNSR_IMU_SetGyroConfigurationCmd_t;
+
+// typedef SNSR_U8Cmd_t    SNSR_IMU_SetAccelConfigurationCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t FifoSize;
+//     uint8_t DEC2_CFG;
+//     bool AccelFilterChoice;
+//     uint8_t A_DLPF_CFG;
+// } __attribute__((packed)) SNSR_IMU_SetAccelConfiguration2Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     bool DEVICE_RESET;
+//     bool SLEEP;
+// } __attribute__((packed)) SNSR_IMU_SetPowerManagement1Cmd_t;
+
+// typedef SNSR_U8Cmd_t        SNSR_IMU_WriteToRegisterCmd_t;
+// typedef SNSR_NoArgsCmd_t    SNSR_IMU_WhoAmICmd_t;
+
+// /*
+// ** Isolate/restore Command Messages. 
+// */
+// typedef SNSR_NoArgsCmd_t    SNSR_IMU_IsolateCmd_t;
+// typedef SNSR_NoArgsCmd_t    SNSR_IMU_RestoreCmd_t;
+// typedef SNSR_NoArgsCmd_t    SNSR_MMT_IsolateCmd_t;
+// typedef SNSR_NoArgsCmd_t    SNSR_MMT_RestoreCmd_t;
+
+// typedef SNSR_U8Cmd_t        SNSR_FSS_IsolateCmd_t;
+// typedef SNSR_U8Cmd_t        SNSR_FSS_RestoreCmd_t;
+// typedef SNSR_U8Cmd_t        SNSR_CSS_IsolateCmd_t;
+// typedef SNSR_U8Cmd_t        SNSR_CSS_RestoreCmd_t;
+
+// typedef SNSR_NoArgsCmd_t    SNSR_STT_IsolateCmd_t;
+// typedef SNSR_NoArgsCmd_t    SNSR_STT_RestoreCmd_t;
+
+// typedef struct {
+//     CFE_MSG_TelemetryHeader TlmHeader;
+// } __attribute__((packed)) SNSR_SunDetectionMsg_t;
+
+
+// /*************************************************************************/
+// /*
+// ** STX system
+// */
+// /*************************************************************************/
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } STX_NoArgsCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+//     uint8_t                   Arg;
+// } STX_U8Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+//     int16_t                   Length;
+//     uint16_t                  BufPushDelay;
+//     uint8_t                   Data[16];
+// } STX_TransmitDataCmd_t;
+
+// typedef STX_NoArgsCmd_t STX_NoopCmd_t;
+// typedef STX_NoArgsCmd_t STX_ResetCountersCmd_t;
+// typedef STX_NoArgsCmd_t STX_ProcessCmd_t;
+// typedef STX_NoArgsCmd_t STX_ResetCmd_t;
+
+// typedef STX_U8Cmd_t     STX_SetControlModeCmd_t;
+// typedef STX_U8Cmd_t     STX_SetEncoderRateCmd_t;
+// typedef STX_U8Cmd_t     STX_SetPaPowerCmd_t;
+// typedef STX_U8Cmd_t     STX_SetSynthOffsetCmd_t;
+
+// typedef STX_NoArgsCmd_t STX_TransmitReadyCmd_t;
+// typedef STX_NoArgsCmd_t STX_TransmitEndCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t Offset;
+//     uint32_t Length;
+//     uint16_t BufPushDelay;
+//     char Path[32];
+// } STX_TransmitFileCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t Offset;
+//     uint32_t Length;
+//     uint16_t BufPushDelay;
+//     char Path[64];
+// } STX_TransmitFileLongPathCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** TO system
+// */
+// /*************************************************************************/
+
+// /*
+// ** Type definition (generic "no arguments" command)
+// */
+// typedef struct
+// {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } TO_NoArgsCmd_t;
+
+// /*
+// ** The following commands all share the "NoArgs" format
+// **
+// ** They are each given their own type name matching the command name, which
+// ** allows them to change independently in the future without changing the prototype
+// ** of the handler function
+// */
+// typedef TO_NoArgsCmd_t TO_NoopCmd_t;
+// typedef TO_NoArgsCmd_t TO_ResetCountersCmd_t;
+// typedef TO_NoArgsCmd_t TO_ProcessCmd_t;
+// typedef TO_NoArgsCmd_t TO_EnableBeaconCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** Type definition (TO App housekeeping)
+// */
+
+// typedef struct {
+//     uint16_t Target;
+//     uint16_t FileStatus;
+//     uint32_t NumFiles;
+//     uint32_t Offset;
+//     uint32_t Frequency;
+//     void* Conn;
+// } TO_DownlinkQueryReplyCmd_Payload_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     TO_DownlinkQueryReplyCmd_Payload_t Payload;
+// } TO_DownlinkQueryReplyCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     int32_t timeoutsmin;
+// } TO_DisableBeaconCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** UTRX system
+// */
+// /*************************************************************************/
+
+// /*
+// ** Type definition (generic "no arguments" command)
+// */
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+// } UTRX_NoArgsCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; 
+//     uint8_t                   Arg;
+// } UTRX_u8Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; 
+//     uint32_t                  Arg;
+// } UTRX_u32Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader; 
+//     float                   Arg;
+// } UTRX_fCmd_t;
+
+
+// typedef UTRX_NoArgsCmd_t    UTRX_NoopCmd_t;
+// typedef UTRX_NoArgsCmd_t    UTRX_ResetCountersCmd_t;
+// typedef UTRX_NoArgsCmd_t    UTRX_RebootCmd_t;
+
+// typedef UTRX_u32Cmd_t       UTRX_SetTxFreqCmd_t;
+// typedef UTRX_u32Cmd_t       UTRX_SetTxBaudCmd_t;
+
+// typedef UTRX_fCmd_t         UTRX_SetTxModIndexCmd_t;
+
+// typedef UTRX_u8Cmd_t        UTRX_SetTxModeCmd_t;
+
+// typedef UTRX_u32Cmd_t       UTRX_SetRxFreqCmd_t;
+// typedef UTRX_u32Cmd_t       UTRX_SetRxBaudCmd_t;
+
+// typedef UTRX_fCmd_t         UTRX_SetRxModIndexCmd_t;
+
+// typedef UTRX_u8Cmd_t        UTRX_SetRxModeCmd_t;
+
+// typedef UTRX_u32Cmd_t       UTRX_SetRxBandwidthCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** TS system
+// */
+// /*************************************************************************/
+
+// /*
+// ** Type definition (generic "no arguments" command)
+// */
+// typedef struct
+// {
+//     CFE_MSG_CommandHeader CmdHeader; /**< \brief Command header */
+// } TS_NoArgsCmd_t;
+// typedef TS_NoArgsCmd_t TS_NoopCmd_t;
+// typedef TS_NoArgsCmd_t TS_ResetCountersCmd_t;
+// typedef TS_NoArgsCmd_t TS_ProcessCmd_t;
+
+// typedef TS_NoArgsCmd_t TS_ClearAllScheduleCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint32_t ExecutionTime;
+//     uint32_t ExecutionWindow;
+//     uint16_t EntryId;
+//     uint16_t EntryGroup;
+//     CFE_MSG_Message_t ExecutionMsg;
+// } TS_InsertScheduleEntryCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint16_t EntryId;
+// } TS_ClearScheduleEntryCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint16_t EntryGroup;
+// } TS_ClearScheduleGroupCmd_t;
+
+// /*************************************************************************/
+// /*
+// ** ECM system
+// */
+// /*************************************************************************/
+
+// /*
+// ** Type definition (generic "no arguments" command)
+// */
+// typedef struct
+// {
+//     CFE_MSG_CommandHeader CmdHeader;
+// } ECM_NoArgsCmd_t;
+
+// typedef ECM_NoArgsCmd_t ECM_GetHKAvgCmd_t;
+// typedef ECM_NoArgsCmd_t ECM_GetSystemStatusCmd_t;
+// typedef ECM_NoArgsCmd_t ECM_GetOcfStateCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader CmdHeader;
+//     uint8_t txlen;
+//     uint8_t rxlen;
+//     uint8_t cc;
+//     uint8_t data[5];
+// } ECM_Read_t;
+
+// /*************************************************************************/
+// /*
+// ** FTP File Parser
+// */
+// /*************************************************************************/
+
+// /*
+// ** FTP File Header
+// */
+// #define CFE_FS_HDR_DESC_MAX_LEN         32
+// #define DS_TOTAL_FNAME_BUFSIZE          64
+
+
+// typedef struct CFE_FS_Header
+// {
+//     uint32_t ContentType;   /**< \brief Identifies the content type (='cFE1'=0x63464531)*/
+//     uint32_t SubType;       /**< \brief Type of \c ContentType, if necessary */
+//                           /**< Standard SubType definitions can be found
+//                                \link #CFE_FS_SubType_ES_ERLOG here \endlink */
+//     uint32_t Length;        /**< \brief Length of this header to support external processing */
+//     uint32_t SpacecraftID;  /**< \brief Spacecraft that generated the file */
+//     uint32_t ProcessorID;   /**< \brief Processor that generated the file */
+//     uint32_t ApplicationID; /**< \brief Application that generated the file */
+
+//     uint32_t TimeSeconds;    /**< \brief File creation timestamp (seconds) */
+//     uint32_t TimeSubSeconds; /**< \brief File creation timestamp (sub-seconds) */
+
+//     char Description[CFE_FS_HDR_DESC_MAX_LEN]; /**< \brief File description */
+
+// } CFE_FS_Header_t;
+
+
+// typedef struct
+// {
+//     uint32_t  CloseSeconds;                               /**< \brief Time when file was closed */
+//     uint32_t  CloseSubsecs;        
+
+//     uint16_t  FileTableIndex;                             /**< \brief Destination file table index */
+//     uint16_t  FileNameType;                               /**< \brief Filename type - count vs time */
+
+//     char    FileName[DS_TOTAL_FNAME_BUFSIZE];           /**< \brief On-board filename */
+
+// } DS_FileHeader_t;
+
+// /*
+// ** Ctrlo Type Definitions
+// */
+// typedef struct {
+//     float AttitudeSolution[7];
+//     float AngularVelocityError[3];
+//     float AngleError;
+// } ADCS_OutputTlm_Attitude_t;
+
+// typedef struct {
+//     float BestPosition[3];
+//     float BestVelocity[3];
+//     uint8_t PositionStdStatus;
+//     uint8_t VelocityStdStatus;
+//     uint8_t Spare[2];   /* 32-bit Alignment. */
+// } ADCS_OutputTlm_Orbit_t;
+
+// typedef struct {
+//     uint16_t IntegratorErrFlag;
+//     uint8_t ControlMode;
+//     uint8_t ControlModeUpdated;
+//     uint8_t AcuatorFlagUpdated;
+//     uint8_t FlagDetumbling;
+//     uint8_t FlagForcedSpinning;
+//     uint8_t FlagSensors;
+//     uint8_t FlagCss;
+//     uint8_t FlagDumping[3];
+// } ADCS_OutputTlm_ControlFlags_t;
+
+// typedef struct {
+//     ADCS_OutputTlm_Attitude_t       Attitude;
+//     ADCS_OutputTlm_Orbit_t          Orbit;
+//     ADCS_OutputTlm_ControlFlags_t   Flags;
+// } ADCS_OutputTlm_Payload_t;
+
+// typedef struct {
+//     ccsds_tlm_header_t tlmHeader;
+//     ADCS_OutputTlm_Payload_t ctrlo;
+// } ctrlo_packet_t;
+
+// /*
+// ** GPS_raw Type Definitions
+// */
+// #define MAX_SAT_NUM             8
+
+
+// typedef struct {
+//     /* Reference week number in u32 to be aligned properly. */
+//     uint32_t          Week;
+//     int32_t           ms;
+// } GPS_HeaderReferenceTime;
+
+
+// /* RANGEGPSL1 log measurements. */
+// typedef struct {
+//     double                  Pseudorange;
+//     double                  CarrierPhase;
+//     float                   PseudorangeStd;
+//     float                   CarrierPhaseStd;
+//     float                   Doppler;
+//     float                   CNR;
+//     float                   Locktime;
+//     uint16_t                PRN;
+//     uint16_t                TrackingStatus;
+// } GPS_MeasurementsAux_RangeGPSL1_Comp_t;
+
+// typedef struct {
+//     GPS_HeaderReferenceTime Time;
+//     GPS_MeasurementsAux_RangeGPSL1_Comp_t Comp[MAX_SAT_NUM];
+//     uint8_t                 NumSat;
+// } GPS_MeasurementsAux_RangeGPSL1_t;
+
+
+// /* SATXYZ2 log measurements. */
+// typedef struct {
+//     double                  SatX;
+//     double                  SatY;
+//     double                  SatZ;
+//     double                  ClockCorrection;
+//     double                  IonosphereDelay;
+//     double                  TroposphereDelay;
+//     uint32_t                SatId;
+// } GPS_MeasurementsAux_SatXYZ2_Comp_t;
+
+// typedef struct {
+//     GPS_HeaderReferenceTime Time;
+//     GPS_MeasurementsAux_SatXYZ2_Comp_t Comp[MAX_SAT_NUM];
+//     uint8_t                 NumSat;
+// } GPS_MeasurementsAux_SatXYZ2_t;
+
+
+// /* Auxilary measurement package. */
+// typedef struct {
+//     GPS_MeasurementsAux_RangeGPSL1_t    RangeGPSL1;
+//     GPS_MeasurementsAux_SatXYZ2_t       SatXYZ2;
+// } GPS_MeasurementsAux_t_Payload_t;
+
+
+// typedef struct {
+//     ccsds_tlm_header_t              tlmHeader;
+//     GPS_MeasurementsAux_t_Payload_t gps;
+// } gps_packet_t;
+
+// /*
+// ** HK Type Definitions
+// */
+// typedef struct __attribute__((packed)) {
+//     ccsds_tlm_header_t      tlmHeader;
+//     FM_HkTlm_Payload_t      fm;
+//     EPS_HkTlm_Payload_t     eps;
+//     uint8_t padding[6];
+//     RWA_HkTlm_Payload_t     rwa;
+//     MTQ_HkTlm_Payload_t     mtq;
+//     SNSR_HkTlm_Payload_t    snsr;
+//     UTRX_HkTlm_Payload_t    utrx;
+//     STX_HkTlm_Payload_t     stx;
+//     //PAY_HkTlm_Payload_t     pay;
+//     //TS_HkTlm_Payload_t      ts;
+//     //uint8_t padding2[16];
+// } hk_packet_t;
+
+// /*
+// ** SNSR_low Type Definitions
+// */
+// typedef struct {
+//     uint32_t Ticks;
+//     uint32_t TS;
+//     float CalibratedQuaternion_Qw;
+//     float CalibratedQuaternion_Qx;
+//     float CalibratedQuaternion_Qy;
+//     float CalibratedQuaternion_Qz;
+//     float TRACK_Confidence;
+//     float TRACK_Qw;
+//     float TRACK_Qx;
+//     float TRACK_Qy;
+//     float TRACK_Qz;
+//     float LISA_Qw;
+//     float LISA_Qx;
+//     float LISA_Qy;
+//     float LISA_Qz;
+//     float LISA_Percentageclose;
+//     uint32_t StableCount;
+//     uint8_t IsTrustworthy;
+//     uint8_t SolutionStrategy;
+//     uint8_t Padding[2];
+// } SNSR_STT_Measurements_t;
+
+// typedef struct {
+//     float AngleX[2];
+//     float AngleY[2];
+//     float SunDetection[2];
+//     uint8_t ErrorCode[2];
+//     uint8_t Padding[2];
+// } SNSR_FSS_Measurements_t;
+
+// typedef struct {
+//     float RawVoltageOut[5];
+// } SNSR_CSS_Measurements_t;
+
+// typedef struct {
+//     float Temperature[5];
+// } SNSR_TMP_Measurements_t;
+
+// typedef struct {
+//     float IMU_AngularVelocity[3];
+//     float IMU_Temperature;
+// } SNSR_IMU_Measurements_t;
+
+// typedef struct {
+//     float MMT_FieldOutputs[3];
+// } SNSR_MMT_Measurements_t;
+
+// typedef struct {
+//     SNSR_STT_Measurements_t STT;
+//     SNSR_FSS_Measurements_t FSS;
+//     SNSR_IMU_Measurements_t IMU;
+//     SNSR_MMT_Measurements_t MMT;
+//     SNSR_CSS_Measurements_t CSS;
+//     SNSR_TMP_Measurements_t TMP;
+//     bool FaultySTT;
+//     bool FaultyIMU;
+//     bool FaultyMMT;
+//     bool FaultyFSS[2];
+// } SNSR_Meas_Payload_t;
+
+// typedef struct {
+//     ccsds_tlm_header_t  tlmHeader;
+//     SNSR_Meas_Payload_t snsr;
+// } snsr_packet_t;
 
 #define CFE_SB_TLM_HDR_SIZE             12
 #define CCSDS_TIME_SIZE                 6
@@ -2215,130 +2215,130 @@ typedef struct {
     HYVRID_CmdExecutionReportMsg_t Report;
 } OS_PACK HYVRID_TelemetryHeader_t;
 
-/*----------------------------------------*/
-/*                   EPS                  */
-/*----------------------------------------*/
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-} OS_PACK HYVRID_NoArgsCmd_t;
+// /*----------------------------------------*/
+// /*                   EPS                  */
+// /*----------------------------------------*/
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+// } OS_PACK HYVRID_NoArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint8 arg;
-} OS_PACK HYVRID_U8ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint8 arg;
+// } OS_PACK HYVRID_U8ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint16 arg;
-} OS_PACK HYVRID_U16ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint16 arg;
+// } OS_PACK HYVRID_U16ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint32 arg;
-} OS_PACK HYVRID_U32ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint32 arg;
+// } OS_PACK HYVRID_U32ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint64 arg;
-} OS_PACK HYVRID_U64ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint64 arg;
+// } OS_PACK HYVRID_U64ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    int8 arg;
-} OS_PACK HYVRID_S8ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     int8 arg;
+// } OS_PACK HYVRID_S8ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    int16 arg;
-} OS_PACK HYVRID_S16ARgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     int16 arg;
+// } OS_PACK HYVRID_S16ARgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    int32 arg;
-} OS_PACK HYVRID_S32ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     int32 arg;
+// } OS_PACK HYVRID_S32ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    int64 arg;
-} OS_PACK HYVRID_S64ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     int64 arg;
+// } OS_PACK HYVRID_S64ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    float arg;
-} OS_PACK HYVRID_FloatArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     float arg;
+// } OS_PACK HYVRID_FloatArgsCmd_t;
 
-typedef struct {
-   uint8_t    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32_t   Timeout;
-   uint8_t    Channel;
-   bool     Status;
-}__attribute__((packed)) u32u8bool_t;
+// typedef struct {
+//    uint8_t    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32_t   Timeout;
+//    uint8_t    Channel;
+//    bool     Status;
+// }__attribute__((packed)) u32u8bool_t;
 
-typedef struct {
-   uint8_t    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32_t   Timeout;
-   uint8_t    Channel;
-}__attribute__((packed)) u32u8_t;
+// typedef struct {
+//    uint8_t    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32_t   Timeout;
+//    uint8_t    Channel;
+// }__attribute__((packed)) u32u8_t;
 
-typedef struct {
-   uint8_t   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32_t   Size;
-   uint32_t  Timeout;
-   uint8_t    Node;
-   uint8_t    TableId;
-}__attribute__((packed)) u32u32u8u8_t;
+// typedef struct {
+//    uint8_t   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32_t   Size;
+//    uint32_t  Timeout;
+//    uint8_t    Node;
+//    uint8_t    TableId;
+// }__attribute__((packed)) u32u32u8u8_t;
 
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32   Timeout;
-   uint8    Node;
-   uint8    TableId;
-   uint8    Destination;
-}__attribute__((packed)) u32u8u8u8_t;
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32   Timeout;
+//    uint8    Node;
+//    uint8    TableId;
+//    uint8    Destination;
+// }__attribute__((packed)) u32u8u8u8_t;
 
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32   Timeout;
-   uint32   Size;
-   uint8    Node;
-   uint8    TableId;
-   uint16   Address;
-   uint8    Type;
-}__attribute__((packed)) u32u32u8u8u16u8_t;
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32   Timeout;
+//    uint32   Size;
+//    uint8    Node;
+//    uint8    TableId;
+//    uint16   Address;
+//    uint8    Type;
+// }__attribute__((packed)) u32u32u8u8u16u8_t;
 
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32   Timeout;
-   uint32   ItemSize;
-   uint32   ItemCount;
-   uint8    Node;
-   uint8    TableId;
-   uint16   Address;
-   uint8    Type;
-} OS_PACK u32u32u32u8u8u16u8_t;
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32   Timeout;
+//    uint32   ItemSize;
+//    uint32   ItemCount;
+//    uint8    Node;
+//    uint8    TableId;
+//    uint16   Address;
+//    uint8    Type;
+// } OS_PACK u32u32u32u8u8u16u8_t;
 
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32   Timeout;
-   bool     ChannelStatus[13];
-} OS_PACK u32bool13_t;
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32   Timeout;
+//    bool     ChannelStatus[13];
+// } OS_PACK u32bool13_t;
 
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32   Timeout;
-   bool     ChannelStatus[9];
-} OS_PACK u32bool9_t;
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32   Timeout;
+//    bool     ChannelStatus[9];
+// } OS_PACK u32bool9_t;
 
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint32   Timeout;
-   uint32   Size;
-   uint8    Node;
-   uint8    TableId;
-   uint16   Address;
-   uint8    Type;
-   uint8    Value[128];
-} OS_PACK EPS_P60_ParamSetCmd_t;
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint32   Timeout;
+//    uint32   Size;
+//    uint8    Node;
+//    uint8    TableId;
+//    uint16   Address;
+//    uint8    Type;
+//    uint8    Value[128];
+// } OS_PACK EPS_P60_ParamSetCmd_t;
 
 /*----------------------------------------*/
 /*                   GRX                  */
@@ -2736,236 +2736,212 @@ typedef struct {
 /*---- < End of ADCS > -------*/
 /*----------------------------*/
 
-/*----------------------------------------*/
-/*                 IFC app                */
-/*----------------------------------------*/
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char HandleName[16];
-} IFC_HandleNoArgsCmd_t;
+// /*----------------------------------------*/
+// /*                 IFC app                */
+// /*----------------------------------------*/
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char HandleName[16];
+// } IFC_HandleNoArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char HandleName[16];
-    uint8 Arg;
-} IFC_HandleU8ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char HandleName[16];
+//     uint8 Arg;
+// } IFC_HandleU8ArgsCmd_t;
 
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char HandleName[16];
-    uint32 Arg;
-} IFC_HandleU32ArgsCmd_t;
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char HandleName[16];
+//     uint32 Arg;
+// } IFC_HandleU32ArgsCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char    HandleName[16];
-    uint16  Size;
-    uint8   Data[128]; 
-} IFC_WriteCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char    HandleName[16];
+//     uint16  Size;
+//     uint8   Data[128]; 
+// } IFC_WriteCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char    HandleName[16];
-    uint16  Size;
-    uint16  Timeout;
-} IFC_ReadCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char    HandleName[16];
+//     uint16  Size;
+//     uint16  Timeout;
+// } IFC_ReadCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    int     GpioNum;
-} IFC_GpioNumCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     int     GpioNum;
+// } IFC_GpioNumCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char    HandleName[16];
-    char    DeviceName[16];
-    int     OpenOpt;
-} IFC_IoOpenCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char    HandleName[16];
+//     char    DeviceName[16];
+//     int     OpenOpt;
+// } IFC_IoOpenCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    int     GpioNum;
-    bool    Value;
-} IFC_GpioWriteCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     int     GpioNum;
+//     bool    Value;
+// } IFC_GpioWriteCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char    HandleName[16];
-    uint8   Termios[64];
-} IFC_UartSetTermiosCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char    HandleName[16];
+//     uint8   Termios[64];
+// } IFC_UartSetTermiosCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char    HandleName[16];
-    uint16  TxSize;
-    uint16  RxSize;
-    uint8   Address;
-    uint8   TxData[128];
-} IFC_I2cDuplexTransferCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char    HandleName[16];
+//     uint16  TxSize;
+//     uint16  RxSize;
+//     uint8   Address;
+//     uint8   TxData[128];
+// } IFC_I2cDuplexTransferCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char    HandleName[16];
-    uint16  TxSize;
-    uint16  RxSize;
-    uint8   TxData[128];
-} IFC_SpiDuplexTransferCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char    HandleName[16];
+//     uint16  TxSize;
+//     uint16  RxSize;
+//     uint8   TxData[128];
+// } IFC_SpiDuplexTransferCmd_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    char    HandleName[16];
-    char    DevName[32];
-    uint8   devType;
-    uint8   MutexId;
-} IFC_IoHandleAllocateCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     char    HandleName[16];
+//     char    DevName[32];
+//     uint8   devType;
+//     uint8   MutexId;
+// } IFC_IoHandleAllocateCmd_t;
 
-/*----------------------------------------*/
-/*                  PAYS                  */
-/*----------------------------------------*/
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint16  NumReads;
-    uint16  IntervalMs;
-    bool    IgnoreErrors;
-    bool    Pack;
-    char    FileName[128];
-} OS_PACK PAYS_D1064_ReadSaveStatusCmd_t;
-
-
-/*----------------------------------------*/
-/*                  PAYC                  */
-/*----------------------------------------*/
-//Other Definitions
-#define PAYC_STORE_FILENAME_SIZE        32
-#define PAYC_FILE_LIST_PATH_SIZE        64
-#define PAYC_REMOTE_DIRNAME_SIZE        64
-#define PAYC_LOCAL_DIRNAME_SIZE         64
-typedef struct {
-    uint16_t delay;
-    uint32_t snap_flags;
-    uint8_t snap_format;
-    uint32_t store_flags;
-    uint8_t store_format;
-} OS_PACK PAYC_Conf_t;
-
-typedef struct{
-    uint8_t count;
-    uint16_t width;
-    uint16_t height;
-    uint16_t leftedge;
-    uint16_t topedge;
-} OS_PACK PAYC_Snap_t;
-
-typedef struct{
-    uint8_t format;
-    uint8_t scale;
-    char filename[PAYC_STORE_FILENAME_SIZE];
-} OS_PACK PAYC_Store_t;
-
-typedef struct{
-    char StoredFileListLocation[PAYC_FILE_LIST_PATH_SIZE];
-} OS_PACK PAYC_StoreFileListLocation_t;
-
-typedef struct{
-    char remote_dirname[PAYC_REMOTE_DIRNAME_SIZE];
-    char local_dirname[PAYC_LOCAL_DIRNAME_SIZE];
-} OS_PACK PAYC_DirPath_t;
-
-typedef struct{
-    char filename[PAYC_STORE_FILENAME_SIZE];
-} OS_PACK PAYC_DownloadwithFileName_t;
-
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    PAYC_Conf_t Payload;
-}OS_PACK PAYC_SetConfCmd_t;
-
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    PAYC_Snap_t Payload;
-} OS_PACK PAYC_SnapCmd_t;
-
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    PAYC_Store_t Payload;
-} OS_PACK PAYC_StoreCmd_t;
-
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    PAYC_StoreFileListLocation_t Payload;
-} OS_PACK PAYC_StoreFileListLocationCmd_t;
-
-typedef struct {
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    PAYC_DirPath_t Payload;
-} OS_PACK PAYC_SetDirPathCmd_t;
-
-typedef struct
-{
-    uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    PAYC_DownloadwithFileName_t Payload;
-} OS_PACK PAYC_DownloadCmd_t;
-
-/*----------------------------------------*/
-/*                  STX                   */
-/*----------------------------------------*/
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint8    Reg;
-   uint8    Val;
-} STX_PULSAR_GenericSetValueCmd_t;
-
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   bool     Val;
-} STX_PULSAR_SetValueBoolCmd_t;
-
-typedef struct {
-   uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
-   uint8    Reg;
-   uint8    Size;
-} STX_PULSAR_GenericGetValueCmd_t;
+// /*----------------------------------------*/
+// /*                  PAYS                  */
+// /*----------------------------------------*/
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint16  NumReads;
+//     uint16  IntervalMs;
+//     bool    IgnoreErrors;
+//     bool    Pack;
+//     char    FileName[128];
+// } OS_PACK PAYS_D1064_ReadSaveStatusCmd_t;
 
 
-/*----------------------------------------*/
-/*                  PAYR                  */
-/*----------------------------------------*/
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint8   Chip;
-    uint8   Pins;
-} PAYR_BurnCmd_t;
+// /*----------------------------------------*/
+// /*                  PAYC                  */
+// /*----------------------------------------*/
+// //Other Definitions
+// #define PAYC_STORE_FILENAME_SIZE        32
+// #define PAYC_FILE_LIST_PATH_SIZE        64
+// #define PAYC_REMOTE_DIRNAME_SIZE        64
+// #define PAYC_LOCAL_DIRNAME_SIZE         64
+// typedef struct {
+//     uint16_t delay;
+//     uint32_t snap_flags;
+//     uint8_t snap_format;
+//     uint32_t store_flags;
+//     uint8_t store_format;
+// } OS_PACK PAYC_Conf_t;
 
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint8   Chip;
-    bool    MainBurn;
-    uint8_t BurnTimeSeconds;
-} PAYR_BurnLoopCmd_t;
+// typedef struct{
+//     uint8_t count;
+//     uint16_t width;
+//     uint16_t height;
+//     uint16_t leftedge;
+//     uint16_t topedge;
+// } OS_PACK PAYC_Snap_t;
+
+// typedef struct{
+//     uint8_t format;
+//     uint8_t scale;
+//     char filename[PAYC_STORE_FILENAME_SIZE];
+// } OS_PACK PAYC_Store_t;
+
+// typedef struct{
+//     char StoredFileListLocation[PAYC_FILE_LIST_PATH_SIZE];
+// } OS_PACK PAYC_StoreFileListLocation_t;
+
+// typedef struct{
+//     char remote_dirname[PAYC_REMOTE_DIRNAME_SIZE];
+//     char local_dirname[PAYC_LOCAL_DIRNAME_SIZE];
+// } OS_PACK PAYC_DirPath_t;
+
+// typedef struct{
+//     char filename[PAYC_STORE_FILENAME_SIZE];
+// } OS_PACK PAYC_DownloadwithFileName_t;
+
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     PAYC_Conf_t Payload;
+// }OS_PACK PAYC_SetConfCmd_t;
+
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     PAYC_Snap_t Payload;
+// } OS_PACK PAYC_SnapCmd_t;
+
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     PAYC_Store_t Payload;
+// } OS_PACK PAYC_StoreCmd_t;
+
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     PAYC_StoreFileListLocation_t Payload;
+// } OS_PACK PAYC_StoreFileListLocationCmd_t;
+
+// typedef struct {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     PAYC_DirPath_t Payload;
+// } OS_PACK PAYC_SetDirPathCmd_t;
+
+// typedef struct
+// {
+//     uint8 CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     PAYC_DownloadwithFileName_t Payload;
+// } OS_PACK PAYC_DownloadCmd_t;
+
+// /*----------------------------------------*/
+// /*                  STX                   */
+// /*----------------------------------------*/
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint8    Reg;
+//    uint8    Val;
+// } STX_PULSAR_GenericSetValueCmd_t;
+
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    bool     Val;
+// } STX_PULSAR_SetValueBoolCmd_t;
+
+// typedef struct {
+//    uint8    CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//    uint8    Reg;
+//    uint8    Size;
+// } STX_PULSAR_GenericGetValueCmd_t;
 
 
+// /*----------------------------------------*/
+// /*                  PAYR                  */
+// /*----------------------------------------*/
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint8   Chip;
+//     uint8   Pins;
+// } PAYR_BurnCmd_t;
 
-
-
-
-
-
-
-
-
-
-// THIS PART IS ADDED FOR COSMIC
-
-/*----------------------------------------*/
-/*                  SANT                  */
-/*----------------------------------------*/
-
-typedef struct {
-    uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
-    uint16  min_deploy;
-    uint8   backup;
-    uint8   max_burn_duration;
-} SANT_DeployBurnCmd_t;
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint8   Chip;
+//     bool    MainBurn;
+//     uint8_t BurnTimeSeconds;
+// } PAYR_BurnLoopCmd_t;
 
 
 
@@ -2978,103 +2954,127 @@ typedef struct {
 
 
 
+// // THIS PART IS ADDED FOR COSMIC
+
+// /*----------------------------------------*/
+// /*                  SANT                  */
+// /*----------------------------------------*/
+
+// typedef struct {
+//     uint8   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     uint16  min_deploy;
+//     uint8   backup;
+//     uint8   max_burn_duration;
+// } SANT_DeployBurnCmd_t;
 
 
-typedef struct {
-    /* PAYR */
-    PAYR_BurnCmd_t payrburncmd;
-    PAYR_BurnLoopCmd_t payrburnloofcmd;
 
-    /* STX */
-    STX_PULSAR_GenericSetValueCmd_t stxgenericsetvalue;
-    STX_PULSAR_SetValueBoolCmd_t    stxsetvaluebool;
-    STX_PULSAR_GenericGetValueCmd_t stxgenericgetvalue;
+
+
+
+
+
+
+
+
+
+
+
+// typedef struct {
+//     /* PAYR */
+//     PAYR_BurnCmd_t payrburncmd;
+//     PAYR_BurnLoopCmd_t payrburnloofcmd;
+
+//     /* STX */
+//     STX_PULSAR_GenericSetValueCmd_t stxgenericsetvalue;
+//     STX_PULSAR_SetValueBoolCmd_t    stxsetvaluebool;
+//     STX_PULSAR_GenericGetValueCmd_t stxgenericgetvalue;
     
-    /* PAYC*/
-    PAYC_SetConfCmd_t paycsetconfcmd;
-    PAYC_SnapCmd_t paycsnapcmd;
-    PAYC_StoreCmd_t paycstorecmd;
-    PAYC_StoreFileListLocationCmd_t paycstorefilelistlocationcmd;
-    PAYC_SetDirPathCmd_t paycsetdirpathcmd;
-    PAYC_DownloadCmd_t paycdownloadcmd;
+//     /* PAYC*/
+//     PAYC_SetConfCmd_t paycsetconfcmd;
+//     PAYC_SnapCmd_t paycsnapcmd;
+//     PAYC_StoreCmd_t paycstorecmd;
+//     PAYC_StoreFileListLocationCmd_t paycstorefilelistlocationcmd;
+//     PAYC_SetDirPathCmd_t paycsetdirpathcmd;
+//     PAYC_DownloadCmd_t paycdownloadcmd;
 
-    /* PAYS */
-    PAYS_D1064_ReadSaveStatusCmd_t paysd1064readsavestatuscmd;
+//     /* PAYS */
+//     PAYS_D1064_ReadSaveStatusCmd_t paysd1064readsavestatuscmd;
 
-    /* IFC app */
-    IFC_HandleNoArgsCmd_t ifchandlenoarg;
-    IFC_HandleU8ArgsCmd_t ifchandleu8arg;
-    IFC_HandleU32ArgsCmd_t ifchandleu32arg;
-    IFC_WriteCmd_t ifcwritecmd;
-    IFC_ReadCmd_t ifcreadcmd;
-    IFC_GpioNumCmd_t ifcgpionumcmd;
-    IFC_IoOpenCmd_t ifcioopencmd;
-    IFC_GpioWriteCmd_t ifcgpiowritecmd;
-    IFC_UartSetTermiosCmd_t ifcuartsettermioscmd;
-    IFC_I2cDuplexTransferCmd_t ifci2cduplextransfercmd;
-    IFC_SpiDuplexTransferCmd_t ifcspiduplextransfercmd;
-    IFC_IoHandleAllocateCmd_t ifciohandleallocatecmd;
+//     /* IFC app */
+//     IFC_HandleNoArgsCmd_t ifchandlenoarg;
+//     IFC_HandleU8ArgsCmd_t ifchandleu8arg;
+//     IFC_HandleU32ArgsCmd_t ifchandleu32arg;
+//     IFC_WriteCmd_t ifcwritecmd;
+//     IFC_ReadCmd_t ifcreadcmd;
+//     IFC_GpioNumCmd_t ifcgpionumcmd;
+//     IFC_IoOpenCmd_t ifcioopencmd;
+//     IFC_GpioWriteCmd_t ifcgpiowritecmd;
+//     IFC_UartSetTermiosCmd_t ifcuartsettermioscmd;
+//     IFC_I2cDuplexTransferCmd_t ifci2cduplextransfercmd;
+//     IFC_SpiDuplexTransferCmd_t ifcspiduplextransfercmd;
+//     IFC_IoHandleAllocateCmd_t ifciohandleallocatecmd;
 
-    //eps unusual case
-    u32u8bool_t u32u8bool;
-    u32u8_t u32u8;
-    u32u32u8u8_t u32u32u8u8;
-    u32u8u8u8_t u32u8u8u8;
-    u32u32u8u8u16u8_t u32u32u8u8u16u8;
-    u32u32u32u8u8u16u8_t u32u32u32u8u8u16u8;
-    u32bool13_t u32bool13;
-    u32bool9_t u32bool9;
-    EPS_P60_ParamSetCmd_t epsp60paramsetcmd;
+//     //eps unusual case
+//     u32u8bool_t u32u8bool;
+//     u32u8_t u32u8;
+//     u32u32u8u8_t u32u32u8u8;
+//     u32u8u8u8_t u32u8u8u8;
+//     u32u32u8u8u16u8_t u32u32u8u8u16u8;
+//     u32u32u32u8u8u16u8_t u32u32u32u8u8u16u8;
+//     u32bool13_t u32bool13;
+//     u32bool9_t u32bool9;
+//     EPS_P60_ParamSetCmd_t epsp60paramsetcmd;
 
-    //grx
-    GRX_AssemblePublishCmd_t grxassemblepublishcmd;
-    GRX_CmdLOGCmd_t grxcmdlogcmd;
-    GRX_CmdLogOnTimeCmd_t grxcmdlogontimecmd;
-    GRX_CmdLogOnChangedCmd_t grxcmdlogonchangedcmd;
-    GRX_CmdLogOnNewCmd_t grxcmdlogonnewcmd;
-    GRX_CmdUnlogCmd_t grxcmdunlogcmd;
-    GRX_CmdUnlogAllCmd_t grxcmdunlogallcmd;
-    GRX_CmdElevationCutoffCmd_t grxcmdelevationcutoffcmd;
-    GRX_CmdInterfaceModeCmd_t grxcmdinterfacemodecmd;
-    GRX_CmdSerialConfigCmd_t grxcmdserialconfigcmd;
-    GRX_LogRegisterHandlerCmd_t grxlogresisterhandlercmd;
-    GRX_LogUnregisterHandlerCmd_t grxlogunresisterhandlercmd;
-    GRX_LogAddCallbackCmd_t grxlogaddcallbackcmd;
-    GRX_LogSetHandlerStatusCmd_t grxlogsethandlerstatuscmd;
+//     //grx
+//     GRX_AssemblePublishCmd_t grxassemblepublishcmd;
+//     GRX_CmdLOGCmd_t grxcmdlogcmd;
+//     GRX_CmdLogOnTimeCmd_t grxcmdlogontimecmd;
+//     GRX_CmdLogOnChangedCmd_t grxcmdlogonchangedcmd;
+//     GRX_CmdLogOnNewCmd_t grxcmdlogonnewcmd;
+//     GRX_CmdUnlogCmd_t grxcmdunlogcmd;
+//     GRX_CmdUnlogAllCmd_t grxcmdunlogallcmd;
+//     GRX_CmdElevationCutoffCmd_t grxcmdelevationcutoffcmd;
+//     GRX_CmdInterfaceModeCmd_t grxcmdinterfacemodecmd;
+//     GRX_CmdSerialConfigCmd_t grxcmdserialconfigcmd;
+//     GRX_LogRegisterHandlerCmd_t grxlogresisterhandlercmd;
+//     GRX_LogUnregisterHandlerCmd_t grxlogunresisterhandlercmd;
+//     GRX_LogAddCallbackCmd_t grxlogaddcallbackcmd;
+//     GRX_LogSetHandlerStatusCmd_t grxlogsethandlerstatuscmd;
 
-    /* ADCS */
-    ADCS_CurrentUnixTimeCmd_t adcs_Unixtime;
-    ADCS_Reference_LLHTargetCommandCmd_t adcs_RefLLHTarget;
-    ADCS_GnssMeasurementsCmd_t adcs_GnssMeasurements;
-    ADCS_ReferenceRPYValueCmd_t adcs_RefRPY;
-    ADCS_OpenLoopCommandMtqCmd_t adcs_OpenLoopCmdMtq;
-    ADCS_ControlModeCmd_t adcs_ControlMode;
-    ADCS_ConfigAdcsSatelliteCmd_t adcs_ConfigAdcsSat;
-    ADCS_ControllerConfigurationCmd_t adcs_ControllerConfig;
-    ADCS_ConfigMag0OrbitCalCmd_t adcs_ConfigMag0OrbitCal;
-    ADCS_MountingConfigurationCmd_t adcs_MountingConfig;
-    ADCS_EstimatorConfigurationCmd_t adcs_EstimatorConfig;
-    ADCS_ConfigOrbitSatParamsCmd_t adcs_ConfigOrbitSatParams;
-    ADCS_NodeSelectionCmd_t adcs_NodeSelection;
-    ADCS_MtqConfigCmd_t adcs_MtqConfig;
-    ADCS_EstimationModeCmd_t adcs_EstMode;
-    ADCS_OpenLoopCommandRwlCmd_t adcs_OpenLoopCmdRwl;
-    ADCS_OpenLoopCommandHxyzRwCmd_t adcs_OpenLoopCmdHxyzRw;
+//     /* ADCS */
+//     ADCS_CurrentUnixTimeCmd_t adcs_Unixtime;
+//     ADCS_Reference_LLHTargetCommandCmd_t adcs_RefLLHTarget;
+//     ADCS_GnssMeasurementsCmd_t adcs_GnssMeasurements;
+//     ADCS_ReferenceRPYValueCmd_t adcs_RefRPY;
+//     ADCS_OpenLoopCommandMtqCmd_t adcs_OpenLoopCmdMtq;
+//     ADCS_ControlModeCmd_t adcs_ControlMode;
+//     ADCS_ConfigAdcsSatelliteCmd_t adcs_ConfigAdcsSat;
+//     ADCS_ControllerConfigurationCmd_t adcs_ControllerConfig;
+//     ADCS_ConfigMag0OrbitCalCmd_t adcs_ConfigMag0OrbitCal;
+//     ADCS_MountingConfigurationCmd_t adcs_MountingConfig;
+//     ADCS_EstimatorConfigurationCmd_t adcs_EstimatorConfig;
+//     ADCS_ConfigOrbitSatParamsCmd_t adcs_ConfigOrbitSatParams;
+//     ADCS_NodeSelectionCmd_t adcs_NodeSelection;
+//     ADCS_MtqConfigCmd_t adcs_MtqConfig;
+//     ADCS_EstimationModeCmd_t adcs_EstMode;
+//     ADCS_OpenLoopCommandRwlCmd_t adcs_OpenLoopCmdRwl;
+//     ADCS_OpenLoopCommandHxyzRwCmd_t adcs_OpenLoopCmdHxyzRw;
     
 
 
 
-    // THIS PART IS ADDED FOR COSMIC
+//     // THIS PART IS ADDED FOR COSMIC
 
-    /* SANT*/
-    SANT_DeployBurnCmd_t santdeployburncmd;
-
-
+//     /* SANT*/
+//     SANT_DeployBurnCmd_t santdeployburncmd;
 
 
 
 
-}__attribute__((packed)) Command;
+
+
+// }__attribute__((packed)) Command;
 
 typedef struct __attribute__ ((packed)) {
     uint8_t redir_out;
@@ -3202,12 +3202,12 @@ typedef struct __attribute__ ((packed)) {
 // Define CMD Structure
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
 } UTRX_NoArgsCmd_t;
 
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
     uint32_t                  Arg;
 } UTRX_u32Cmd_t;
 
@@ -3321,38 +3321,38 @@ typedef UTRX_u32Cmd_t       UTRX_SetRxBaudCmd_t;
 
 // Define CMD Structure
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
-} UANT_NoArgsCmd_t;
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
+} COS_UANT_NoArgsCmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
     uint8_t                   Arg;
-} UANT_u8Cmd_t;
+} COS_UANT_u8Cmd_t;
 
 
 
-typedef UANT_NoArgsCmd_t    UANT_NoopCmd_t;
-typedef UANT_NoArgsCmd_t    UANT_ResetCountersCmd_t;
-typedef UANT_NoArgsCmd_t    UANT_ResetCmd_t;
-typedef UANT_NoArgsCmd_t    UANT_GetDeploymentStatusCmd_t;
-typedef UANT_NoArgsCmd_t    UANT_ArmAntennaSystemsCmd_t;
-typedef UANT_NoArgsCmd_t    UANT_DisarmCmd_t;
-typedef UANT_NoArgsCmd_t    UANT_CancelDeploymentActivationCmd_t;
-typedef UANT_NoArgsCmd_t    UANT_MeasureSystemTemperatureCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_NoopCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_ResetCountersCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_ResetCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_GetDeploymentStatusCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_ArmAntennaSystemsCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_DisarmCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_CancelDeploymentActivationCmd_t;
+typedef COS_UANT_NoArgsCmd_t    COS_UANT_MeasureSystemTemperatureCmd_t;
 
 
 
-typedef UANT_u8Cmd_t        UANT_AutomatedDeploymentCmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt1Cmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt2Cmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt3Cmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt4Cmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt1OverrideCmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt2OverrideCmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt3OverrideCmd_t;
-typedef UANT_u8Cmd_t        UANT_DeployAnt4OverrideCmd_t;
-typedef UANT_u8Cmd_t        UANT_ReportAntActivationCntCmd_t;
-typedef UANT_u8Cmd_t        UANT_ReportAntActivationTimeCmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_AutomatedDeploymentCmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt1Cmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt2Cmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt3Cmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt4Cmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt1OverrideCmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt2OverrideCmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt3OverrideCmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_DeployAnt4OverrideCmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_ReportAntActivationCntCmd_t;
+typedef COS_UANT_u8Cmd_t        COS_UANT_ReportAntActivationTimeCmd_t;
 
 
 
@@ -3382,16 +3382,16 @@ typedef UANT_u8Cmd_t        UANT_ReportAntActivationTimeCmd_t;
 // Define CMD Structure
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader;
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
 } SANT_NoArgsCmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
     uint8_t                   Arg;
 } SANT_u8Cmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader CmdHeader; 
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE]; 
     uint16_t                 min_deploy;
     uint8_t                  backup;
     uint8_t                  max_burn_duration;
@@ -3417,236 +3417,236 @@ typedef SANT_u8Cmd_t            SANT_BurnCmd_t;
 
 
 
-/*******************************************/
-/*                                         */
-/*               EPS (COSMIC)              */
-/*        ?????????????????????????        */
-/*                                         */
-/*******************************************/
-// Define MSGID
+// /*******************************************/
+// /*                                         */
+// /*               EPS (COSMIC)              */
+// /*        ?????????????????????????        */
+// /*                                         */
+// /*******************************************/
+// // Define MSGID
 
-// Define Function Codes
+// // Define Function Codes
 
-/*
-** EPS App command codes
-*/
-#define EPS_NOOP_CC                 0
-#define EPS_RESET_COUNTERS_CC       1
-#define EPS_GET_COUNTERS_CC         2
-#define EPS_GET_APPDATA_CC          3
+// /*
+// ** EPS App command codes
+// */
+// #define EPS_NOOP_CC                 0
+// #define EPS_RESET_COUNTERS_CC       1
+// #define EPS_GET_COUNTERS_CC         2
+// #define EPS_GET_APPDATA_CC          3
 
-/*
-** P31u device & channel control
-*/
-#define EPS_P31U_SET_OUT_SINGLE_CC  10
-#define EPS_P31U_SET_OUTPUTS_CC     11
-#define EPS_P31U_RESET_WDT_CC       20
-#define EPS_P31U_RESET_COUNTERS_CC  21
-#define EPS_P31U_HARD_RESET_CC      22
+// /*
+// ** P31u device & channel control
+// */
+// #define EPS_P31U_SET_OUT_SINGLE_CC  10
+// #define EPS_P31U_SET_OUTPUTS_CC     11
+// #define EPS_P31U_RESET_WDT_CC       20
+// #define EPS_P31U_RESET_COUNTERS_CC  21
+// #define EPS_P31U_HARD_RESET_CC      22
 
-/*
-** P31u housekeeping requests
-*/
-#define EPS_P31U_GETHK_ALL_CC       30
-#define EPS_P31U_GETHK_OUT_CC       31
-#define EPS_P31U_GETHK_VI_CC        32
-#define EPS_P31U_GETHK_WDT_CC       33
-#define EPS_P31U_GETHK_BASIC_CC     34
-#define EPS_P31U_GETHK_OLD_CC       35
-#define EPS_P31U_GETHK_CC           36
+// /*
+// ** P31u housekeeping requests
+// */
+// #define EPS_P31U_GETHK_ALL_CC       30
+// #define EPS_P31U_GETHK_OUT_CC       31
+// #define EPS_P31U_GETHK_VI_CC        32
+// #define EPS_P31U_GETHK_WDT_CC       33
+// #define EPS_P31U_GETHK_BASIC_CC     34
+// #define EPS_P31U_GETHK_OLD_CC       35
+// #define EPS_P31U_GETHK_CC           36
 
-/*
-** P31u config commands
-*/
-#define EPS_P31U_SET_PV_VOLT_CC     40
-#define EPS_P31U_SET_PV_AUTO_CC     41
-#define EPS_P31U_SET_HEATER_CC      42
+// /*
+// ** P31u config commands
+// */
+// #define EPS_P31U_SET_PV_VOLT_CC     40
+// #define EPS_P31U_SET_PV_AUTO_CC     41
+// #define EPS_P31U_SET_HEATER_CC      42
 
-#define EPS_P31U_GET_CONFIG_CC      50
-#define EPS_P31U_SET_CONFIG_CC      51
-#define EPS_P31U_CONFIG_CC          52
-#define EPS_P31U_GET_CONFIG2_CC     53
-#define EPS_P31U_SET_CONFIG2_CC     54
-#define EPS_P31U_CONFIG2_CC         55
-#define EPS_P31U_SET_CONFIG3_CC     56
+// #define EPS_P31U_GET_CONFIG_CC      50
+// #define EPS_P31U_SET_CONFIG_CC      51
+// #define EPS_P31U_CONFIG_CC          52
+// #define EPS_P31U_GET_CONFIG2_CC     53
+// #define EPS_P31U_SET_CONFIG2_CC     54
+// #define EPS_P31U_CONFIG2_CC         55
+// #define EPS_P31U_SET_CONFIG3_CC     56
 
-/*
-** Generic transaction (plumbing)
-*/
-#define EPS_P31U_TRANSACTION_CC     99
+// /*
+// ** Generic transaction (plumbing)
+// */
+// #define EPS_P31U_TRANSACTION_CC     99
 
 
-// Define CMD Structure
-typedef struct {
-    uint8_t  channel;
-    uint8_t  value;
-    uint16_t delay;
-} EPS_P31U_SetOutputSingle_Payload_t;
+// // Define CMD Structure
+// typedef struct {
+//     uint8_t  channel;
+//     uint8_t  value;
+//     uint16_t delay;
+// } EPS_P31U_SetOutputSingle_Payload_t;
 
-typedef struct {
-    uint8_t  mask;
-} EPS_P31U_SetOutputs_Payload_t;
+// typedef struct {
+//     uint8_t  mask;
+// } EPS_P31U_SetOutputs_Payload_t;
 
-typedef struct {
-    uint8_t  id;
-} EPS_P31U_GetHk_Payload_t;
+// typedef struct {
+//     uint8_t  id;
+// } EPS_P31U_GetHk_Payload_t;
  
-typedef struct {
-    int16_t  voltage[3];
-} EPS_P31U_SetPvVolt_Payload_t;
+// typedef struct {
+//     int16_t  voltage[3];
+// } EPS_P31U_SetPvVolt_Payload_t;
 
-typedef struct {
-    uint8_t  mode;
-} EPS_P31U_SetPvAuto_Payload_t;
+// typedef struct {
+//     uint8_t  mode;
+// } EPS_P31U_SetPvAuto_Payload_t;
 
-typedef struct {
-    uint8_t  cmd;
-    uint8_t  heater;
-    uint8_t  mode;
-} EPS_P31U_SetHeater_Payload_t;
+// typedef struct {
+//     uint8_t  cmd;
+//     uint8_t  heater;
+//     uint8_t  mode;
+// } EPS_P31U_SetHeater_Payload_t;
 
-typedef struct {
-    uint8_t  ppt_mode;
-    uint8_t  battheater_mode;
-    int8_t   battheater_low;
-    int8_t   battheater_high;
-    uint8_t  output_normal_value[8];
-    uint8_t  output_safe_value[8];
-    uint16_t output_initial_on_delay[8];
-    uint16_t output_initial_off_delay[8];
-    uint16_t vboost[3];
-} EPS_P31U_SetConfig_Payload_t;
+// typedef struct {
+//     uint8_t  ppt_mode;
+//     uint8_t  battheater_mode;
+//     int8_t   battheater_low;
+//     int8_t   battheater_high;
+//     uint8_t  output_normal_value[8];
+//     uint8_t  output_safe_value[8];
+//     uint16_t output_initial_on_delay[8];
+//     uint16_t output_initial_off_delay[8];
+//     uint16_t vboost[3];
+// } EPS_P31U_SetConfig_Payload_t;
 
-typedef struct {
-    uint16_t batt_maxvoltage;
-    uint16_t batt_safevoltage;
-    uint16_t batt_criticalvoltage;
-    uint16_t batt_normalvoltage;
-    uint32_t reserved1[2];
-    uint8_t  reserved2[4];
-} EPS_P31U_SetConfig2_Payload_t;
+// typedef struct {
+//     uint16_t batt_maxvoltage;
+//     uint16_t batt_safevoltage;
+//     uint16_t batt_criticalvoltage;
+//     uint16_t batt_normalvoltage;
+//     uint32_t reserved1[2];
+//     uint8_t  reserved2[4];
+// } EPS_P31U_SetConfig2_Payload_t;
 
-typedef struct {
-    uint8_t  version;
-    uint8_t  cmd;
-    uint8_t  length;
-    uint8_t  flags;
-    uint16_t cur_lim[8];
-    uint8_t  cur_ema_gain;
-    uint8_t  cspwdt_channel[2];
-    uint8_t  cspwdt_address[2];
-} EPS_P31U_SetConfig3_Payload_t;
+// typedef struct {
+//     uint8_t  version;
+//     uint8_t  cmd;
+//     uint8_t  length;
+//     uint8_t  flags;
+//     uint16_t cur_lim[8];
+//     uint8_t  cur_ema_gain;
+//     uint8_t  cspwdt_channel[2];
+//     uint8_t  cspwdt_address[2];
+// } EPS_P31U_SetConfig3_Payload_t;
 
-typedef struct {
-    uint8_t  port;
-    uint8_t  reserved;
-    uint8_t  txSize;
-    uint8_t  rxSize;
-    uint8_t  tx[128];
-} EPS_P31U_Transaction_Payload_t;
+// typedef struct {
+//     uint8_t  port;
+//     uint8_t  reserved;
+//     uint8_t  txSize;
+//     uint8_t  rxSize;
+//     uint8_t  tx[128];
+// } EPS_P31U_Transaction_Payload_t;
 
-/*************************************************************************/
-/*
-** Type definition (EPS housekeeping)
-*/
+// /*************************************************************************/
+// /*
+// ** Type definition (EPS housekeeping)
+// */
 
-typedef struct {
+// typedef struct {
 
-} EPS_P31U_HkTlm_Payload_t;
+// } EPS_P31U_HkTlm_Payload_t;
 
-typedef struct SAMPLE_APP_HkTlm_Payload {
-    uint8_t CommandErrorCounter;
-    uint8_t CommandCounter;
-    uint8_t spare[2];
-} EPS_HkTlm_Payload_t;
-
-
-
-/**
- * Noarg cmd template.
- */
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-} EPS_NoArgCmd_t;
-
-typedef EPS_NoArgCmd_t  EPS_NoopCmd_t;
-typedef EPS_NoArgCmd_t  EPS_ResetCountersCmd_t;
-typedef EPS_NoArgCmd_t  EPS_GetCountersCmd_t;
-typedef EPS_NoArgCmd_t  EPS_GetAppDataCmd_t;
-
-typedef EPS_NoArgCmd_t  EPS_P31U_ResetCountersCmd_t;
-typedef EPS_NoArgCmd_t  EPS_P31U_ResetWdtCmd_t;
-typedef EPS_NoArgCmd_t  EPS_P31U_HardResetCmd_t;
-
-typedef EPS_NoArgCmd_t  EPS_P31U_GetHkAllCmd_t;
-typedef EPS_NoArgCmd_t  EPS_P31U_GetHkOutCmd_t;
-typedef EPS_NoArgCmd_t  EPS_P31U_GetHkViCmd_t;
-typedef EPS_NoArgCmd_t  EPS_P31U_GetHkWdtCmd_t;
-typedef EPS_NoArgCmd_t  EPS_P31U_GetHkBasicCmd_t;
-typedef EPS_NoArgCmd_t  EPS_P31U_GetHkOldCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_GetHk_Payload_t Payload;
-} EPS_P31U_GetHkCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetOutputSingle_Payload_t Payload;
-} EPS_P31U_SetOutputSingleCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetOutputs_Payload_t Payload;
-} EPS_P31U_SetOutputsCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetPvVolt_Payload_t Payload;
-} EPS_P31U_SetPvVoltCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetPvAuto_Payload_t Payload;
-} EPS_P31U_SetPvAutoCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetHeater_Payload_t Payload;
-} EPS_P31U_SetHeaterCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetConfig_Payload_t Payload;
-} EPS_P31U_SetConfigCmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetConfig2_Payload_t Payload;
-} EPS_P31U_SetConfig2Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_SetConfig3_Payload_t Payload;
-} EPS_P31U_SetConfig3Cmd_t;
-
-typedef struct {
-    CFE_MSG_CommandHeader_t CommandHeader;
-    EPS_P31U_Transaction_Payload_t Payload;
-} EPS_P31U_TransactionCmd_t;
+// typedef struct SAMPLE_APP_HkTlm_Payload {
+//     uint8_t CommandErrorCounter;
+//     uint8_t CommandCounter;
+//     uint8_t spare[2];
+// } EPS_HkTlm_Payload_t;
 
 
-/*************************************************************************/
-/*
-** Type definition (EPS housekeeping)
-*/
-typedef EPS_NoArgCmd_t  EPS_SendHkCmd_t;
+
+// /**
+//  * Noarg cmd template.
+//  */
+// typedef struct {
+//     uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
+// } EPS_NoArgCmd_t;
+
+// typedef EPS_NoArgCmd_t  EPS_NoopCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_ResetCountersCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_GetCountersCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_GetAppDataCmd_t;
+
+// typedef EPS_NoArgCmd_t  EPS_P31U_ResetCountersCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_P31U_ResetWdtCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_P31U_HardResetCmd_t;
+
+// typedef EPS_NoArgCmd_t  EPS_P31U_GetHkAllCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_P31U_GetHkOutCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_P31U_GetHkViCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_P31U_GetHkWdtCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_P31U_GetHkBasicCmd_t;
+// typedef EPS_NoArgCmd_t  EPS_P31U_GetHkOldCmd_t;
+
+// typedef struct {
+//     uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     EPS_P31U_GetHk_Payload_t Payload;
+// } EPS_P31U_GetHkCmd_t;
+
+// typedef struct {
+//     uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     EPS_P31U_SetOutputSingle_Payload_t Payload;
+// } EPS_P31U_SetOutputSingleCmd_t;
+
+// typedef struct {
+//     uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE];
+//     EPS_P31U_SetOutputs_Payload_t Payload;
+// } EPS_P31U_SetOutputsCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader_t CommandHeader;
+//     EPS_P31U_SetPvVolt_Payload_t Payload;
+// } EPS_P31U_SetPvVoltCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader_t CommandHeader;
+//     EPS_P31U_SetPvAuto_Payload_t Payload;
+// } EPS_P31U_SetPvAutoCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader_t CommandHeader;
+//     EPS_P31U_SetHeater_Payload_t Payload;
+// } EPS_P31U_SetHeaterCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader_t CommandHeader;
+//     EPS_P31U_SetConfig_Payload_t Payload;
+// } EPS_P31U_SetConfigCmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader_t CommandHeader;
+//     EPS_P31U_SetConfig2_Payload_t Payload;
+// } EPS_P31U_SetConfig2Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader_t CommandHeader;
+//     EPS_P31U_SetConfig3_Payload_t Payload;
+// } EPS_P31U_SetConfig3Cmd_t;
+
+// typedef struct {
+//     CFE_MSG_CommandHeader_t CommandHeader;
+//     EPS_P31U_Transaction_Payload_t Payload;
+// } EPS_P31U_TransactionCmd_t;
 
 
-typedef struct {
-    CFE_MSG_TelemetryHeader_t  TelemetryHeader;
-    EPS_HkTlm_Payload_t Payload;
-} EPS_HkTlm_t;
+// /*************************************************************************/
+// /*
+// ** Type definition (EPS housekeeping)
+// */
+// typedef EPS_NoArgCmd_t  EPS_SendHkCmd_t;
+
+
+// typedef struct {
+//     CFE_MSG_TelemetryHeader_t  TelemetryHeader;
+//     EPS_HkTlm_Payload_t Payload;
+// } EPS_HkTlm_t;
 
 
 
@@ -3766,23 +3766,23 @@ typedef struct {
 // Define CMD Structure
 
 typedef struct {
-    CFE_MSG_CommandHeader     CmdHeader;
-} UANT_NoArgsCmd_t;
+    uint8_t                   CmdHeader[CFE_SB_CMD_HDR_SIZE];
+} B16_UANT_NoArgsCmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader     CmdHeader; 
+    uint8_t                   CmdHeader[CFE_SB_CMD_HDR_SIZE]; 
     uint8_t                   Arg;
-} UANT_u8Cmd_t;
+} B16_UANT_u8Cmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader     CmdHeader; 
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE]; 
     uint8_t                   addr;
     uint8_t                   channel;
     uint8_t                   duration;
 } UANT_BurnChannelCmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader     CmdHeader; 
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE]; 
     uint8_t                   addr;
     uint16_t                  MinutesUntilDeploy;
     uint8_t                   BackupActive;
@@ -3790,23 +3790,23 @@ typedef struct {
 } UANT_SetSettingsCmd_t;
 
 typedef struct {
-    CFE_MSG_CommandHeader     CmdHeader; 
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE]; 
     uint16_t                  SecondsDelay;
     uint8_t                   addrslave1;
     uint8_t                   addrslave2;
 } UANT_AutoDeployCmd_t;
 
 
-typedef UANT_NoArgCmd_t    UANT_NoopCmd_t;
-typedef UANT_NoArgCmd_t    UANT_ResetCountersCmd_t;
+typedef B16_UANT_NoArgsCmd_t    UANT_NoopCmd_t;
+typedef B16_UANT_NoArgsCmd_t    UANT_ResetCountersCmd_t;
 
-typedef UANT_u8Cmd_t       UANT_SoftRebootCmd_t;
-typedef UANT_u8Cmd_t       UANT_StopBurnCmd_t;
-typedef UANT_u8Cmd_t       UANT_GetStatusCmd_t;
-typedef UANT_u8Cmd_t       UANT_GetBackupStatusCmd_t;
-typedef UANT_u8Cmd_t       UANT_GetBoardStatusCmd_t;
-typedef UANT_u8Cmd_t       UANT_GetTemperatureCmd_t;
-typedef UANT_u8Cmd_t       UANT_GetSettingsCmd_t;
+typedef B16_UANT_u8Cmd_t       UANT_SoftRebootCmd_t;
+typedef B16_UANT_u8Cmd_t       UANT_StopBurnCmd_t;
+typedef B16_UANT_u8Cmd_t       UANT_GetStatusCmd_t;
+typedef B16_UANT_u8Cmd_t       UANT_GetBackupStatusCmd_t;
+typedef B16_UANT_u8Cmd_t       UANT_GetBoardStatusCmd_t;
+typedef B16_UANT_u8Cmd_t       UANT_GetTemperatureCmd_t;
+typedef B16_UANT_u8Cmd_t       UANT_GetSettingsCmd_t;
 
 
 
