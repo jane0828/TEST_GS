@@ -4720,9 +4720,22 @@ void ImGui_ControlWindow(float fontscale)
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
                     msgid = htons(msgid);
                 }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->santsetsettingscmd.CmdHeader[0],
-                            command->santsetsettingscmd.CmdHeader[1], command->santsetsettingscmd.CmdHeader[2], command->santsetsettingscmd.CmdHeader[3], command->santsetsettingscmd.CmdHeader[4], command->santsetsettingscmd.CmdHeader[5], command->santsetsettingscmd.CmdHeader[6], command->santsetsettingscmd.CmdHeader[7],
-                            command->santsetsettingscmd.min_deploy, command->santsetsettingscmd.backup, command->santsetsettingscmd.max_burn_duration);
+
+                ImGui::Text("Header: %02X %02X %02X %02X %02X %02X %02X %02X",
+                            command->santsetsettingscmd.CmdHeader[0],
+                            command->santsetsettingscmd.CmdHeader[1],
+                            command->santsetsettingscmd.CmdHeader[2],
+                            command->santsetsettingscmd.CmdHeader[3],
+                            command->santsetsettingscmd.CmdHeader[4],
+                            command->santsetsettingscmd.CmdHeader[5],
+                            command->santsetsettingscmd.CmdHeader[6],
+                            command->santsetsettingscmd.CmdHeader[7]);
+
+                ImGui::Text("Params: min_deploy=%u, backup=%u, max_burn_duration=%u",
+                            command->santsetsettingscmd.min_deploy,
+                            command->santsetsettingscmd.backup,
+                            command->santsetsettingscmd.max_burn_duration);
+            
                 break;
             }
 
@@ -4768,9 +4781,23 @@ void ImGui_ControlWindow(float fontscale)
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
                     msgid = htons(msgid);
                 }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantburnchannelcmd.CmdHeader[0],
-                            command->uantburnchannelcmd.CmdHeader[1], command->uantburnchannelcmd.CmdHeader[2], command->uantburnchannelcmd.CmdHeader[3], command->uantburnchannelcmd.CmdHeader[4], command->uantburnchannelcmd.CmdHeader[5], command->uantburnchannelcmd.CmdHeader[6], command->uantburnchannelcmd.CmdHeader[7],
-                            command->uantburnchannelcmd.addr, command->uantburnchannelcmd.channel, command->uantburnchannelcmd.duration);
+               ImGui::Text("Header: %02X %02X %02X %02X %02X %02X %02X %02X",
+                            command->uantburnchannelcmd.CmdHeader[0],
+                            command->uantburnchannelcmd.CmdHeader[1],
+                            command->uantburnchannelcmd.CmdHeader[2],
+                            command->uantburnchannelcmd.CmdHeader[3],
+                            command->uantburnchannelcmd.CmdHeader[4],
+                            command->uantburnchannelcmd.CmdHeader[5],
+                            command->uantburnchannelcmd.CmdHeader[6],
+                            command->uantburnchannelcmd.CmdHeader[7]);
+
+                ImGui::Text("Params: addr=%u, channel=%u, duration=%u",
+                            command->uantburnchannelcmd.addr,
+                            command->uantburnchannelcmd.channel,
+                            command->uantburnchannelcmd.duration);
+
+
+
                 break;
             }
 
@@ -4806,6 +4833,7 @@ void ImGui_ControlWindow(float fontscale)
                     TestPacket->PacketType = MIM_PT_TMTC_TEST;
                     TestPacket->Length = sizeof(UANT_SetSettingsCmd_t);
                     
+                    command->uantsetsettingscmd.CmdHeader[7] = 0x00;
                     uint16_t len = sizeof(UANT_SetSettingsCmd_t);
                     const uint8_t *byteptr = (uint8_t *)&command->uantsetsettingscmd;
                     uint8_t checksum = 0xFF;
@@ -4818,9 +4846,22 @@ void ImGui_ControlWindow(float fontscale)
                     pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void *)TestPacket);
                     msgid = htons(msgid);
                 }
-                ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantsetsettingscmd.CmdHeader[0],
-                            command->uantsetsettingscmd.CmdHeader[1], command->uantsetsettingscmd.CmdHeader[2], command->uantsetsettingscmd.CmdHeader[3], command->uantsetsettingscmd.CmdHeader[4], command->uantsetsettingscmd.CmdHeader[5], command->uantsetsettingscmd.CmdHeader[6], command->uantsetsettingscmd.CmdHeader[7],
-                            command->uantsetsettingscmd.addr, command->uantsetsettingscmd.MinutesUntilDeploy, command->uantsetsettingscmd.BackupActive, command->uantsetsettingscmd.MaxBurnDuration);
+                ImGui::Text("Header: %02X %02X %02X %02X %02X %02X %02X %02X",
+                            command->uantsetsettingscmd.CmdHeader[0],
+                            command->uantsetsettingscmd.CmdHeader[1],
+                            command->uantsetsettingscmd.CmdHeader[2],
+                            command->uantsetsettingscmd.CmdHeader[3],
+                            command->uantsetsettingscmd.CmdHeader[4],
+                            command->uantsetsettingscmd.CmdHeader[5],
+                            command->uantsetsettingscmd.CmdHeader[6],
+                            command->uantsetsettingscmd.CmdHeader[7]);
+
+                        ImGui::Text("Params: addr=%u, MinutesUntilDeploy=%u, BackupActive=%u, MaxBurnDuration=%u",
+                            command->uantsetsettingscmd.addr,
+                            command->uantsetsettingscmd.MinutesUntilDeploy,
+                            command->uantsetsettingscmd.BackupActive,
+                            command->uantsetsettingscmd.MaxBurnDuration);
+
                 break;
             }
 
@@ -4870,6 +4911,23 @@ void ImGui_ControlWindow(float fontscale)
                 ImGui::Text("0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x || %u %u %u",command->uantautodeploycmd.CmdHeader[0],
                             command->uantautodeploycmd.CmdHeader[1], command->uantautodeploycmd.CmdHeader[2], command->uantautodeploycmd.CmdHeader[3], command->uantautodeploycmd.CmdHeader[4], command->uantautodeploycmd.CmdHeader[5], command->uantautodeploycmd.CmdHeader[6], command->uantautodeploycmd.CmdHeader[7],
                             command->uantautodeploycmd.SecondsDelay, command->uantautodeploycmd.addrslave1, command->uantautodeploycmd.addrslave2);
+                ImGui::Text("Header: %02X %02X %02X %02X %02X %02X %02X %02X",
+                            command->uantautodeploycmd.CmdHeader[0],
+                            command->uantautodeploycmd.CmdHeader[1],
+                            command->uantautodeploycmd.CmdHeader[2],
+                            command->uantautodeploycmd.CmdHeader[3],
+                            command->uantautodeploycmd.CmdHeader[4],
+                            command->uantautodeploycmd.CmdHeader[5],
+                            command->uantautodeploycmd.CmdHeader[6],
+                            command->uantautodeploycmd.CmdHeader[7]);
+
+                ImGui::Text("Params: SecondsDelay=%u, addrslave1=%u, addrslave2=%u",
+                            command->uantautodeploycmd.SecondsDelay,
+                            command->uantautodeploycmd.addrslave1,
+                            command->uantautodeploycmd.addrslave2);
+
+                
+                
                 break;
             }
             

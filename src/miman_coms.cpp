@@ -898,7 +898,7 @@ void * task_uplink_onorbit(void * sign_)
             while(State.uplink_mode)
             {
                 if ((txconn = csp_connect(CSP_PRIO_HIGH, 3, 13, MIM_DEFAULT_TIMEOUT, 0)) == NULL) {
-                /*!!!!!!!!!!!Revise setup->obc_node!!!!!!!!!!*/ //-> Change to 28.
+                /*!!!!!!!!!!!Revise setup->obc_node!!!!!!!!!!*/ //
                 // setup->
                 /*!!!!!!!!!!!!Need to revise Port!!!!!!!!!!!*/
                     continue;
