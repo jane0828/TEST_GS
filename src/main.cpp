@@ -349,7 +349,13 @@ int main(int, char**)
                     State.TRx_mode = true;
                     State.downlink_mode = true;
                     pthread_create(&p_thread[11], NULL, TRxController, NULL); 
-                    
+                
+
+
+
+
+
+
                 }
                 if(State.SbandUse)
                 {

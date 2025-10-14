@@ -1,0 +1,19 @@
+Uplink packet. Length: 8
+18	50	c0	00	00	01	08	7e	
+
+Uplink packet. Length: 9
+18	51	c0	00	00	02	08	7e	02	
+
+Uplink packet. Length: 9
+18	51	c0	00	00	03	07	71	03	
+
+Uplink packet. Length: 9
+18	51	c0	00	00	03	07	71	03	
+
+Uplink packet. Length: 12
+18	51	c0	00	00	05	06	7d	08	00	
+00	00	
+
+Uplink packet. Length: 9
+18	51	c0	00	00	02	08	7e	02	
+

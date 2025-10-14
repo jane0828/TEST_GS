@@ -911,12 +911,29 @@ void * task_uplink_onorbit(void * sign_)
                 console.AddLog("[OK]CMD Packet Header: 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x 0x%x",
                     packet->data[0],packet->data[1],packet->data[2],packet->data[3],packet->data[4],packet->data[5],packet->data[6],packet->data[7]);
                 fprintf(log_ptr, "Uplink packet. Length: %d\n",packet->length);
-                    for(int i=0; i<packet->length; i++) {
+                    
+                
+                
+                for(int i=0; i<packet->length; i++) {
                         if(!(i%10) && i !=0) {
                             fprintf(log_ptr, "\n");
                         }
                         fprintf(log_ptr, "%02hhx\t",packet->data[i]);
                     } fprintf(log_ptr,"\n\n");
+
+                fprintf(stdout, "[TX] len=%u\n", packet->length);
+                for (int i = 0; i < packet->length; i++) {
+        fprintf(stdout, "%02X%s", packet->data[i], ((i + 1) % 16 == 0 || i == packet->length - 1) ? "\n" : " ");
+                }
+                fflush(stdout);
+
+
+
+
+
+
+
+
                 if(csp_send(txconn, packet, setup->default_timeout)) // Success. then,
                 {   
                     packet = NULL; // discard packet and,

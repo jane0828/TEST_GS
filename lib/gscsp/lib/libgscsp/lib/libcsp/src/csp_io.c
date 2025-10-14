@@ -595,7 +595,7 @@ int csp_send_direct_streaming(csp_id_t idout, csp_packet_t * packet, csp_iface_t
 	if (idout.src == csp_get_address()) {
 		/* Append HMAC */
 		if (idout.flags & CSP_FHMAC) {
-#ifdef CSP_USE_HMAC
+#ifdef 
 			/* Calculate and add HMAC (does not include header for backwards compatability with csp1.x) */
 			if (csp_hmac_append(packet, false) != 0) {
 				/* HMAC append failed */
