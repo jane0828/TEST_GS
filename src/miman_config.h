@@ -3412,7 +3412,19 @@ typedef SANT_u8Cmd_t            SANT_BurnCmd_t;
 
 
 
-
+/*******************************************/
+/*                                         */
+/*              FTP  (COSMIC)              */
+/*        GomSpace NanoCom AM2150-O        */
+/*                                         */
+/*******************************************/
+typedef struct {
+    char                     name[64]; 
+    uint32_t                 start_byte;
+    uint32_t                 end_byte;
+    uint32_t                 interval;
+    uint8_t                  padding[3];
+} FTP_sendfileCmd_t;
 
 
 
@@ -3824,6 +3836,9 @@ typedef struct {
     UANT_BurnChannelCmd_t  uantburnchannelcmd;
     UANT_SetSettingsCmd_t  uantsetsettingscmd;
     UANT_AutoDeployCmd_t   uantautodeploycmd;
+
+    FTP_sendfileCmd_t      ftpsendfilecmd;
+    
 
     
 

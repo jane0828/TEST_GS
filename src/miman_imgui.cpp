@@ -4930,6 +4930,81 @@ void ImGui_ControlWindow(float fontscale)
                 
                 break;
             }
+            case 78: {
+                static uint16_t msgid = 0;
+                static uint8_t fnccode = 0;
+                static FTP_sendfileCmd_t payload = {};
+                static char name_buf[64] = "";
+
+                ImGui::InputScalar("msgid", ImGuiDataType_U16, &msgid);
+                ImGui::InputScalar("fnccode", ImGuiDataType_U8, &fnccode);
+
+                ImGui::InputText("name", name_buf, sizeof(name_buf));
+                ImGui::InputScalar("start_byte (u32)", ImGuiDataType_U32, &payload.start_byte);
+                ImGui::InputScalar("end_byte (u32)", ImGuiDataType_U32, &payload.end_byte);
+                ImGui::InputScalar("interval (u32)", ImGuiDataType_U32, &payload.interval);
+
+                ImGui::Separator();
+                ImGui::Text("Padding (3 bytes)");
+                ImGui::Separator();
+
+                ImGui::InputScalar("padding[0] (u8)", ImGuiDataType_U8, &payload.padding[0]);
+                ImGui::InputScalar("padding[1] (u8)", ImGuiDataType_U8, &payload.padding[1]);
+                ImGui::InputScalar("padding[2] (u8)", ImGuiDataType_U8, &payload.padding[2]);
+
+                if (ImGui::Button("Generate CMD")) {
+                    memset(payload.name, 0, sizeof(payload.name));
+                    strncpy(payload.name, name_buf, sizeof(payload.name) - 1);
+
+                    uint8_t header[8] = {0};
+                    uint16_t mid_be = htons(msgid);
+                    memcpy(header + 0, &mid_be, sizeof(uint16_t));
+                    header[2] = 0xC0;
+                    header[3] = 0x00;
+                    uint16_t len_be = htons(static_cast<uint16_t>(sizeof(FTP_sendfileCmd_t)));
+                    memcpy(header + 4, &len_be, sizeof(uint16_t));
+                    header[6] = fnccode;
+
+                    uint8_t checksum = 0xFF;
+                    for (int i = 0; i < 7; ++i) checksum ^= header[i];
+                    const uint8_t* p = reinterpret_cast<const uint8_t*>(&payload);
+                    for (size_t i = 0; i < sizeof(FTP_sendfileCmd_t); ++i) checksum ^= p[i];
+                    header[7] = checksum;
+
+                    pthread_join(p_thread[4], NULL);
+
+                    size_t pkt_len = sizeof(header) + sizeof(FTP_sendfileCmd_t);
+                    packetsign* TestPacket = (packetsign*)malloc(2 + 2 + 4 + pkt_len);
+                    TestPacket->Identifier = HVD_TEST;
+                    TestPacket->PacketType = MIM_PT_TMTC_TEST;
+                    TestPacket->Length = pkt_len;
+
+                    uint8_t* dst = reinterpret_cast<uint8_t*>(TestPacket->Data);
+                    memcpy(dst, header, sizeof(header));
+                    memcpy(dst + sizeof(header), &payload, sizeof(FTP_sendfileCmd_t));
+
+                    pthread_create(&p_thread[4], NULL, task_uplink_onorbit, (void*)TestPacket);
+                }
+
+                ImGui::Separator();
+                ImGui::Text("Header: %02X %02X %02X %02X %02X %02X %02X %02X",
+                            0xFF & payload.name[0], 0xFF & payload.name[1],
+                            0xFF & payload.name[2], 0xFF & payload.name[3],
+                            0xFF & payload.name[4], 0xFF & payload.name[5],
+                            0xFF & payload.name[6], 0xFF & payload.name[7]);
+
+                ImGui::Text("Params:");
+                ImGui::Text("  name        = %s", name_buf);
+                ImGui::Text("  start_byte  = %u", payload.start_byte);
+                ImGui::Text("  end_byte    = %u", payload.end_byte);
+                ImGui::Text("  interval    = %u", payload.interval);
+                ImGui::Text("  padding[0..2] = {%u, %u, %u}",
+                            payload.padding[0], payload.padding[1], payload.padding[2]);
+                break;
+            }
+ 
+
+
             
         }
         // if(ImGui::Button("Generate CMD")) {
@@ -6331,6 +6406,7 @@ void Initialize_CMDLabels()
     snprintf(Templabels[75], 64, "BEE-1000 UANT Burn Channel Command");
     snprintf(Templabels[76], 64, "BEE-1000 UANT Set Settings Command");
     snprintf(Templabels[77], 64, "BEE-1000 UANT Auto Deploy Command");
+    snprintf(Templabels[78], 64, "COSMIC FTP Send File Command");
     // // EPS unusual
     // snprintf(Templabels[10], 64, "EPS_P60_Dock(PDU)SetChannelSingle");
     // snprintf(Templabels[11], 64, "EPS_P60_Dock(PDU)GetChannelSingle & AcuSetMpptMode");
