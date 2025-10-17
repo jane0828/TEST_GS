@@ -3419,10 +3419,11 @@ typedef SANT_u8Cmd_t            SANT_BurnCmd_t;
 /*                                         */
 /*******************************************/
 typedef struct {
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE]; 
     char                     name[64]; 
     uint32_t                 start_byte;
     uint32_t                 end_byte;
-    uint32_t                 interval;
+    uint8_t                 interval;
     uint8_t                  padding[3];
 } FTP_sendfileCmd_t;
 
