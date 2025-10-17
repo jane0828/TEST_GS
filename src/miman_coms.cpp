@@ -7,6 +7,12 @@
 #include "miman_orbital.h"
 #include "miman_radial.h"
 #include "miman_ftp.h"
+#include <vector>
+#include <string>
+#include <fstream>
+#include <algorithm>
+#include <opencv2/opencv.hpp>
+#include <opencv2/xphoto.hpp>
 
 #include <netinet/in.h>
 
@@ -327,6 +333,31 @@ void * task_downlink_onorbit(void * socketinfo)
     packetsign * confirm = (packetsign *)malloc(MIM_LEN_PACKET);
     csp_conn_t * conn;
 
+    /////////////////////////////////////////////////////////////////////////
+
+    bool image_packet_received = false;
+
+    std::string filename = fn;
+    std::vector <uint8_t> image_data(640*480);
+    std::vector <uint8_t> image_packet_data(640*480 + 8*(640*480/120));
+    size_t image_packet_data_length = 128;
+    size_t image_data_length = image_packet_data_length - 8;
+    size_t image_packet_num = 640 * 480 / 120;
+    int count = 0;
+    int index;
+    std::vector <int> clear_index(image_packet_num);
+    std::vector <int> received_index;    //index vector to check received packet index
+    std::vector<int> error_index(image_packet_num);    //index vector to know error packet index
+    std::ifstream fileI;
+    std::ofstream fileO;
+
+
+    for (int i = 0; i < image_packet_num; i++){
+        clear_index[i] = i;
+    }
+
+    /////////////////////////////////////////////////////////////////////////
+
     //Need to copy pointer
     //This function must be on p_thread[3]
     float seconds = 0.0f;
@@ -373,6 +404,102 @@ void * task_downlink_onorbit(void * socketinfo)
                     //     fclose(TMTC_fp);
                     // }
                     printf("Packet length: %u\n", PacketLength);
+
+                    /////////////////////////////////////////////////////////////////////////
+
+                    if (image_packet_received == false && PacketLength == 148     //compare header and receive start
+                        && data[0] == 0x08 && data[1] == 0x78
+                        ){
+                        image_packet_received = true;
+
+                        image_packet_data.assign(image_packet_data.size(), 0);    //vector initialize
+                        image_data.assign(image_data.size(), 0);    //vector initialize
+                        received_index.clear()    //vector initialize
+                        error_index.clear()    //vector initialize
+
+                        fileI.open(filename, std::ios::in | std::ios::binary);    //if in resend case, we need to use and modify previous file
+                        
+                        printf("image packet received start \n");
+
+                        if(fileI.is_open()){    //if file of image is already exist, we modify that file
+                            printf("start modify image data \n");
+                            
+                            fileI.read(reinterpret_cast<char*>(image_packet_data.data()), image_packet_data.size() * sizeof(uint8_t));
+
+                            fileI.close();
+                        }
+                    }
+
+                    if (image_packet_received){
+
+                        index = ((data[2] & 0x3F)<<8 + data[3]);    //extract index of packet
+                        
+                        if (received_index.find(received_index.begin(), received_index.end(), index) != received_index.end()){    //if received index is already exist, we need to know this information to find unexpected error
+                            printf("index %d is received again \n", index);
+                        }
+
+                        if (index < image_packet_num){
+                            memcpy(&image_packet_data[128 * i], &data[16], image_packet_data_length);    //save data in image_packet_data vector
+                            received_index.push_back(index);    //save index that is received
+                        }
+
+                        if ((data[2] >> 6) == 0x02 || count >= 3072 || (data[2] >> 6) == 0x03){    //need better trigger that say end of transmit specially in resend case 
+                            //extract error packet index
+                            printf("image packet received finish \n");
+                            std::sort(received_index.begin(), received_index.end());    //sort received index to find difference with clear index
+
+                            iter = std::set_difference(clear_index.begin(), clear_index.end(), received_index.begin(), received_index.end(), error_index.begin());    //index that doesn't received
+                            error_index.resize(iter - error_index.begin());
+
+                            """
+                            for (int i; i < 480; i++){
+                                if (image_packet_data[640*i] == 0x40 && image_packet_data[640*i +1] == 0x44 && image_packet_data[640*i + 3] == 0x02 && image_packet_data[640*i + 4] == 0x82 && image_packet_data[640*i + 639] == 0x0D){
+                                    memcpy(&image_data[640*i], &image_packet_data[640 * i + 7], 640);    //check the data is pure
+                                }
+                                
+                                else{
+                                    error_index.push_back[i];    //add index that 
+                                }
+                            }
+                            """
+
+                            for (int i; i < 480; i++){
+                                memcpy(&image_data[640*i], &image_packet_data[648 * i + 7], 640);    //save pure image data
+                            }
+
+                            printf("error packet index : \n");    //print error index
+                            for (size_t i = 0; i < error_index.size(); i++){
+                                printf("%d\t", error_index[i]);
+                            }
+                            printf("\n");
+
+                            fout.open(filename, std::ios::out | std::ios::binary);
+                            fout.write(reinterpret_cast<char*>(image_packet_data.data()), image_packet_data.size() * sizeof(uint8_t));    //save data to reuse it
+
+                            fout.close()
+
+                            std::string image_filename = filename + ".jpg";
+
+                            cv::Mat grayimage(480, 640, CV_8UC1, image_data.data());    //convert image
+                            cv::Mat colorimage;
+                            
+                            cv::cvtColor(grayimage, colorimage, cv::COLOR_BayerGR2RGB);
+                            cv::Ptr<cv::xphoto::WhiteBalancer> wb = cv::xphoto::createSimpleWB();
+                            wb -> balanceWhite(colorimage, colorimage);
+
+                            cv::imshow("original image", grayimage);
+                            cv::waitKey(0);
+                            cv::imshow("color image", colorimage);
+                            cv::waitKey(0);
+                            cv::imwrite(image_filename, colorimage);
+
+                            image_packet_received = false;    //reset progress
+                        }
+
+                        count += 1;
+                    }
+
+                    /////////////////////////////////////////////////////////////////////////////////////
 
                     for(uint8_t i=0; i < packet->length; i++) {
                         printf("0x%02X\t", data[i]);
