@@ -3428,6 +3428,10 @@ typedef struct {
 } FTP_sendfileCmd_t;
 
 
+typedef struct {
+    uint8_t               CmdHeader[CFE_SB_CMD_HDR_SIZE]; 
+    char                     path[64];
+} FTP_filenameCmd_t;
 
 
 // /*******************************************/
@@ -3839,6 +3843,7 @@ typedef struct {
     UANT_AutoDeployCmd_t   uantautodeploycmd;
 
     FTP_sendfileCmd_t      ftpsendfilecmd;
+    FTP_filenameCmd_t.     ftpfilenamecmd;
     
 
     
